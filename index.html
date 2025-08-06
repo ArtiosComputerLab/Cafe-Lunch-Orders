@@ -101,6 +101,202 @@
             border: 1px solid #f44336;
         }
 
+        /* MULTI-CHILD STYLES */
+        .parent-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 1px solid #4285f4;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .parent-info h3 {
+            color: #4285f4;
+            margin: 0 0 15px 0;
+        }
+
+        .parent-details {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 1.1em;
+        }
+
+        .change-parent-btn {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .change-parent-btn:hover {
+            background: #3367d6;
+        }
+
+        .multi-child-section {
+            margin: 20px 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .multi-child-header {
+            margin-bottom: 20px;
+        }
+
+        .multi-child-header h3 {
+            color: #3c4043;
+            margin: 0;
+        }
+
+        .child-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 0;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .child-tab {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-width: 160px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .child-tab:hover:not(.add-child-tab):not(.active) {
+            border-color: #4285f4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(66, 133, 244, 0.2);
+        }
+
+        .child-tab.active {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+        }
+
+        .child-name {
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+
+        .child-info {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .child-grade {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        .order-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #34a853;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 0.75em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        .add-child-tab {
+            background: #e8f5e8 !important;
+            border: 2px dashed #34a853 !important;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .add-child-tab:hover {
+            background: #d4edda !important;
+            border-color: #2e7d32 !important;
+            transform: translateY(-2px);
+        }
+
+        .add-icon {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .remove-child-btn {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #ea4335;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .child-tab:hover .remove-child-btn {
+            display: flex;
+        }
+
+        .child-form-wrapper {
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .child-form-wrapper.active {
+            display: block;
+        }
+
+        .child-form-wrapper h3 {
+            color: #4285f4;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .main-content {
             display: grid;
             grid-template-columns: 1fr 350px;
@@ -610,6 +806,21 @@
                 margin: 10px auto;
                 width: fit-content;
             }
+
+            .child-tabs {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .child-tab {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .parent-details {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -647,6 +858,29 @@
 
         <div class="store-status" id="store-status">
             Checking store hours...
+        </div>
+
+        <!-- Parent Information Section (Multi-Child Mode) -->
+        <div class="parent-info" id="parent-info">
+            <h3>👨‍👩‍👧‍👦 Parent Information</h3>
+            <div class="parent-details">
+                <strong>Email:</strong> <span id="parent-email-display"></span>
+                <button type="button" class="change-parent-btn" onclick="changeParentInfo()">Change</button>
+            </div>
+        </div>
+
+        <!-- Multi-Child Section -->
+        <div class="multi-child-section" id="multi-child-section">
+            <div class="multi-child-header">
+                <h3>Select Child to Order For:</h3>
+            </div>
+            
+            <div class="child-tabs" id="child-tabs">
+                <div class="child-tab add-child-tab" onclick="addNewChild()">
+                    <span class="add-icon">+</span>
+                    <span>Add Child</span>
+                </div>
+            </div>
         </div>
 
         <div class="main-content">
@@ -781,6 +1015,14 @@
         let storeIsOpen = true;
         let cloudSyncActive = false;
 
+        // Multi-child state management
+        let familyOrder = {
+            parentEmail: '',
+            parentPhone: '',
+            children: [],
+            currentChildIndex: 0
+        };
+
         // Menu data structure
         const menuData = {
             entrees: [
@@ -829,6 +1071,9 @@
             checkStoreHours();
             setupEventListeners();
             updateSyncStatus();
+            
+            // Initialize multi-child system
+            initializeMultiChildSystem();
 
             // Check store hours every minute
             setInterval(checkStoreHours, 60000);
@@ -995,6 +1240,573 @@
         }
 
         // ============================================
+        // MULTI-CHILD SYSTEM
+        // ============================================
+
+        /**
+         * Initialize multi-child system
+         */
+        function initializeMultiChildSystem() {
+            setupMultiChildEventListeners();
+            console.log('Multi-child system initialized');
+        }
+
+        /**
+         * Setup event listeners for multi-child system
+         */
+        function setupMultiChildEventListeners() {
+            // Enhanced email listener
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.addEventListener('blur', function() {
+                    const email = this.value.trim();
+                    if (email && isValidEmail(email)) {
+                        activateMultiChildMode(email);
+                    } else {
+                        deactivateMultiChildMode();
+                    }
+                });
+            }
+        }
+
+        /**
+         * Activate multi-child mode when parent email is entered
+         */
+        function activateMultiChildMode(email) {
+            familyOrder.parentEmail = email;
+            
+            // Show parent info
+            const parentInfo = document.getElementById('parent-info');
+            const parentEmailDisplay = document.getElementById('parent-email-display');
+            const multiChildSection = document.getElementById('multi-child-section');
+            
+            parentEmailDisplay.textContent = email;
+            parentInfo.style.display = 'block';
+            multiChildSection.style.display = 'block';
+            
+            // Hide the original form inputs (but keep them for compatibility)
+            hideOriginalStudentFields();
+            
+            // Load existing children from history
+            loadExistingChildren(email);
+            
+            console.log('Multi-child mode activated for:', email);
+        }
+
+        /**
+         * Deactivate multi-child mode
+         */
+        function deactivateMultiChildMode() {
+            const parentInfo = document.getElementById('parent-info');
+            const multiChildSection = document.getElementById('multi-child-section');
+            
+            parentInfo.style.display = 'none';
+            multiChildSection.style.display = 'none';
+            
+            // Show original form
+            showOriginalStudentFields();
+            
+            // Reset state
+            familyOrder = {
+                parentEmail: '',
+                parentPhone: '',
+                children: [],
+                currentChildIndex: 0
+            };
+            
+            console.log('Multi-child mode deactivated');
+        }
+
+        /**
+         * Hide original student form fields
+         */
+        function hideOriginalStudentFields() {
+            const formSection = document.querySelector('.form-section');
+            const formRows = formSection.querySelectorAll('.form-row');
+            
+            // Hide first form row (student name fields)
+            if (formRows[0]) {
+                formRows[0].style.display = 'none';
+            }
+            
+            // Hide email field from second form row
+            const emailGroup = document.querySelector('#email').closest('.form-group');
+            if (emailGroup) {
+                emailGroup.style.display = 'none';
+            }
+        }
+
+        /**
+         * Show original student form fields
+         */
+        function showOriginalStudentFields() {
+            const formSection = document.querySelector('.form-section');
+            const formRows = formSection.querySelectorAll('.form-row');
+            
+            // Show first form row
+            if (formRows[0]) {
+                formRows[0].style.display = 'grid';
+            }
+            
+            // Show email field
+            const emailGroup = document.querySelector('#email').closest('.form-group');
+            if (emailGroup) {
+                emailGroup.style.display = 'block';
+            }
+        }
+
+        /**
+         * Add new child
+         */
+        function addNewChild() {
+            const childIndex = familyOrder.children.length;
+            const newChild = {
+                firstName: '',
+                lastName: '',
+                grade: '',
+                items: [],
+                total: 0
+            };
+            
+            familyOrder.children.push(newChild);
+            createChildTab(childIndex, newChild);
+            createChildForm(childIndex, newChild);
+            switchToChild(childIndex);
+            
+            // Focus on first name field
+            setTimeout(() => {
+                const firstNameInput = document.querySelector(`#child-form-${childIndex} .child-first-name`);
+                if (firstNameInput) {
+                    firstNameInput.focus();
+                }
+            }, 100);
+            
+            console.log('Added new child:', childIndex);
+        }
+
+        /**
+         * Create child tab in UI
+         */
+        function createChildTab(childIndex, child) {
+            const childTabsContainer = document.getElementById('child-tabs');
+            const addButton = childTabsContainer.querySelector('.add-child-tab');
+            
+            const tab = document.createElement('div');
+            tab.className = 'child-tab';
+            tab.dataset.child = childIndex;
+            tab.onclick = () => switchToChild(childIndex);
+            
+            tab.innerHTML = `
+                <div class="child-name">${child.firstName || 'New Child'}</div>
+                <div class="child-info">
+                    <div class="child-grade">${child.grade || 'Select Grade'}</div>
+                </div>
+                ${child.items && child.items.length > 0 ? `<div class="order-count">${child.items.length}</div>` : ''}
+                ${childIndex > 0 ? `<button class="remove-child-btn" onclick="removeChild(${childIndex}); event.stopPropagation();">×</button>` : ''}
+            `;
+            
+            childTabsContainer.insertBefore(tab, addButton);
+        }
+
+        /**
+         * Create child form
+         */
+        function createChildForm(childIndex, child) {
+            const mainContent = document.querySelector('.main-content .form-section');
+            
+            const childForm = document.createElement('div');
+            childForm.className = 'child-form-wrapper';
+            childForm.id = `child-form-${childIndex}`;
+            
+            childForm.innerHTML = `
+                <h3>📝 ${child.firstName || 'New Child'}'s Lunch Order</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Student First Name <span class="required">*</span></label>
+                        <input type="text" class="child-first-name" value="${child.firstName}" 
+                               onchange="updateChildInfo(${childIndex}, 'firstName', this.value)" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Student Last Name <span class="required">*</span></label>
+                        <input type="text" class="child-last-name" value="${child.lastName}"
+                               onchange="updateChildInfo(${childIndex}, 'lastName', this.value)" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Grade <span class="required">*</span></label>
+                        <select class="child-grade" onchange="updateChildInfo(${childIndex}, 'grade', this.value)" required>
+                            <option value="">Select Grade</option>
+                            <option value="K-2" ${child.grade === 'K-2' ? 'selected' : ''}>K-2</option>
+                            <option value="3-4" ${child.grade === '3-4' ? 'selected' : ''}>3-4</option>
+                            <option value="5-6" ${child.grade === '5-6' ? 'selected' : ''}>5-6</option>
+                            <option value="7-8" ${child.grade === '7-8' ? 'selected' : ''}>7-8</option>
+                            <option value="9-12" ${child.grade === '9-12' ? 'selected' : ''}>9-12</option>
+                            <option value="Staff" ${child.grade === 'Staff' ? 'selected' : ''}>Staff</option>
+                            <option value="Parent" ${child.grade === 'Parent' ? 'selected' : ''}>Parent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div style="padding-top: 25px;">
+                            <strong>Items: </strong><span class="child-item-count">0</span> | 
+                            <strong>Total: </strong><span class="child-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="menu-section">
+                    <h3>Select Days & Menu Items</h3>
+                    <!-- Menu will be inserted here -->
+                </div>
+            `;
+            
+            // Insert the menu content
+            const menuContainer = childForm.querySelector('.menu-section');
+            const originalMenuContainer = document.getElementById('menu-container');
+            if (originalMenuContainer) {
+                menuContainer.appendChild(originalMenuContainer.cloneNode(true));
+                
+                // Update all the menu item IDs and data attributes for this child
+                updateMenuForChild(menuContainer, childIndex);
+            }
+            
+            mainContent.appendChild(childForm);
+        }
+
+        /**
+         * Update menu items for specific child
+         */
+        function updateMenuForChild(menuContainer, childIndex) {
+            const checkboxes = menuContainer.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const originalId = checkbox.id;
+                checkbox.id = `${originalId}-child${childIndex}`;
+                checkbox.dataset.childIndex = childIndex;
+                
+                // Update corresponding label
+                const label = menuContainer.querySelector(`label[for="${originalId}"]`);
+                if (label) {
+                    label.setAttribute('for', checkbox.id);
+                }
+                
+                // Add event listener for this child
+                checkbox.addEventListener('change', () => updateChildCart(childIndex));
+            });
+        }
+
+        /**
+         * Switch to specific child
+         */
+        function switchToChild(childIndex) {
+            familyOrder.currentChildIndex = childIndex;
+            
+            // Update tab active states
+            document.querySelectorAll('.child-tab:not(.add-child-tab)').forEach((tab, index) => {
+                tab.classList.toggle('active', index === childIndex);
+            });
+            
+            // Show corresponding form
+            document.querySelectorAll('.child-form-wrapper').forEach((form, index) => {
+                form.classList.toggle('active', index === childIndex);
+            });
+            
+            // Update the global form fields to match this child (for compatibility)
+            updateGlobalFormFields(childIndex);
+            
+            console.log('Switched to child:', childIndex);
+        }
+
+        /**
+         * Update global form fields to match current child (for compatibility)
+         */
+        function updateGlobalFormFields(childIndex) {
+            const child = familyOrder.children[childIndex];
+            if (!child) return;
+            
+            // Update global form fields
+            document.getElementById('first-name').value = child.firstName || '';
+            document.getElementById('last-name').value = child.lastName || '';
+            document.getElementById('grade').value = child.grade || '';
+            
+            // Trigger cart update
+            setTimeout(() => updateCart(), 100);
+        }
+
+        /**
+         * Update child information
+         */
+        function updateChildInfo(childIndex, field, value) {
+            const child = familyOrder.children[childIndex];
+            if (!child) return;
+            
+            child[field] = value;
+            
+            // Update tab display
+            updateChildTab(childIndex);
+            
+            // Update form title
+            updateChildFormTitle(childIndex);
+            
+            // Update global fields if this is the current child
+            if (childIndex === familyOrder.currentChildIndex) {
+                updateGlobalFormFields(childIndex);
+            }
+        }
+
+        /**
+         * Update child tab display
+         */
+        function updateChildTab(childIndex) {
+            const child = familyOrder.children[childIndex];
+            const tab = document.querySelector(`.child-tab[data-child="${childIndex}"]`);
+            
+            if (tab && child) {
+                const nameElement = tab.querySelector('.child-name');
+                const gradeElement = tab.querySelector('.child-grade');
+                
+                if (nameElement) {
+                    nameElement.textContent = child.firstName || 'New Child';
+                }
+                
+                if (gradeElement) {
+                    gradeElement.textContent = child.grade || 'Select Grade';
+                }
+                
+                // Update order count
+                updateChildOrderCount(childIndex);
+            }
+        }
+
+        /**
+         * Update child form title
+         */
+        function updateChildFormTitle(childIndex) {
+            const child = familyOrder.children[childIndex];
+            const form = document.getElementById(`child-form-${childIndex}`);
+            
+            if (form && child) {
+                const title = form.querySelector('h3');
+                if (title) {
+                    title.textContent = `📝 ${child.firstName || 'New Child'}'s Lunch Order`;
+                }
+            }
+        }
+
+        /**
+         * Update child cart (override existing updateCart for current child)
+         */
+        function updateChildCart(childIndex) {
+            const child = familyOrder.children[childIndex];
+            if (!child) return;
+            
+            // Get items for this child
+            const form = document.getElementById(`child-form-${childIndex}`);
+            if (!form) return;
+            
+            const checkedBoxes = form.querySelectorAll('input[type="checkbox"]:checked');
+            
+            child.items = [];
+            child.total = 0;
+            
+            checkedBoxes.forEach(checkbox => {
+                const item = {
+                    id: checkbox.dataset.id,
+                    name: checkbox.dataset.item,
+                    price: parseFloat(checkbox.dataset.price),
+                    day: checkbox.dataset.day
+                };
+                
+                child.items.push(item);
+                child.total += item.price;
+            });
+            
+            // Update child-specific displays
+            updateChildFormSummary(childIndex);
+            updateChildOrderCount(childIndex);
+            
+            // If this is the current child, update the main cart
+            if (childIndex === familyOrder.currentChildIndex) {
+                updateMainCartFromChild(childIndex);
+            }
+            
+            console.log(`Updated cart for child ${childIndex}:`, child.items.length, 'items, $' + child.total.toFixed(2));
+        }
+
+        /**
+         * Update child form summary
+         */
+        function updateChildFormSummary(childIndex) {
+            const child = familyOrder.children[childIndex];
+            const form = document.getElementById(`child-form-${childIndex}`);
+            
+            if (form && child) {
+                const itemCountElement = form.querySelector('.child-item-count');
+                const totalElement = form.querySelector('.child-total');
+                
+                if (itemCountElement) {
+                    itemCountElement.textContent = child.items.length;
+                }
+                
+                if (totalElement) {
+                    totalElement.textContent = '$' + child.total.toFixed(2);
+                }
+            }
+        }
+
+        /**
+         * Update child order count badge
+         */
+        function updateChildOrderCount(childIndex) {
+            const child = familyOrder.children[childIndex];
+            const tab = document.querySelector(`.child-tab[data-child="${childIndex}"]`);
+            
+            if (tab && child) {
+                // Remove existing count
+                const existingCount = tab.querySelector('.order-count');
+                if (existingCount) {
+                    existingCount.remove();
+                }
+                
+                // Add new count if there are items
+                if (child.items && child.items.length > 0) {
+                    const countElement = document.createElement('div');
+                    countElement.className = 'order-count';
+                    countElement.textContent = child.items.length;
+                    tab.appendChild(countElement);
+                }
+            }
+        }
+
+        /**
+         * Update main cart from child (for compatibility with existing checkout)
+         */
+        function updateMainCartFromChild(childIndex) {
+            const child = familyOrder.children[childIndex];
+            if (!child) return;
+            
+            // Update global state
+            orderItems = child.items || [];
+            currentTotal = child.total || 0;
+            
+            // Update main cart display
+            displayCart();
+            validateForm();
+        }
+
+        /**
+         * Remove child
+         */
+        function removeChild(childIndex) {
+            if (familyOrder.children.length <= 1) {
+                alert('You must have at least one child to place an order.');
+                return;
+            }
+            
+            const child = familyOrder.children[childIndex];
+            const confirmMessage = `Remove ${child.firstName || 'this child'}'s order?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            // Remove from array
+            familyOrder.children.splice(childIndex, 1);
+            
+            // Remove tab and form
+            const tab = document.querySelector(`.child-tab[data-child="${childIndex}"]`);
+            const form = document.getElementById(`child-form-${childIndex}`);
+            
+            if (tab) tab.remove();
+            if (form) form.remove();
+            
+            // Update remaining tabs and forms
+            updateChildIndices();
+            
+            // Switch to first child
+            if (familyOrder.children.length > 0) {
+                switchToChild(0);
+            }
+            
+            console.log('Removed child:', childIndex);
+        }
+
+        /**
+         * Update child indices after removal
+         */
+        function updateChildIndices() {
+            // Update tabs
+            document.querySelectorAll('.child-tab:not(.add-child-tab)').forEach((tab, newIndex) => {
+                tab.dataset.child = newIndex;
+                tab.onclick = () => switchToChild(newIndex);
+                
+                // Update remove button
+                const removeBtn = tab.querySelector('.remove-child-btn');
+                if (removeBtn && newIndex > 0) {
+                    removeBtn.onclick = (e) => {
+                        removeChild(newIndex);
+                        e.stopPropagation();
+                    };
+                }
+            });
+            
+            // Update forms
+            document.querySelectorAll('.child-form-wrapper').forEach((form, newIndex) => {
+                form.id = `child-form-${newIndex}`;
+                
+                // Update all the onchange handlers
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    if (input.onchange) {
+                        const field = input.className.includes('first-name') ? 'firstName' : 
+                                    input.className.includes('last-name') ? 'lastName' : 'grade';
+                        input.onchange = () => updateChildInfo(newIndex, field, input.value);
+                    }
+                });
+                
+                // Update menu checkboxes
+                const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.dataset.childIndex = newIndex;
+                    checkbox.removeEventListener('change', checkbox._childHandler);
+                    checkbox._childHandler = () => updateChildCart(newIndex);
+                    checkbox.addEventListener('change', checkbox._childHandler);
+                });
+            });
+        }
+
+        /**
+         * Change parent info
+         */
+        function changeParentInfo() {
+            const newEmail = prompt('Enter new parent email:', familyOrder.parentEmail);
+            if (newEmail && isValidEmail(newEmail)) {
+                document.getElementById('email').value = newEmail;
+                activateMultiChildMode(newEmail);
+            }
+        }
+
+        /**
+         * Load existing children from history
+         */
+        function loadExistingChildren(email) {
+            // For now, just add one child to get started
+            // In Phase 2, we'll implement proper history loading
+            if (familyOrder.children.length === 0) {
+                addNewChild();
+            }
+        }
+
+        /**
+         * Utility function to validate email
+         */
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // ============================================
         // STORE HOURS MANAGEMENT
         // ============================================
         function checkStoreHours() {
@@ -1115,9 +1927,22 @@
         }
 
         // ============================================
-        // CART MANAGEMENT
+        // CART MANAGEMENT (ENHANCED FOR MULTI-CHILD)
         // ============================================
-        function updateCart() {
+
+        // Override the existing updateCart function
+        const originalUpdateCart = updateCart || function() {};
+        updateCart = function() {
+            if (familyOrder.children.length > 0 && familyOrder.currentChildIndex >= 0) {
+                // We're in multi-child mode
+                updateChildCart(familyOrder.currentChildIndex);
+            } else {
+                // Use original function
+                originalUpdateCartLogic();
+            }
+        };
+
+        function originalUpdateCartLogic() {
             orderItems = [];
             currentTotal = 0;
 
@@ -1177,7 +2002,7 @@
                     html += `
                         <div class="cart-item">
                             <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                            <div class="cart-item-price">${item.price.toFixed(2)}</div>
                         </div>
                     `;
                 });
@@ -1188,7 +2013,37 @@
             totalSpan.textContent = currentTotal.toFixed(2);
         }
 
-        function validateForm() {
+        // Override the existing validateForm function
+        const originalValidateForm = validateForm || function() {};
+        validateForm = function() {
+            if (familyOrder.children.length > 0) {
+                // Multi-child validation
+                const currentChild = familyOrder.children[familyOrder.currentChildIndex];
+                const checkoutBtn = document.getElementById('checkout-btn');
+                
+                const childValid = currentChild && 
+                                  currentChild.firstName && 
+                                  currentChild.lastName && 
+                                  currentChild.grade && 
+                                  currentChild.items.length > 0;
+                
+                if (!storeIsOpen) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.textContent = 'Store Closed';
+                } else if (childValid) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.textContent = `Review & Pay Order (${currentChild.total.toFixed(2)})`;
+                } else {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.textContent = 'Complete Child Info & Add Items';
+                }
+            } else {
+                // Use original validation
+                originalValidateFormLogic();
+            }
+        };
+
+        function originalValidateFormLogic() {
             const firstName = document.getElementById('first-name').value.trim();
             const lastName = document.getElementById('last-name').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -1202,7 +2057,7 @@
                 checkoutBtn.textContent = 'Store Closed';
             } else if (formValid) {
                 checkoutBtn.disabled = false;
-                checkoutBtn.textContent = `Review & Pay Order ($${currentTotal.toFixed(2)})`;
+                checkoutBtn.textContent = `Review & Pay Order (${currentTotal.toFixed(2)})`;
             } else {
                 checkoutBtn.disabled = true;
                 checkoutBtn.textContent = 'Review & Pay Order';
@@ -1385,7 +2240,7 @@
                 message += `\n👤 ${student}\n`;
                 message += ` Grade: ${studentData.grade}\n`;
                 message += ` Total Orders: ${studentData.orders.length}\n`;
-                message += ` Total Spent: $${totalSpent.toFixed(2)}\n`;
+                message += ` Total Spent: ${totalSpent.toFixed(2)}\n`;
                 message += ` ─────────────────────────\n`;
 
                 const recentOrders = studentData.orders.slice(0, 5);
@@ -1399,7 +2254,7 @@
 
                     message += `\n ${GOOGLE_SHEETS_CONFIG.useGoogleSheets ? source : ''}${isThisWeek ? '🔵 ' : '○'} ${dateStr} at ${timeStr}\n`;
                     message += ` Order: ${order.orderId}\n`;
-                    message += ` Total: $${order.total.toFixed(2)}\n`;
+                    message += ` Total: ${order.total.toFixed(2)}\n`;
 
                     const itemsByDay = {};
                     const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -1438,7 +2293,7 @@
 
             if (thisWeekOrders.length > 0) {
                 const weekTotal = thisWeekOrders.reduce((sum, order) => sum + order.total, 0);
-                message += `\nThis Week: ${thisWeekOrders.length} orders ($${weekTotal.toFixed(2)})\n`;
+                message += `\nThis Week: ${thisWeekOrders.length} orders (${weekTotal.toFixed(2)})\n`;
             }
 
             if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
@@ -1496,7 +2351,7 @@
         }
 
         // ============================================
-        // PAYMENT & ORDER SUBMISSION
+        // PAYMENT & ORDER SUBMISSION (ENHANCED FOR MULTI-CHILD)
         // ============================================
         function openPaymentModal() {
             if (!checkDuplicateOrder()) {
@@ -1511,8 +2366,18 @@
             modalTotal.textContent = currentTotal.toFixed(2);
             venmoTotal.textContent = currentTotal.toFixed(2);
 
-            const firstName = document.getElementById('first-name').value.trim();
-            const lastName = document.getElementById('last-name').value.trim();
+            let firstName, lastName;
+            
+            if (familyOrder.children.length > 0 && familyOrder.currentChildIndex >= 0) {
+                // Multi-child mode
+                const currentChild = familyOrder.children[familyOrder.currentChildIndex];
+                firstName = currentChild.firstName;
+                lastName = currentChild.lastName;
+            } else {
+                // Single child mode
+                firstName = document.getElementById('first-name').value.trim();
+                lastName = document.getElementById('last-name').value.trim();
+            }
 
             const itemsByDay = {};
             orderItems.forEach(item => {
@@ -1537,7 +2402,7 @@
                     e.preventDefault();
                     window.open('https://venmo.com/u/ChanTa-Rivers', '_blank');
 
-                    const paymentDetails = `Pay: @ChanTa-Rivers\nAmount: $${currentTotal.toFixed(2)}\nNote: ${orderNote}`;
+                    const paymentDetails = `Pay: @ChanTa-Rivers\nAmount: ${currentTotal.toFixed(2)}\nNote: ${orderNote}`;
 
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(paymentDetails).then(() => {
@@ -1571,9 +2436,20 @@
         }
 
         function checkDuplicateOrder() {
-            const email = document.getElementById('email').value.trim();
-            const firstName = document.getElementById('first-name').value.trim();
-            const lastName = document.getElementById('last-name').value.trim();
+            let email, firstName, lastName;
+            
+            if (familyOrder.children.length > 0 && familyOrder.currentChildIndex >= 0) {
+                // Multi-child mode
+                email = familyOrder.parentEmail;
+                const currentChild = familyOrder.children[familyOrder.currentChildIndex];
+                firstName = currentChild.firstName;
+                lastName = currentChild.lastName;
+            } else {
+                // Single child mode
+                email = document.getElementById('email').value.trim();
+                firstName = document.getElementById('first-name').value.trim();
+                lastName = document.getElementById('last-name').value.trim();
+            }
 
             try {
                 const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
@@ -1641,19 +2517,43 @@
             const randomStr = Math.random().toString(36).substr(2, 5).toUpperCase();
             const orderId = `LO${timestamp}${randomStr}`;
 
-            const orderData = {
-                orderId: orderId,
-                timestamp: new Date().toISOString(),
-                email: document.getElementById('email').value.trim(),
-                firstName: document.getElementById('first-name').value.trim(),
-                lastName: document.getElementById('last-name').value.trim(),
-                grade: document.getElementById('grade').value,
-                items: orderItems,
-                total: currentTotal,
-                paymentMethod: 'Venmo',
-                paymentStatus: 'confirmed',
-                sendConfirmation: true
-            };
+            let orderData;
+            
+            if (familyOrder.children.length > 0 && familyOrder.currentChildIndex >= 0) {
+                // Multi-child mode
+                const currentChild = familyOrder.children[familyOrder.currentChildIndex];
+                orderData = {
+                    orderId: orderId,
+                    timestamp: new Date().toISOString(),
+                    email: familyOrder.parentEmail,
+                    firstName: currentChild.firstName,
+                    lastName: currentChild.lastName,
+                    grade: currentChild.grade,
+                    items: currentChild.items,
+                    total: currentChild.total,
+                    paymentMethod: 'Venmo',
+                    paymentStatus: 'confirmed',
+                    sendConfirmation: true,
+                    parentPhone: familyOrder.parentPhone || '',
+                    isMultiChild: true
+                };
+            } else {
+                // Single child mode
+                orderData = {
+                    orderId: orderId,
+                    timestamp: new Date().toISOString(),
+                    email: document.getElementById('email').value.trim(),
+                    firstName: document.getElementById('first-name').value.trim(),
+                    lastName: document.getElementById('last-name').value.trim(),
+                    grade: document.getElementById('grade').value,
+                    items: orderItems,
+                    total: currentTotal,
+                    paymentMethod: 'Venmo',
+                    paymentStatus: 'confirmed',
+                    sendConfirmation: true,
+                    isMultiChild: false
+                };
+            }
 
             showNotification('Submitting order...', 'info');
 
@@ -1765,19 +2665,48 @@
         }
 
         function resetForm() {
-            document.getElementById('first-name').value = '';
-            document.getElementById('last-name').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('grade').value = '';
+            if (familyOrder.children.length > 0) {
+                // Multi-child mode: reset current child's form
+                const currentChildIndex = familyOrder.currentChildIndex;
+                const child = familyOrder.children[currentChildIndex];
+                
+                if (child) {
+                    // Clear child's order but keep their info
+                    child.items = [];
+                    child.total = 0;
+                    
+                    // Uncheck all checkboxes for this child
+                    const form = document.getElementById(`child-form-${currentChildIndex}`);
+                    if (form) {
+                        form.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                            cb.checked = false;
+                        });
+                    }
+                    
+                    // Update displays
+                    updateChildFormSummary(currentChildIndex);
+                    updateChildOrderCount(currentChildIndex);
+                    updateMainCartFromChild(currentChildIndex);
+                }
+            } else {
+                // Single child mode: reset everything
+                document.getElementById('first-name').value = '';
+                document.getElementById('last-name').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('grade').value = '';
 
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-                cb.checked = false;
-            });
+                document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                    cb.checked = false;
+                });
 
-            orderItems = [];
-            currentTotal = 0;
-            displayCart();
-            validateForm();
+                orderItems = [];
+                currentTotal = 0;
+                displayCart();
+                validateForm();
+                
+                // Deactivate multi-child mode
+                deactivateMultiChildMode();
+            }
         }
 
         // ============================================
