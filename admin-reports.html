@@ -294,6 +294,15 @@
     function generateReport() {
       const dateInput = document.getElementById('report-date').value;
       const generateBtn = document.getElementById('generate-btn');
+      
+      // Get email recipients
+      const emailAdmin = document.getElementById('email-admin').checked;
+      const emailCrivers = document.getElementById('email-crivers').checked;
+      
+      if (!emailAdmin && !emailCrivers) {
+        showStatus('Please select at least one email recipient', 'error');
+        return;
+      }
 
       if (!dateInput) {
         showStatus('Please select a date', 'error');
@@ -307,9 +316,14 @@
 
       generateBtn.disabled = true;
       generateBtn.textContent = '⏳ Generating Report...';
-      showStatus(`Generating report for ${dateInput}...`, 'info');
+      
+      const recipients = [];
+      if (emailAdmin) recipients.push('jedaws@gmail.com');
+      if (emailCrivers) recipients.push('CRivers@artiosacademies.com');
+      
+      showStatus(`Generating report for ${dateInput} (sending to ${recipients.length} recipient${recipients.length > 1 ? 's' : ''})...`, 'info');
 
-      const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=generate_report&secret=cafe2025&date=${dateInput}`;
+      const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=generate_report&secret=cafe2025&date=${dateInput}&recipients=${encodeURIComponent(recipients.join(','))}`;
 
       fetch(reportUrl)
         .then(response => response.json())
@@ -320,7 +334,8 @@
             let message = `✅ Report Generated Successfully!\n\n`;
             message += `📅 Date: ${dateInput}\n`;
             message += `📊 Sheet: ${data.sheetName}\n`;
-            message += `🍽️ Orders Found: ${data.ordersProcessed}\n\n`;
+            message += `🍽️ Orders Found: ${data.ordersProcessed}\n`;
+            message += `📧 Email sent to: ${recipients.join(', ')}\n\n`;
             
             if (data.ordersProcessed > 0) {
               message += `The report includes:\n`;
@@ -328,7 +343,6 @@
               message += `• Restaurant preparation summary\n`;
               message += `• Item counts and totals\n`;
               message += `• Copy-friendly ordering format\n\n`;
-              message += `📧 Email report sent to admin\n`;
               showStatus(`Report created: ${data.ordersProcessed} orders for ${dateInput}`, 'success');
             } else {
               message += `No orders found for this date.\n`;
