@@ -1180,11 +1180,12 @@
         });
       }
 
-      // FIXED: Payment modal listeners
+      // FIXED: Payment modal listeners with proper error checking
       const cancelBtn = document.getElementById('cancel-payment-btn');
       if (cancelBtn) {
         cancelBtn.addEventListener('click', function(e) {
           e.preventDefault();
+          e.stopPropagation();
           console.log('Cancel payment clicked');
           closePaymentModal();
         });
@@ -1194,9 +1195,24 @@
       if (confirmBtn) {
         confirmBtn.addEventListener('click', function(e) {
           e.preventDefault();
-          console.log('Confirm payment clicked');
-          submitOrder();
+          e.stopPropagation();
+          console.log('🚀 Confirm payment clicked - submitting order');
+          
+          // Add loading state to button
+          confirmBtn.disabled = true;
+          confirmBtn.textContent = '⏳ Submitting Order...';
+          
+          try {
+            submitOrder();
+          } catch (error) {
+            console.error('❌ Error in submitOrder:', error);
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+            showNotification('Error submitting order. Please try again.', 'error');
+          }
         });
+      } else {
+        console.error('❌ Confirm payment button not found!');
       }
 
       // Click outside modal to close
@@ -1568,12 +1584,20 @@
     function closePaymentModal() {
       console.log('🚪 Closing payment modal...');
       const modal = document.getElementById('payment-modal');
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      
       if (modal) {
         modal.classList.remove('show');
         // Use setTimeout to allow animation to complete
         setTimeout(() => {
           modal.style.display = 'none';
         }, 300);
+      }
+      
+      // Reset confirm button state
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
       }
     }
 
@@ -1702,6 +1726,13 @@
 
     function handleSubmissionFailure(orderData, orderId, errorMessage) {
       console.error('💥 Complete submission failure:', errorMessage);
+      
+      // Reset confirm button
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+      }
       
       if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
         console.log('🔄 Falling back to localStorage...');
