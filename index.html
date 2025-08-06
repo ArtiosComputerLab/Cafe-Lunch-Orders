@@ -12,14 +12,14 @@
         }
         
         body {
-            font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+            font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
             background: #f8f9fa;
             color: #202124;
             line-height: 1.6;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -47,28 +47,68 @@
             margin-top: 15px;
         }
         
+        .sync-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .sync-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34a853;
+            animation: pulse 2s infinite;
+        }
+        
+        .sync-indicator.offline {
+            background: #fbbc04;
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
         .store-status {
             text-align: center;
             padding: 15px;
             margin: 20px 30px;
             border-radius: 8px;
             font-weight: 500;
+            transition: all 0.3s;
         }
         
-        .store-open {
+        .store-status.store-open {
             background: #e8f5e8;
             color: #2e7d32;
             border: 1px solid #4caf50;
         }
         
-        .store-closed {
+        .store-status.store-closed {
             background: #ffebee;
             color: #c62828;
             border: 1px solid #f44336;
         }
         
-        .form-section {
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
             padding: 30px;
+        }
+        
+        .form-section {
+            background: white;
         }
         
         .form-row {
@@ -110,16 +150,14 @@
             box-shadow: 0 0 0 1px #4285f4;
         }
         
-        .week-selector {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+        .menu-section {
+            margin: 30px 0;
         }
         
-        .week-selector h3 {
-            margin-bottom: 15px;
+        .menu-section h3 {
+            margin-bottom: 20px;
             color: #3c4043;
+            font-size: 1.2em;
         }
         
         .day-tabs {
@@ -127,6 +165,7 @@
             gap: 5px;
             margin-bottom: 20px;
             overflow-x: auto;
+            padding-bottom: 5px;
         }
         
         .day-tab {
@@ -141,8 +180,9 @@
             text-align: center;
         }
         
-        .day-tab:hover {
+        .day-tab:hover:not(.disabled) {
             border-color: #4285f4;
+            transform: translateY(-1px);
         }
         
         .day-tab.active {
@@ -156,29 +196,50 @@
             color: #9aa0a6;
             cursor: not-allowed;
             border-color: #e0e0e0;
+            opacity: 0.7;
         }
         
         .day-tab.disabled:hover {
             border-color: #e0e0e0;
+            transform: none;
+        }
+        
+        .day-name {
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .day-date {
+            font-size: 0.85em;
+            margin-top: 2px;
+            opacity: 0.9;
         }
         
         .menu-for-day {
             display: none;
+            animation: fadeIn 0.3s;
         }
         
         .menu-for-day.active {
             display: block;
         }
         
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
         .menu-category {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .category-title {
             background: #34a853;
             color: white;
-            padding: 10px 15px;
-            border-radius: 6px 6px 0 0;
+            padding: 12px 15px;
             font-weight: 600;
             font-size: 1.1em;
         }
@@ -186,13 +247,9 @@
         .menu-items {
             border: 1px solid #e0e0e0;
             border-top: none;
-            border-radius: 0 0 6px 6px;
         }
         
         .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             padding: 15px;
             border-bottom: 1px solid #f0f0f0;
             transition: background-color 0.2s;
@@ -206,42 +263,60 @@
             background: #f8f9fa;
         }
         
-        .item-info {
-            flex: 1;
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
         
         .item-name {
             font-weight: 500;
             color: #3c4043;
-            margin-bottom: 2px;
-        }
-        
-        .item-description {
-            color: #5f6368;
-            font-size: 0.9em;
         }
         
         .item-price {
             font-weight: 600;
             color: #34a853;
-            margin: 0 15px;
             font-size: 1.1em;
         }
         
-        .item-checkbox {
-            width: 20px;
-            height: 20px;
+        .item-description {
+            color: #5f6368;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .day-selection {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .day-selection input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
             cursor: pointer;
         }
         
-        .cart-summary {
+        .day-selection label {
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #5f6368;
+        }
+        
+        .sidebar {
             position: sticky;
             top: 20px;
+            height: fit-content;
+        }
+        
+        .cart-summary {
             background: white;
             border: 2px solid #4285f4;
             border-radius: 8px;
             padding: 20px;
-            margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(66,133,244,0.15);
         }
         
         .cart-title {
@@ -253,9 +328,24 @@
         }
         
         .cart-items {
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
             margin-bottom: 15px;
+            padding-right: 5px;
+        }
+        
+        .cart-items::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .cart-items::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .cart-items::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
         }
         
         .cart-item {
@@ -263,12 +353,38 @@
             justify-content: space-between;
             margin-bottom: 8px;
             font-size: 0.9em;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .cart-item-name {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .cart-item-price {
+            font-weight: 600;
+            color: #34a853;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            color: #9aa0a6;
+            font-style: italic;
+            padding: 20px;
         }
         
         .cart-total {
             border-top: 2px solid #4285f4;
             padding-top: 15px;
             text-align: center;
+        }
+        
+        .total-label {
+            font-size: 0.9em;
+            color: #5f6368;
+            margin-bottom: 5px;
         }
         
         .total-amount {
@@ -288,16 +404,37 @@
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
         }
         
         .checkout-btn:hover:not(:disabled) {
             background: #2e7d32;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(52,168,83,0.3);
         }
         
         .checkout-btn:disabled {
             background: #dadce0;
             cursor: not-allowed;
+            transform: none;
+        }
+        
+        .history-btn {
+            width: 100%;
+            background: white;
+            color: #4285f4;
+            border: 1px solid #4285f4;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+        
+        .history-btn:hover {
+            background: #f0f5ff;
         }
         
         .payment-modal {
@@ -311,6 +448,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            animation: fadeIn 0.3s;
         }
         
         .payment-content {
@@ -320,6 +458,34 @@
             max-width: 500px;
             width: 90%;
             text-align: center;
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .payment-header {
+            color: #4285f4;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .payment-amount {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
         }
         
         .payment-steps {
@@ -348,6 +514,7 @@
             font-weight: 600;
             margin-right: 12px;
             font-size: 0.9em;
+            flex-shrink: 0;
         }
         
         .venmo-btn {
@@ -359,7 +526,7 @@
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
             margin: 10px;
             text-decoration: none;
             display: inline-block;
@@ -367,6 +534,8 @@
         
         .venmo-btn:hover {
             background: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(61,149,206,0.3);
         }
         
         .confirmation-btn {
@@ -378,6 +547,7 @@
             font-weight: 600;
             cursor: pointer;
             margin: 10px;
+            transition: all 0.2s;
         }
         
         .confirmation-btn:hover {
@@ -393,10 +563,52 @@
             font-weight: 600;
             cursor: pointer;
             margin: 10px;
+            transition: all 0.2s;
         }
         
         .cancel-btn:hover {
-            background: #bdc1c6;
+            background: #c5c8cc;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease;
+            font-size: 0.95em;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+                order: -1;
+            }
+            
+            .sync-status {
+                position: static;
+                margin: 10px auto;
+                width: fit-content;
+            }
         }
         
         @media (max-width: 768px) {
@@ -405,22 +617,13 @@
             }
             
             .day-tabs {
-                flex-wrap: wrap;
+                overflow-x: scroll;
             }
             
-            .day-tab {
-                flex: 1;
-                min-width: 80px;
-            }
-            
-            .menu-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .item-price {
-                margin: 0;
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
             }
         }
     </style>
@@ -428,21 +631,25 @@
 <body>
     <div class="container">
         <div class="header">
+            <div class="sync-status" id="sync-status">
+                <div class="sync-indicator" id="sync-indicator"></div>
+                <span id="sync-text">Cloud Sync Active</span>
+            </div>
             <h1>🍽️ Cafe Lunch Order Form 2025-2026</h1>
             <div class="notice">
-                <strong>Order & Payment Cutoff Daily at 8:00 AM</strong><br>
+                <strong>Order & Payment Cutoff: Daily at 8:00 AM</strong><br>
                 ONE FORM PER PERSON • Preorder for the whole week or daily<br>
                 Form closed daily from 8:00 AM - 1:00 PM<br>
                 Contact: CRivers@artiosacademies.com
             </div>
         </div>
         
-        <div id="store-status" class="store-status">
-            <span id="status-text">Checking store hours...</span>
+        <div class="store-status" id="store-status">
+            Checking store hours...
         </div>
         
-        <div class="form-section">
-            <form id="lunch-order-form">
+        <div class="main-content">
+            <div class="form-section">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="first-name">Student First Name <span class="required">*</span></label>
@@ -457,7 +664,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email <span class="required">*</span></label>
-                        <input type="email" id="email" required>
+                        <input type="email" id="email" required placeholder="parent@example.com">
                     </div>
                     <div class="form-group">
                         <label for="grade">Grade <span class="required">*</span></label>
@@ -474,279 +681,56 @@
                     </div>
                 </div>
                 
-                <div class="week-selector">
+                <div class="menu-section">
                     <h3>Select Days & Menu Items</h3>
-                    <div class="day-tabs">
-                        <div class="day-tab" data-day="monday">
-                            <div class="day-name">Monday</div>
-                            <div class="day-date" id="date-mon"></div>
-                        </div>
-                        <div class="day-tab" data-day="tuesday">
-                            <div class="day-name">Tuesday</div>
-                            <div class="day-date" id="date-tue"></div>
-                        </div>
-                        <div class="day-tab" data-day="wednesday">
-                            <div class="day-name">Wednesday</div>
-                            <div class="day-date" id="date-wed"></div>
-                        </div>
-                        <div class="day-tab" data-day="thursday">
-                            <div class="day-name">Thursday</div>
-                            <div class="day-date" id="date-thu"></div>
-                        </div>
-                        <div class="day-tab" data-day="friday">
-                            <div class="day-name">Friday</div>
-                            <div class="day-date" id="date-fri"></div>
-                        </div>
+                    
+                    <div class="day-tabs" id="day-tabs">
+                        <!-- Tabs will be generated by JavaScript -->
                     </div>
                     
-                    <!-- Monday Menu -->
-                    <div class="menu-for-day" data-day="monday">
-                        <div class="menu-category">
-                            <div class="category-title">Entrees</div>
-                            <div class="menu-items">
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Chicken Sandwich</div>
-                                        <div class="item-description">Classic boneless breast of chicken</div>
-                                    </div>
-                                    <div class="item-price">$6.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-sandwich" data-price="6.50" data-item="Chicken Sandwich" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Spicy Chicken Sandwich</div>
-                                        <div class="item-description">Boneless breast with spicy seasoning</div>
-                                    </div>
-                                    <div class="item-price">$6.75</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-spicy-sandwich" data-price="6.75" data-item="Spicy Chicken Sandwich" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Nuggets (8ct)</div>
-                                        <div class="item-description">Bite-sized boneless chicken pieces</div>
-                                    </div>
-                                    <div class="item-price">$6.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-nuggets" data-price="6.50" data-item="Nuggets (8ct)" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Grilled Nuggets (8ct)</div>
-                                        <div class="item-description">Grilled boneless chicken pieces</div>
-                                    </div>
-                                    <div class="item-price">$7.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-grilled-nuggets" data-price="7.50" data-item="Grilled Nuggets (8ct)" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Grilled Sandwich</div>
-                                        <div class="item-description">Grilled chicken breast sandwich</div>
-                                    </div>
-                                    <div class="item-price">$8.25</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-grilled-sandwich" data-price="8.25" data-item="Grilled Sandwich" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Grilled Sandwich (GF Bun)</div>
-                                        <div class="item-description">Grilled chicken with gluten-free bun</div>
-                                    </div>
-                                    <div class="item-price">$9.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-grilled-gf" data-price="9.50" data-item="Grilled Sandwich (GF Bun)" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Chicken Wrap</div>
-                                        <div class="item-description">Chicken with fresh vegetables in a wrap</div>
-                                    </div>
-                                    <div class="item-price">$9.75</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-chicken-wrap" data-price="9.75" data-item="Chicken Wrap" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Southwest Veggie Wrap</div>
-                                        <div class="item-description">Fresh vegetables with southwest flavors</div>
-                                    </div>
-                                    <div class="item-price">$9.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-veggie-wrap" data-price="9.50" data-item="Southwest Veggie Wrap" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Chicken Strips (3ct)</div>
-                                        <div class="item-description">Hand-breaded chicken strips</div>
-                                    </div>
-                                    <div class="item-price">$6.75</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-strips" data-price="6.75" data-item="Chicken Strips (3ct)" data-day="Monday">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="menu-category">
-                            <div class="category-title">Add-Ons (Save $1.50 vs separate!)</div>
-                            <div class="menu-items">
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Chips & Drink</div>
-                                        <div class="item-description">Add to any entree</div>
-                                    </div>
-                                    <div class="item-price">+$1.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-combo-chips" data-price="1.50" data-item="Chips & Drink" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Fries & Drink</div>
-                                        <div class="item-description">Add to any entree</div>
-                                    </div>
-                                    <div class="item-price">+$3.75</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-combo-fries" data-price="3.75" data-item="Fries & Drink" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Fruit Cup & Drink</div>
-                                        <div class="item-description">Add to any entree</div>
-                                    </div>
-                                    <div class="item-price">+$5.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-combo-fruit" data-price="5.50" data-item="Fruit Cup & Drink" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Mac & Cheese & Drink</div>
-                                        <div class="item-description">Add to any entree</div>
-                                    </div>
-                                    <div class="item-price">+$5.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-combo-mac" data-price="5.50" data-item="Mac & Cheese & Drink" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Side Salad & Drink</div>
-                                        <div class="item-description">Add to any entree</div>
-                                    </div>
-                                    <div class="item-price">+$5.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-combo-salad" data-price="5.50" data-item="Side Salad & Drink" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Cookie Parfait & Drink</div>
-                                        <div class="item-description">Add to any entree</div>
-                                    </div>
-                                    <div class="item-price">+$5.75</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-combo-cookie" data-price="5.75" data-item="Cookie Parfait & Drink" data-day="Monday">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="menu-category">
-                            <div class="category-title">Sides Only</div>
-                            <div class="menu-items">
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Fries</div>
-                                    </div>
-                                    <div class="item-price">$3.75</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-fries" data-price="3.75" data-item="Fries" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Fruit Cup</div>
-                                    </div>
-                                    <div class="item-price">$5.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-fruit" data-price="5.50" data-item="Fruit Cup" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Mac & Cheese</div>
-                                    </div>
-                                    <div class="item-price">$5.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-mac" data-price="5.50" data-item="Mac & Cheese" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Side Salad</div>
-                                    </div>
-                                    <div class="item-price">$5.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-salad" data-price="5.50" data-item="Side Salad" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Cookie Parfait</div>
-                                    </div>
-                                    <div class="item-price">$5.75</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-cookie" data-price="5.75" data-item="Cookie Parfait" data-day="Monday">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="menu-category">
-                            <div class="category-title">Salads</div>
-                            <div class="menu-items">
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Cobb Salad</div>
-                                        <div class="item-description">Mixed greens with chicken, bacon, cheese</div>
-                                    </div>
-                                    <div class="item-price">$11.25</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-cobb" data-price="11.25" data-item="Cobb Salad" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Southwest Salad</div>
-                                        <div class="item-description">Mixed greens with southwest flavors</div>
-                                    </div>
-                                    <div class="item-price">$11.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-southwest" data-price="11.50" data-item="Southwest Salad" data-day="Monday">
-                                </div>
-                                <div class="menu-item">
-                                    <div class="item-info">
-                                        <div class="item-name">Market Fresh Salad</div>
-                                        <div class="item-description">Seasonal fresh vegetables and greens</div>
-                                    </div>
-                                    <div class="item-price">$11.50</div>
-                                    <input type="checkbox" class="item-checkbox" name="monday-market" data-price="11.50" data-item="Market Fresh Salad" data-day="Monday">
-                                </div>
-                            </div>
-                        </div>
+                    <div id="menu-container">
+                        <!-- Menu for each day will be generated by JavaScript -->
                     </div>
-                    
-                    <!-- Duplicate menu structure for other days -->
-                    <!-- Tuesday through Friday would have identical menu structures with different name attributes -->
-                    <!-- I'll create them dynamically with JavaScript for efficiency -->
                 </div>
-                
+            </div>
+            
+            <div class="sidebar">
                 <div class="cart-summary">
                     <div class="cart-title">📋 Your Order</div>
-                    <div style="text-align: center; margin-bottom: 15px;">
-                        <button type="button" id="history-btn" class="cancel-btn" style="padding: 8px 15px; font-size: 0.9em;" onclick="checkForExistingOrders()">
-                            View Order History
-                        </button>
-                    </div>
+                    <button type="button" class="history-btn" id="history-btn">
+                        View Order History
+                    </button>
                     <div class="cart-items" id="cart-items">
-                        <div style="text-align: center; color: #9aa0a6; font-style: italic;">No items selected</div>
+                        <div class="empty-cart">No items selected</div>
                     </div>
                     <div class="cart-total">
-                        <div class="total-amount">Total: $<span id="total-amount">0.00</span></div>
+                        <div class="total-label">Order Total</div>
+                        <div class="total-amount">$<span id="total-amount">0.00</span></div>
                         <button type="button" class="checkout-btn" id="checkout-btn" disabled>
                             Review & Pay Order
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
     
     <!-- Payment Modal -->
     <div class="payment-modal" id="payment-modal">
         <div class="payment-content">
-            <h2 style="color: #4285f4; margin-bottom: 20px;">Complete Your Order</h2>
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-                <strong>Total: $<span id="modal-total">0.00</span></strong>
+            <div class="payment-header">Complete Your Order</div>
+            <div class="payment-amount">
+                Total: $<span id="modal-total">0.00</span>
             </div>
             
             <div class="payment-steps">
                 <div class="payment-step">
                     <div class="step-number">1</div>
-                    <div>Click "Pay with Venmo" to open Venmo with your order details</div>
+                    <div>Click "Pay with Venmo" to open Venmo with order details</div>
                 </div>
                 <div class="payment-step">
                     <div class="step-number">2</div>
-                    <div>Complete payment to <strong>@ChanTa-Rivers</strong> in Venmo</div>
+                    <div>Complete payment to <strong>@ChanTa-Rivers</strong></div>
                 </div>
                 <div class="payment-step">
                     <div class="step-number">3</div>
@@ -768,107 +752,192 @@
                     Cancel
                 </button>
             </div>
-            
-            <div style="font-size: 0.85em; color: #5f6368; margin-top: 15px;">
-                <strong>Important:</strong> Only click "I've Paid" after completing payment in Venmo
-            </div>
         </div>
     </div>
 
     <script>
+        // ============================================
+        // CONFIGURATION - UPDATE THIS SECTION
+        // ============================================
+        const GOOGLE_SHEETS_CONFIG = {
+            webAppUrl: '', // PASTE YOUR WEB APP URL HERE
+            useGoogleSheets: false, // SET TO true AFTER ADDING URL
+            fallbackToLocalStorage: true
+        };
+
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
         let currentTotal = 0;
         let orderItems = [];
-        let activeDays = [];
-        
+        let currentDay = 'monday';
+        let storeIsOpen = true;
+        let cloudSyncActive = false;
+
         // Menu data structure
         const menuData = {
             entrees: [
-                { name: "Chicken Sandwich", price: 6.50, desc: "Classic boneless breast of chicken" },
-                { name: "Spicy Chicken Sandwich", price: 6.75, desc: "Boneless breast with spicy seasoning" },
-                { name: "Nuggets (8ct)", price: 6.50, desc: "Bite-sized boneless chicken pieces" },
-                { name: "Grilled Nuggets (8ct)", price: 7.50, desc: "Grilled boneless chicken pieces" },
-                { name: "Grilled Sandwich", price: 8.25, desc: "Grilled chicken breast sandwich" },
-                { name: "Grilled Sandwich (GF Bun)", price: 9.50, desc: "Grilled chicken with gluten-free bun" },
-                { name: "Chicken Wrap", price: 9.75, desc: "Chicken with fresh vegetables in a wrap" },
-                { name: "Southwest Veggie Wrap", price: 9.50, desc: "Fresh vegetables with southwest flavors" },
-                { name: "Chicken Strips (3ct)", price: 6.75, desc: "Hand-breaded chicken strips" }
+                { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken' },
+                { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning' },
+                { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces' },
+                { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces' },
+                { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich' },
+                { id: 'grilled-gf', name: 'Grilled Sandwich (GF Bun)', price: 9.50, desc: 'Grilled chicken with gluten-free bun' },
+                { id: 'chicken-wrap', name: 'Chicken Wrap', price: 9.75, desc: 'Chicken with fresh vegetables in a wrap' },
+                { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Fresh vegetables with southwest flavors' },
+                { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips' }
             ],
             addons: [
-                { name: "Chips & Drink", price: 1.50, desc: "Add to any entree" },
-                { name: "Fries & Drink", price: 3.75, desc: "Add to any entree" },
-                { name: "Fruit Cup & Drink", price: 5.50, desc: "Add to any entree" },
-                { name: "Mac & Cheese & Drink", price: 5.50, desc: "Add to any entree" },
-                { name: "Side Salad & Drink", price: 5.50, desc: "Add to any entree" },
-                { name: "Cookie Parfait & Drink", price: 5.75, desc: "Add to any entree" }
+                { id: 'chips-drink', name: 'Chips & Drink', price: 1.50, desc: 'Add to any entree' },
+                { id: 'fries-drink', name: 'Fries & Drink', price: 3.75, desc: 'Add to any entree' },
+                { id: 'fruit-drink', name: 'Fruit Cup & Drink', price: 5.50, desc: 'Add to any entree' },
+                { id: 'mac-drink', name: 'Mac & Cheese & Drink', price: 5.50, desc: 'Add to any entree' },
+                { id: 'salad-drink', name: 'Side Salad & Drink', price: 5.50, desc: 'Add to any entree' },
+                { id: 'cookie-drink', name: 'Cookie Parfait & Drink', price: 5.75, desc: 'Add to any entree' }
             ],
             sides: [
-                { name: "Fries", price: 3.75 },
-                { name: "Fruit Cup", price: 5.50 },
-                { name: "Mac & Cheese", price: 5.50 },
-                { name: "Side Salad", price: 5.50 },
-                { name: "Cookie Parfait", price: 5.75 }
+                { id: 'fries-only', name: 'Fries', price: 3.75 },
+                { id: 'fruit-only', name: 'Fruit Cup', price: 5.50 },
+                { id: 'mac-only', name: 'Mac & Cheese', price: 5.50 },
+                { id: 'salad-only', name: 'Side Salad', price: 5.50 },
+                { id: 'cookie-only', name: 'Cookie Parfait', price: 5.75 }
             ],
             salads: [
-                { name: "Cobb Salad", price: 11.25, desc: "Mixed greens with chicken, bacon, cheese" },
-                { name: "Southwest Salad", price: 11.50, desc: "Mixed greens with southwest flavors" },
-                { name: "Market Fresh Salad", price: 11.50, desc: "Seasonal fresh vegetables and greens" }
+                { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese' },
+                { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with southwest flavors' },
+                { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Seasonal fresh vegetables and greens' }
             ]
         };
-        
-        // Initialize the form
-        function initializeForm() {
+
+        const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+        const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
             initializeDates();
-            generateMenuForAllDays();
+            generateDayTabs();
+            generateMenus();
             checkStoreHours();
             setupEventListeners();
+            updateSyncStatus();
             
-            // Set first available day as active
-            const firstAvailableDay = document.querySelector('.day-tab:not(.disabled)');
-            if (firstAvailableDay) {
-                firstAvailableDay.click();
+            // Check store hours every minute
+            setInterval(checkStoreHours, 60000);
+            
+            // Check Google Sheets status if configured
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+                checkStoreStatusFromSheets();
+                setInterval(checkStoreStatusFromSheets, 300000); // Every 5 minutes
+            }
+        });
+
+        function initializeDates() {
+            const today = new Date();
+            const currentDay = today.getDay();
+            const monday = new Date(today);
+            
+            // Get Monday of current week
+            const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+            monday.setDate(diff);
+            
+            return monday;
+        }
+
+        function generateDayTabs() {
+            const tabsContainer = document.getElementById('day-tabs');
+            const monday = initializeDates();
+            const today = new Date();
+            const currentHour = today.getHours();
+            
+            let firstAvailableDay = null;
+            
+            days.forEach((day, index) => {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + index);
+                
+                const isToday = date.toDateString() === today.toDateString();
+                const isPast = date < today || (isToday && currentHour >= 8);
+                
+                const tab = document.createElement('div');
+                tab.className = 'day-tab';
+                tab.dataset.day = day;
+                
+                if (isPast) {
+                    tab.classList.add('disabled');
+                } else if (!firstAvailableDay) {
+                    firstAvailableDay = day;
+                    tab.classList.add('active');
+                    currentDay = day;
+                }
+                
+                tab.innerHTML = `
+                    <div class="day-name">${dayNames[index]}</div>
+                    <div class="day-date">${date.getMonth() + 1}/${date.getDate()}</div>
+                `;
+                
+                if (!isPast) {
+                    tab.addEventListener('click', () => switchDay(day));
+                }
+                
+                tabsContainer.appendChild(tab);
+            });
+            
+            if (!firstAvailableDay) {
+                document.getElementById('menu-container').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #5f6368;">
+                        <h3>No days available for ordering this week</h3>
+                        <p>Orders for next week will open on Monday at 1:00 PM</p>
+                    </div>
+                `;
             }
         }
-        
-        // Generate menu for all days
-        function generateMenuForAllDays() {
-            const days = ['tuesday', 'wednesday', 'thursday', 'friday'];
-            const container = document.querySelector('.week-selector');
+
+        function generateMenus() {
+            const container = document.getElementById('menu-container');
             
             days.forEach(day => {
-                const dayCapitalized = day.charAt(0).toUpperCase() + day.slice(1);
-                const menuHTML = generateMenuHTML(day, dayCapitalized);
-                container.insertAdjacentHTML('beforeend', menuHTML);
+                const dayDisplay = dayNames[days.indexOf(day)];
+                const menuDiv = document.createElement('div');
+                menuDiv.className = 'menu-for-day';
+                menuDiv.dataset.day = day;
+                if (day === currentDay) {
+                    menuDiv.classList.add('active');
+                }
+                
+                menuDiv.innerHTML = `
+                    ${createCategoryHTML('Entrees', menuData.entrees, day, dayDisplay, false)}
+                    ${createCategoryHTML('Add-Ons (Save $1.50!)', menuData.addons, day, dayDisplay, true)}
+                    ${createCategoryHTML('Sides Only', menuData.sides, day, dayDisplay, false)}
+                    ${createCategoryHTML('Salads', menuData.salads, day, dayDisplay, false)}
+                `;
+                
+                container.appendChild(menuDiv);
             });
         }
-        
-        // Generate menu HTML for a specific day
-        function generateMenuHTML(day, dayName) {
-            return `
-                <div class="menu-for-day" data-day="${day}">
-                    ${generateCategoryHTML('entrees', 'Entrees', day, dayName)}
-                    ${generateCategoryHTML('addons', 'Add-Ons (Save $1.50 vs separate!)', day, dayName)}
-                    ${generateCategoryHTML('sides', 'Sides Only', day, dayName)}
-                    ${generateCategoryHTML('salads', 'Salads', day, dayName)}
-                </div>
-            `;
-        }
-        
-        // Generate category HTML
-        function generateCategoryHTML(category, title, day, dayName) {
-            const items = menuData[category];
-            const itemsHTML = items.map((item, index) => {
-                const itemId = item.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-                const name = `${day}-${itemId}`;
+
+        function createCategoryHTML(title, items, day, dayDisplay, isAddon) {
+            const itemsHTML = items.map(item => {
+                const uniqueId = `${item.id}-${day}`;
+                const pricePrefix = isAddon ? '+$' : '$';
+                const descHTML = item.desc ? `<div class="item-description">${item.desc}</div>` : '';
                 
                 return `
                     <div class="menu-item">
-                        <div class="item-info">
+                        <div class="item-header">
                             <div class="item-name">${item.name}</div>
-                            ${item.desc ? `<div class="item-description">${item.desc}</div>` : ''}
+                            <div class="item-price">${pricePrefix}${item.price.toFixed(2)}</div>
                         </div>
-                        <div class="item-price">${category === 'addons' ? '+' : ''}${item.price.toFixed(2)}</div>
-                        <input type="checkbox" class="item-checkbox" name="${name}" 
-                               data-price="${item.price}" data-item="${item.name}" data-day="${dayName}">
+                        ${descHTML}
+                        <div class="day-selection">
+                            <input type="checkbox" id="${uniqueId}" 
+                                data-item="${item.name}" 
+                                data-price="${item.price}" 
+                                data-day="${dayDisplay}"
+                                data-id="${uniqueId}">
+                            <label for="${uniqueId}">Add to ${dayDisplay} order</label>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -882,211 +951,684 @@
                 </div>
             `;
         }
-        
-        // Date and availability functions
-        function getCurrentWeekDates() {
-            const today = new Date();
-            const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-            
-            const monday = new Date(today);
-            monday.setDate(today.getDate() - currentDay + 1);
-            
-            const dates = [];
-            for (let i = 0; i < 5; i++) {
-                const date = new Date(monday);
-                date.setDate(monday.getDate() + i);
-                dates.push(date);
-            }
-            
-            return dates;
-        }
-        
-        function isPastDate(date) {
-            const today = new Date();
-            const currentHour = today.getHours();
-            
-            if (date.toDateString() === today.toDateString() && currentHour >= 8) {
-                return true;
-            }
-            
-            return date < today;
-        }
-        
-        function initializeDates() {
-            const weekDates = getCurrentWeekDates();
-            const dayAbbrevs = ['mon', 'tue', 'wed', 'thu', 'fri'];
-            const dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-            
-            weekDates.forEach((date, index) => {
-                const dateStr = (date.getMonth() + 1) + '/' + date.getDate();
-                const dateElement = document.getElementById(`date-${dayAbbrevs[index]}`);
-                if (dateElement) {
-                    dateElement.textContent = dateStr;
-                }
-                
-                const dayTab = document.querySelector(`[data-day="${dayNames[index]}"]`);
-                if (isPastDate(date)) {
-                    dayTab.classList.add('disabled');
-                    // Disable all checkboxes for this day
-                    const dayCheckboxes = document.querySelectorAll(`input[data-day="${dayNames[index].charAt(0).toUpperCase() + dayNames[index].slice(1)}"]`);
-                    dayCheckboxes.forEach(cb => cb.disabled = true);
-                } else {
-                    activeDays.push(dayNames[index]);
+
+        function switchDay(day) {
+            document.querySelectorAll('.day-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.day === day && !tab.classList.contains('disabled')) {
+                    tab.classList.add('active');
                 }
             });
+            
+            document.querySelectorAll('.menu-for-day').forEach(menu => {
+                menu.classList.remove('active');
+                if (menu.dataset.day === day) {
+                    menu.classList.add('active');
+                }
+            });
+            
+            currentDay = day;
         }
-        
+
+        // ============================================
+        // STORE HOURS MANAGEMENT
+        // ============================================
         function checkStoreHours() {
             const now = new Date();
             const hours = now.getHours();
-            
             const statusElement = document.getElementById('store-status');
-            const statusText = document.getElementById('status-text');
             
             if (hours >= 8 && hours < 13) {
+                storeIsOpen = false;
                 statusElement.className = 'store-status store-closed';
-                statusText.textContent = 'Store is currently CLOSED. Orders open at 1:00 PM for next available days.';
-                disableAllOrdering(true);
+                statusElement.textContent = '🔒 Store is CLOSED (8:00 AM - 1:00 PM). Orders will open at 1:00 PM.';
+                disableOrdering(true);
             } else {
+                storeIsOpen = true;
                 statusElement.className = 'store-status store-open';
-                statusText.textContent = 'Store is OPEN! Orders close at 8:00 AM daily.';
-                disableAllOrdering(false);
+                const nextCutoff = hours >= 13 ? 'tomorrow at 8:00 AM' : 'today at 8:00 AM';
+                statusElement.textContent = `✅ Store is OPEN! Next cutoff: ${nextCutoff}`;
+                disableOrdering(false);
             }
         }
-        
-        function disableAllOrdering(disabled) {
-            const formInputs = document.querySelectorAll('#email, #first-name, #last-name, #grade');
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]:not(:disabled)');
-            const checkoutBtn = document.getElementById('checkout-btn');
+
+        function checkStoreStatusFromSheets() {
+            if (!GOOGLE_SHEETS_CONFIG.webAppUrl) return;
             
-            formInputs.forEach(input => input.disabled = disabled);
-            checkboxes.forEach(cb => cb.disabled = disabled);
+            fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=status`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.status) {
+                    updateStoreStatus(data.status);
+                    cloudSyncActive = true;
+                    updateSyncStatus();
+                }
+            })
+            .catch(error => {
+                console.error('Error checking store status:', error);
+                cloudSyncActive = false;
+                updateSyncStatus();
+            });
+        }
+
+        function updateStoreStatus(status) {
+            const statusElement = document.getElementById('store-status');
             
-            if (disabled) {
-                checkoutBtn.disabled = true;
+            if (status.isOpen) {
+                statusElement.className = 'store-status store-open';
+                statusElement.textContent = `✅ ${status.message}. Next cutoff: ${status.nextClose}`;
+                disableOrdering(false);
+            } else {
+                statusElement.className = 'store-status store-closed';
+                statusElement.textContent = `🔒 ${status.message}. Opens at ${status.nextOpen}`;
+                disableOrdering(true);
             }
         }
-        
-        // Event handlers
-        function setupEventListeners() {
-            // Day tab switching
-            document.querySelectorAll('.day-tab:not(.disabled)').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const day = this.dataset.day;
-                    switchToDay(day);
-                });
+
+        function disableOrdering(disabled) {
+            const inputs = document.querySelectorAll('input, select, button');
+            inputs.forEach(input => {
+                if (input.id !== 'history-btn') {
+                    input.disabled = disabled;
+                }
             });
             
-            // Checkout button
-            document.getElementById('checkout-btn').addEventListener('click', openPaymentModal);
+            if (disabled) {
+                const checkoutBtn = document.getElementById('checkout-btn');
+                checkoutBtn.textContent = 'Store Closed';
+            }
+        }
+
+        function updateSyncStatus() {
+            const indicator = document.getElementById('sync-indicator');
+            const text = document.getElementById('sync-text');
             
-            // Payment modal buttons
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+                if (cloudSyncActive) {
+                    indicator.classList.remove('offline');
+                    text.textContent = 'Cloud Sync Active';
+                } else {
+                    indicator.classList.add('offline');
+                    text.textContent = 'Local Storage Only';
+                }
+            } else {
+                indicator.classList.add('offline');
+                text.textContent = 'Local Storage Only';
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        function setupEventListeners() {
+            ['first-name', 'last-name', 'email', 'grade'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', validateForm);
+                    if (id === 'email') {
+                        element.addEventListener('blur', checkOrderHistory);
+                    }
+                }
+            });
+            
+            document.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox' && e.target.dataset.item) {
+                    updateCart();
+                }
+            });
+            
+            document.getElementById('checkout-btn').addEventListener('click', openPaymentModal);
+            document.getElementById('history-btn').addEventListener('click', showOrderHistory);
             document.getElementById('cancel-payment-btn').addEventListener('click', closePaymentModal);
             document.getElementById('confirm-payment-btn').addEventListener('click', submitOrder);
             
-            // Form field changes
-            ['email', 'first-name', 'last-name', 'grade'].forEach(id => {
-                document.getElementById(id).addEventListener('input', updateCheckoutButton);
+            document.getElementById('payment-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePaymentModal();
+                }
             });
-            
-            // Check for order history when email is entered
-            document.getElementById('email').addEventListener('blur', function() {
-                setTimeout(checkForExistingOrders, 500); // Small delay to avoid interrupting typing
-            });
-            
-            // Store hours check
-            setInterval(checkStoreHours, 60000);
         }
-            
-            // Store hours check
-            setInterval(checkStoreHours, 60000);
-        }
-        
-        function switchToDay(day) {
-            // Update active tab
-            document.querySelectorAll('.day-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`[data-day="${day}"]`).classList.add('active');
-            
-            // Update active menu
-            document.querySelectorAll('.menu-for-day').forEach(menu => {
-                menu.classList.remove('active');
-            });
-            document.querySelector(`.menu-for-day[data-day="${day}"]`).classList.add('active');
-            
-            // Add event listeners to checkboxes in this day's menu
-            const dayMenu = document.querySelector(`.menu-for-day[data-day="${day}"]`);
-            if (dayMenu) {
-                dayMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                    cb.addEventListener('change', updateCart);
-                });
-            }
-        }
-        
+
+        // ============================================
+        // CART MANAGEMENT
+        // ============================================
         function updateCart() {
             orderItems = [];
             currentTotal = 0;
             
-            const checkedItems = document.querySelectorAll('input[type="checkbox"]:checked');
+            const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const itemsByDay = {};
             
-            checkedItems.forEach(item => {
-                const price = parseFloat(item.dataset.price);
-                const itemName = item.dataset.item;
-                const day = item.dataset.day;
+            checkedBoxes.forEach(checkbox => {
+                const item = checkbox.dataset.item;
+                const price = parseFloat(checkbox.dataset.price);
+                const day = checkbox.dataset.day;
+                const id = checkbox.dataset.id;
                 
-                orderItems.push({
-                    name: itemName,
-                    day: day,
-                    price: price
+                if (!itemsByDay[day]) {
+                    itemsByDay[day] = [];
+                }
+                
+                itemsByDay[day].push({
+                    id: id,
+                    name: item,
+                    price: price,
+                    day: day
                 });
                 
                 currentTotal += price;
             });
             
-            updateCartDisplay();
-            updateCheckoutButton();
+            const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            dayOrder.forEach(day => {
+                if (itemsByDay[day]) {
+                    orderItems.push(...itemsByDay[day]);
+                }
+            });
+            
+            displayCart();
+            validateForm();
         }
-        
-        function updateCartDisplay() {
-            const cartItems = document.getElementById('cart-items');
-            const totalAmount = document.getElementById('total-amount');
+
+        function displayCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            const totalSpan = document.getElementById('total-amount');
             
             if (orderItems.length === 0) {
-                cartItems.innerHTML = '<div style="text-align: center; color: #9aa0a6; font-style: italic;">No items selected</div>';
+                cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
             } else {
-                const itemsHTML = orderItems.map(item => `
-                    <div class="cart-item">
-                        <span>${item.name} (${item.day})</span>
-                        <span>${item.price.toFixed(2)}</span>
-                    </div>
-                `).join('');
-                cartItems.innerHTML = itemsHTML;
+                let currentDay = '';
+                let html = '';
+                
+                orderItems.forEach(item => {
+                    if (item.day !== currentDay) {
+                        if (currentDay !== '') {
+                            html += '<div style="margin: 10px 0; border-bottom: 1px solid #e0e0e0;"></div>';
+                        }
+                        html += `<div style="font-weight: 600; color: #4285f4; margin-bottom: 5px; font-size: 0.85em;">${item.day}</div>`;
+                        currentDay = item.day;
+                    }
+                    
+                    html += `
+                        <div class="cart-item">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+                
+                cartItemsDiv.innerHTML = html;
             }
             
-            totalAmount.textContent = currentTotal.toFixed(2);
+            totalSpan.textContent = currentTotal.toFixed(2);
         }
-        
-        function updateCheckoutButton() {
-            const checkoutBtn = document.getElementById('checkout-btn');
-            const email = document.getElementById('email').value;
-            const firstName = document.getElementById('first-name').value;
-            const lastName = document.getElementById('last-name').value;
+
+        function validateForm() {
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
+            const email = document.getElementById('email').value.trim();
             const grade = document.getElementById('grade').value;
+            const checkoutBtn = document.getElementById('checkout-btn');
             
-            const hasOrder = orderItems.length > 0;
-            const formComplete = email && firstName && lastName && grade;
+            const formValid = firstName && lastName && email && grade && orderItems.length > 0;
             
-            checkoutBtn.disabled = !(hasOrder && formComplete);
-            
-            if (hasOrder && formComplete) {
-                checkoutBtn.textContent = `Review & Pay Order (${currentTotal.toFixed(2)})`;
+            if (!storeIsOpen) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Store Closed';
+            } else if (formValid) {
+                checkoutBtn.disabled = false;
+                checkoutBtn.textContent = `Review & Pay Order ($${currentTotal.toFixed(2)})`;
             } else {
+                checkoutBtn.disabled = true;
                 checkoutBtn.textContent = 'Review & Pay Order';
             }
         }
-        
+
+        // ============================================
+        // ORDER HISTORY MANAGEMENT
+        // ============================================
+        function checkOrderHistory() {
+            const email = document.getElementById('email').value.trim();
+            if (!email) return;
+            
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+                fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=history&email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.orders && data.orders.length > 0) {
+                        checkOrderHistoryNotification(data.orders, email);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching history:', error);
+                    checkLocalOrderHistory();
+                });
+            } else {
+                checkLocalOrderHistory();
+            }
+        }
+
+        function checkLocalOrderHistory() {
+            const email = document.getElementById('email').value.trim();
+            if (!email) return;
+            
+            try {
+                const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+                const userOrders = orders.filter(order => 
+                    order.email.toLowerCase() === email.toLowerCase()
+                );
+                
+                if (userOrders.length > 0) {
+                    checkOrderHistoryNotification(userOrders, email);
+                }
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
+        }
+
+        function showDetailedOrderConfirmation(order) {
+            const itemsByDay = {};
+            const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            
+            order.items.forEach(item => {
+                if (!itemsByDay[item.day]) {
+                    itemsByDay[item.day] = [];
+                }
+                itemsByDay[item.day].push(item);
+            });
+            
+            const sortedDays = Object.keys(itemsByDay).sort((a, b) => 
+                dayOrder.indexOf(a) - dayOrder.indexOf(b)
+            );
+            
+            let message = `✅ ORDER CONFIRMED!\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            message += `📋 Order Details:\n`;
+            message += `Order ID: ${order.orderId}\n`;
+            message += `Date: ${new Date(order.timestamp).toLocaleString()}\n\n`;
+            
+            message += `👤 Student Information:\n`;
+            message += `Name: ${order.firstName} ${order.lastName}\n`;
+            message += `Grade: ${order.grade}\n`;
+            message += `Email: ${order.email}\n\n`;
+            
+            message += `🍽️ Items Ordered:\n`;
+            message += `─────────────────────────────\n`;
+            
+            let itemCount = 0;
+            sortedDays.forEach(day => {
+                message += `\n${day}:\n`;
+                itemsByDay[day].forEach(item => {
+                    itemCount++;
+                    message += `  • ${item.name} - ${item.price.toFixed(2)}\n`;
+                });
+            });
+            
+            message += `\n─────────────────────────────\n`;
+            message += `Total Items: ${itemCount}\n`;
+            message += `Total Amount: ${order.total.toFixed(2)}\n\n`;
+            
+            message += `💳 Payment:\n`;
+            message += `Method: Venmo (@ChanTa-Rivers)\n`;
+            message += `Status: Confirmed\n\n`;
+            
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+                message += `☁️ Order synced to cloud\n`;
+            }
+            message += `📧 Confirmation email will be sent to:\n${order.email}\n\n`;
+            message += `Questions? Contact:\nCRivers@artiosacademies.com`;
+            
+            alert(message);
+        }
+
+        function resetForm() {
+            document.getElementById('first-name').value = '';
+            document.getElementById('last-name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('grade').value = '';
+            
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            orderItems = [];
+            currentTotal = 0;
+            displayCart();
+            validateForm();
+        }
+
+        // ============================================
+        // NOTIFICATION SYSTEM
+        // ============================================
+        function showNotification(message, type = 'info') {
+            const existingNotif = document.querySelector('.notification');
+            if (existingNotif) {
+                existingNotif.remove();
+            }
+            
+            let bgColor, textColor, borderColor, icon;
+            switch(type) {
+                case 'warning':
+                    bgColor = '#fff3cd';
+                    textColor = '#856404';
+                    borderColor = '#ffeeba';
+                    icon = '⚠️';
+                    break;
+                case 'success':
+                    bgColor = '#d4edda';
+                    textColor = '#155724';
+                    borderColor = '#c3e6cb';
+                    icon = '✅';
+                    break;
+                case 'error':
+                    bgColor = '#f8d7da';
+                    textColor = '#721c24';
+                    borderColor = '#f5c6cb';
+                    icon = '❌';
+                    break;
+                default:
+                    bgColor = '#e3f2fd';
+                    textColor = '#1976d2';
+                    borderColor = '#bbdefb';
+                    icon = 'ℹ️';
+            }
+            
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.style.background = bgColor;
+            notif.style.color = textColor;
+            notif.style.border = `1px solid ${borderColor}`;
+            
+            notif.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.2em;">${icon}</span>
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: none; border: none; cursor: pointer; font-size: 1.2em; margin-left: auto; padding: 0 5px;">✕</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notif);
+            
+            const duration = type === 'success' ? 3000 : 5000;
+            setTimeout(() => {
+                if (notif.parentElement) {
+                    notif.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => notif.remove(), 300);
+                }
+            }, duration);
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        function getMonday(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            d.setDate(diff);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+    </script>
+</body>
+</html>
+                console.error('Error checking order history:', e);
+            }
+        }
+
+        function checkOrderHistoryNotification(orders, email) {
+            const monday = getMonday(new Date());
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            
+            const thisWeekOrders = orders.filter(order => {
+                const orderDate = new Date(order.timestamp);
+                return orderDate >= monday && orderDate <= sunday;
+            });
+            
+            if (thisWeekOrders.length > 0) {
+                const students = [...new Set(thisWeekOrders.map(o => 
+                    `${o.firstName} ${o.lastName}`
+                ))];
+                
+                const message = `Found ${thisWeekOrders.length} order(s) this week for: ${students.join(', ')}`;
+                showNotification(message, 'info');
+                
+                const historyBtn = document.getElementById('history-btn');
+                historyBtn.style.background = '#e3f2fd';
+                historyBtn.style.color = '#1976d2';
+                historyBtn.innerHTML = `📋 View Orders <span style="background: #1976d2; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.8em; margin-left: 5px;">${thisWeekOrders.length}</span>`;
+                
+                setTimeout(() => {
+                    historyBtn.style.background = '';
+                    historyBtn.style.color = '';
+                    historyBtn.innerHTML = 'View Order History';
+                }, 10000);
+            }
+        }
+
+        function showOrderHistory() {
+            const email = document.getElementById('email').value.trim();
+            
+            if (!email) {
+                alert('Please enter your email address to view order history.');
+                document.getElementById('email').focus();
+                return;
+            }
+            
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+                showNotification('Loading order history...', 'info');
+                
+                fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=history&email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.orders) {
+                        const localOrders = JSON.parse(localStorage.getItem('cafeOrders') || '[]')
+                            .filter(order => order.email.toLowerCase() === email.toLowerCase());
+                        const allOrders = mergeOrders(data.orders, localOrders);
+                        displayOrderHistory(allOrders, email);
+                    } else {
+                        showLocalOrderHistory();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching from Google Sheets:', error);
+                    showNotification('Using local history (cloud sync unavailable)', 'warning');
+                    showLocalOrderHistory();
+                });
+            } else {
+                showLocalOrderHistory();
+            }
+        }
+
+        function showLocalOrderHistory() {
+            const email = document.getElementById('email').value.trim();
+            
+            try {
+                const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+                const userOrders = orders.filter(order => 
+                    order.email.toLowerCase() === email.toLowerCase()
+                );
+                
+                displayOrderHistory(userOrders, email);
+            } catch (e) {
+                console.error('Error loading order history:', e);
+                alert('Unable to load order history.');
+            }
+        }
+
+        function mergeOrders(sheetsOrders, localOrders) {
+            const orderMap = new Map();
+            
+            sheetsOrders.forEach(order => {
+                order.fromSheets = true;
+                orderMap.set(order.orderId, order);
+            });
+            
+            localOrders.forEach(order => {
+                if (!orderMap.has(order.orderId)) {
+                    order.fromSheets = false;
+                    orderMap.set(order.orderId, order);
+                }
+            });
+            
+            return Array.from(orderMap.values());
+        }
+
+        function displayOrderHistory(orders, email) {
+            if (orders.length === 0) {
+                alert(`No order history found for: ${email}\n\nIf you've placed orders, they may be on a different device or browser.`);
+                return;
+            }
+            
+            orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            const ordersByStudent = {};
+            orders.forEach(order => {
+                const studentKey = `${order.firstName} ${order.lastName}`;
+                if (!ordersByStudent[studentKey]) {
+                    ordersByStudent[studentKey] = {
+                        grade: order.grade,
+                        orders: []
+                    };
+                }
+                ordersByStudent[studentKey].orders.push(order);
+            });
+            
+            const monday = getMonday(new Date());
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            
+            let message = `📋 ORDER HISTORY${GOOGLE_SHEETS_CONFIG.useGoogleSheets ? ' (Cloud + Local)' : ' (Local Only)'}\n`;
+            message += `Email: ${email}\n`;
+            message += `═══════════════════════════════\n`;
+            
+            Object.keys(ordersByStudent).sort().forEach(student => {
+                const studentData = ordersByStudent[student];
+                const totalSpent = studentData.orders.reduce((sum, order) => sum + order.total, 0);
+                
+                message += `\n👤 ${student}\n`;
+                message += `   Grade: ${studentData.grade}\n`;
+                message += `   Total Orders: ${studentData.orders.length}\n`;
+                message += `   Total Spent: $${totalSpent.toFixed(2)}\n`;
+                message += `   ─────────────────────────\n`;
+                
+                const recentOrders = studentData.orders.slice(0, 5);
+                
+                recentOrders.forEach(order => {
+                    const orderDate = new Date(order.timestamp);
+                    const isThisWeek = orderDate >= monday && orderDate <= sunday;
+                    const dateStr = orderDate.toLocaleDateString();
+                    const timeStr = orderDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const source = order.fromSheets ? '☁️' : '💾';
+                    
+                    message += `\n   ${GOOGLE_SHEETS_CONFIG.useGoogleSheets ? source : ''} ${isThisWeek ? '🔵' : '○'} ${dateStr} at ${timeStr}\n`;
+                    message += `      Order: ${order.orderId}\n`;
+                    message += `      Total: $${order.total.toFixed(2)}\n`;
+                    
+                    const itemsByDay = {};
+                    const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                    
+                    order.items.forEach(item => {
+                        if (!itemsByDay[item.day]) {
+                            itemsByDay[item.day] = [];
+                        }
+                        itemsByDay[item.day].push(item.name);
+                    });
+                    
+                    const sortedDays = Object.keys(itemsByDay).sort((a, b) => 
+                        dayOrder.indexOf(a) - dayOrder.indexOf(b)
+                    );
+                    
+                    sortedDays.forEach(day => {
+                        const dayItems = itemsByDay[day].join(', ');
+                        message += `      ${day}: ${dayItems}\n`;
+                    });
+                });
+                
+                if (studentData.orders.length > 5) {
+                    message += `\n   ... and ${studentData.orders.length - 5} more orders\n`;
+                }
+            });
+            
+            message += `\n═══════════════════════════════\n`;
+            message += `📊 SUMMARY\n`;
+            message += `Total Students: ${Object.keys(ordersByStudent).length}\n`;
+            message += `Total Orders: ${orders.length}\n`;
+            
+            const thisWeekOrders = orders.filter(order => {
+                const orderDate = new Date(order.timestamp);
+                return orderDate >= monday && orderDate <= sunday;
+            });
+            
+            if (thisWeekOrders.length > 0) {
+                const weekTotal = thisWeekOrders.reduce((sum, order) => sum + order.total, 0);
+                message += `\nThis Week: ${thisWeekOrders.length} orders ($${weekTotal.toFixed(2)})\n`;
+            }
+            
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+                message += `\n☁️ = Cloud synced | 💾 = Local only\n`;
+            }
+            message += `🔵 = Current week order\n`;
+            message += `\nQuestions? Contact:\nCRivers@artiosacademies.com`;
+            
+            alert(message);
+            
+            // Offer to sync local orders if using Google Sheets
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+                const localOnlyOrders = orders.filter(o => !o.fromSheets);
+                if (localOnlyOrders.length > 0) {
+                    setTimeout(() => {
+                        if (confirm(`Found ${localOnlyOrders.length} local-only orders. Would you like to sync them to the cloud?`)) {
+                            syncLocalOrdersToSheets(localOnlyOrders);
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        function syncLocalOrdersToSheets(orders) {
+            showNotification(`Syncing ${orders.length} orders to cloud...`, 'info');
+            
+            let syncCount = 0;
+            let errorCount = 0;
+            
+            orders.forEach(order => {
+                fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({...order, sendConfirmation: false})
+                })
+                .then(() => {
+                    syncCount++;
+                    if (syncCount + errorCount === orders.length) {
+                        showNotification(`Sync complete: ${syncCount} succeeded, ${errorCount} failed`, 
+                            errorCount > 0 ? 'warning' : 'success');
+                    }
+                })
+                .catch(error => {
+                    errorCount++;
+                    console.error('Error syncing order:', error);
+                    if (syncCount + errorCount === orders.length) {
+                        showNotification(`Sync complete: ${syncCount} succeeded, ${errorCount} failed`, 
+                            errorCount > 0 ? 'warning' : 'success');
+                    }
+                });
+            });
+        }
+
+        // ============================================
+        // PAYMENT & ORDER SUBMISSION
+        // ============================================
         function openPaymentModal() {
+            if (!checkDuplicateOrder()) {
+                return;
+            }
+            
             const modal = document.getElementById('payment-modal');
             const modalTotal = document.getElementById('modal-total');
             const venmoTotal = document.getElementById('venmo-total');
@@ -1095,119 +1637,197 @@
             modalTotal.textContent = currentTotal.toFixed(2);
             venmoTotal.textContent = currentTotal.toFixed(2);
             
-            // Create Venmo payment link
-            const firstName = document.getElementById('first-name').value;
-            const lastName = document.getElementById('last-name').value;
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
             
-            let orderNote = `Lunch order for ${firstName} ${lastName}: `;
+            const itemsByDay = {};
             orderItems.forEach(item => {
-                orderNote += `${item.name} (${item.day}), `;
+                if (!itemsByDay[item.day]) {
+                    itemsByDay[item.day] = [];
+                }
+                itemsByDay[item.day].push(item.name);
             });
-            orderNote = orderNote.slice(0, -2); // Remove last comma
             
-            const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal}&note=${encodeURIComponent(orderNote)}`;
+            let orderNote = `Lunch: ${firstName} ${lastName}\n`;
+            Object.keys(itemsByDay).forEach(day => {
+                orderNote += `${day}: ${itemsByDay[day].join(', ')}\n`;
+            });
+            
+            const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent(orderNote)}`;
             venmoLink.href = venmoUrl;
             
-            // Enhanced desktop experience
             venmoLink.onclick = function(e) {
-                if (!navigator.userAgent.match(/iPhone|iPad|Android/)) {
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                
+                if (!isMobile) {
                     e.preventDefault();
                     window.open('https://venmo.com/u/ChanTa-Rivers', '_blank');
                     
-                    // Copy payment details to clipboard for desktop users
-                    const paymentDetails = `Amount: ${currentTotal.toFixed(2)}\nTo: @ChanTa-Rivers\nNote: ${orderNote}`;
+                    const paymentDetails = `Pay: @ChanTa-Rivers\nAmount: $${currentTotal.toFixed(2)}\nNote: ${orderNote}`;
                     
-                    if (navigator.clipboard) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(paymentDetails).then(() => {
-                            alert('Payment details copied to clipboard!\n\nPay @ChanTa-Rivers 
-        
-        function closePaymentModal() {
-            document.getElementById('payment-modal').style.display = 'none';
-        }
-        
-        function submitOrder() {
-            const orderData = {
-                timestamp: new Date().toISOString(),
-                email: document.getElementById('email').value,
-                firstName: document.getElementById('first-name').value,
-                lastName: document.getElementById('last-name').value,
-                grade: document.getElementById('grade').value,
-                orderItems: orderItems,
-                total: currentTotal,
-                paymentMethod: 'venmo'
-            };
-            
-            // Here you would send to Google Sheets
-            console.log('Order submitted:', orderData);
-            
-            // Close modal and show success
-            closePaymentModal();
-            alert(`Thank you ${orderData.firstName}! Your order has been submitted successfully. Total: ${currentTotal.toFixed(2)}`);
-            
-            // Reset form
-            document.getElementById('lunch-order-form').reset();
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => cb.checked = false);
-            orderItems = [];
-            currentTotal = 0;
-            updateCartDisplay();
-            updateCheckoutButton();
-        }
-        
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initializeForm);
-    </script>
-</body>
-</html> + currentTotal.toFixed(2) + '\n\nNote: ' + orderNote + '\n\nComplete payment in Venmo, then return here to confirm.');
+                            alert('Payment details copied to clipboard!\n\n' + paymentDetails);
                         }).catch(() => {
-                            showDesktopPaymentInstructions(orderNote);
+                            alert('Please send payment to:\n\n' + paymentDetails);
                         });
                     } else {
-                        showDesktopPaymentInstructions(orderNote);
+                        const textArea = document.createElement('textarea');
+                        textArea.value = paymentDetails;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-999999px';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            alert('Payment details copied to clipboard!\n\n' + paymentDetails);
+                        } catch (err) {
+                            alert('Please send payment to:\n\n' + paymentDetails);
+                        }
+                        document.body.removeChild(textArea);
                     }
                 }
             };
             
             modal.style.display = 'flex';
         }
-        
-        function showDesktopPaymentInstructions(orderNote) {
-            alert(`Please complete this payment in Venmo:\n\nPay: @ChanTa-Rivers\nAmount: ${currentTotal.toFixed(2)}\nNote: ${orderNote}\n\nThen return here and click "I've Paid"`);
-        }
-        
+
         function closePaymentModal() {
             document.getElementById('payment-modal').style.display = 'none';
         }
-        
+
+        function checkDuplicateOrder() {
+            const email = document.getElementById('email').value.trim();
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
+            
+            try {
+                const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+                
+                const monday = getMonday(new Date());
+                const sunday = new Date(monday);
+                sunday.setDate(monday.getDate() + 6);
+                
+                const studentOrders = orders.filter(order => {
+                    const orderDate = new Date(order.timestamp);
+                    return orderDate >= monday && orderDate <= sunday &&
+                           order.email.toLowerCase() === email.toLowerCase() &&
+                           order.firstName.toLowerCase() === firstName.toLowerCase() &&
+                           order.lastName.toLowerCase() === lastName.toLowerCase();
+                });
+                
+                if (studentOrders.length > 0) {
+                    const orderedDays = new Set();
+                    studentOrders.forEach(order => {
+                        order.items.forEach(item => {
+                            orderedDays.add(item.day);
+                        });
+                    });
+                    
+                    const currentDays = [...new Set(orderItems.map(item => item.day))];
+                    const conflicts = currentDays.filter(day => orderedDays.has(day));
+                    
+                    if (conflicts.length > 0) {
+                        const conflictDays = conflicts.join(', ');
+                        const message = `⚠️ Duplicate Order Warning\n\n` +
+                                      `${firstName} ${lastName} already has lunch ordered for:\n` +
+                                      `${conflictDays}\n\n` +
+                                      `Do you want to place another order for these days?\n\n` +
+                                      `Note: This will create a duplicate order that you'll need to pay for.`;
+                        
+                        return confirm(message);
+                    }
+                }
+                
+                const otherChildrenOrders = orders.filter(order => {
+                    const orderDate = new Date(order.timestamp);
+                    return orderDate >= monday && orderDate <= sunday &&
+                           order.email.toLowerCase() === email.toLowerCase() &&
+                           !(order.firstName.toLowerCase() === firstName.toLowerCase() &&
+                             order.lastName.toLowerCase() === lastName.toLowerCase());
+                });
+                
+                if (otherChildrenOrders.length > 0) {
+                    const otherChildren = [...new Set(otherChildrenOrders.map(o => 
+                        `${o.firstName} ${o.lastName}`
+                    ))];
+                    
+                    showNotification(`ℹ️ Other children with orders this week: ${otherChildren.join(', ')}`, 'info');
+                }
+                
+            } catch (e) {
+                console.error('Error checking duplicates:', e);
+            }
+            
+            return true;
+        }
+
         function submitOrder() {
+            const timestamp = Date.now();
+            const randomStr = Math.random().toString(36).substr(2, 5).toUpperCase();
+            const orderId = `LO${timestamp}${randomStr}`;
+            
             const orderData = {
+                orderId: orderId,
                 timestamp: new Date().toISOString(),
-                email: document.getElementById('email').value,
-                firstName: document.getElementById('first-name').value,
-                lastName: document.getElementById('last-name').value,
+                email: document.getElementById('email').value.trim(),
+                firstName: document.getElementById('first-name').value.trim(),
+                lastName: document.getElementById('last-name').value.trim(),
                 grade: document.getElementById('grade').value,
-                orderItems: orderItems,
+                items: orderItems,
                 total: currentTotal,
-                paymentMethod: 'venmo'
+                paymentMethod: 'Venmo',
+                paymentStatus: 'confirmed',
+                sendConfirmation: true
             };
             
-            // Here you would send to Google Sheets
-            console.log('Order submitted:', orderData);
+            showNotification('Submitting order...', 'info');
             
-            // Close modal and show success
-            closePaymentModal();
-            alert(`Thank you ${orderData.firstName}! Your order has been submitted successfully. Total: ${currentTotal.toFixed(2)}`);
-            
-            // Reset form
-            document.getElementById('lunch-order-form').reset();
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => cb.checked = false);
-            orderItems = [];
-            currentTotal = 0;
-            updateCartDisplay();
-            updateCheckoutButton();
+            if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+                fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                })
+                .then(() => {
+                    if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+                        saveToLocalStorage(orderData);
+                    }
+                    
+                    closePaymentModal();
+                    showDetailedOrderConfirmation(orderData);
+                    showNotification(`Order ${orderId} submitted successfully!`, 'success');
+                    resetForm();
+                })
+                .catch(error => {
+                    console.error('Error submitting to Google Sheets:', error);
+                    
+                    if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+                        saveToLocalStorage(orderData);
+                        closePaymentModal();
+                        showDetailedOrderConfirmation(orderData);
+                        showNotification('Order saved locally (cloud sync failed)', 'warning');
+                        resetForm();
+                    } else {
+                        showNotification('Error submitting order. Please try again.', 'error');
+                    }
+                });
+            } else {
+                saveToLocalStorage(orderData);
+                closePaymentModal();
+                showDetailedOrderConfirmation(orderData);
+                showNotification(`Order ${orderId} saved successfully!`, 'success');
+                resetForm();
+            }
         }
-        
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initializeForm);
-    </script>
-</body>
-</html>
+
+        function saveToLocalStorage(orderData) {
+            try {
+                const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+                orders.push(orderData);
+                localStorage.setItem('cafeOrders', JSON.stringify(orders));
+                console.log('Order saved to localStorage:', orderData.orderId);
+            } catch (e) {
