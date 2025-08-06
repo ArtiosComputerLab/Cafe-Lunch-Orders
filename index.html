@@ -567,6 +567,130 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
 
+    /* Confirmation Modal - NEW ADDITION */
+    .confirmation-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .confirmation-modal.show {
+      display: flex !important;
+    }
+
+    .confirmation-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: left;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .confirmation-header {
+      text-align: center;
+      color: #34a853;
+      font-size: 1.8em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .confirmation-section {
+      margin-bottom: 20px;
+    }
+
+    .confirmation-section h4 {
+      color: #4285f4;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .confirmation-section p, .confirmation-section ul {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .confirmation-section ul {
+      padding-left: 20px;
+    }
+
+    .confirmation-items {
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .confirmation-day {
+      font-weight: 600;
+      color: #34a853;
+      margin-bottom: 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .confirmation-item {
+      margin-left: 10px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .confirmation-total {
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+
+    .confirmation-close-btn {
+      background: #4285f4;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .confirmation-close-btn:hover {
+      background: #3367d6;
+      transform: translateY(-2px);
+    }
+
     @keyframes slideUp {
       from { 
         transform: translateY(50px);
@@ -687,7 +811,7 @@
       padding: 15px 20px;
       border-radius: 8px;
       font-weight: 600;
-      z-index: 10001;
+      z-index: 10002;
       animation: slideIn 0.3s ease;
       max-width: 300px;
     }
@@ -725,7 +849,7 @@
         flex-direction: column;
       }
 
-      .payment-content {
+      .payment-content, .confirmation-content {
         margin: 20px;
         width: calc(100% - 40px);
         padding: 20px;
@@ -884,6 +1008,57 @@
           Cancel
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal - NEW ADDITION -->
+  <div class="confirmation-modal" id="confirmation-modal">
+    <div class="confirmation-content">
+      <div class="confirmation-header">
+        ✅ Order Confirmed!
+      </div>
+      
+      <div class="confirmation-section">
+        <h4>📋 Order Details</h4>
+        <ul>
+          <li><strong>Order ID:</strong> <span id="conf-order-id"></span></li>
+          <li><strong>Date:</strong> <span id="conf-date"></span></li>
+          <li><strong>Family Email:</strong> <span id="conf-email"></span></li>
+          <li><strong>Children:</strong> <span id="conf-children-count"></span></li>
+        </ul>
+      </div>
+
+      <div class="confirmation-section">
+        <h4>👥 Family Information</h4>
+        <div id="conf-children-list"></div>
+      </div>
+
+      <div class="confirmation-section">
+        <h4>🍽️ Items Ordered</h4>
+        <div class="confirmation-items" id="conf-items-list"></div>
+      </div>
+
+      <div class="confirmation-total" id="conf-total">
+        Total: $0.00
+      </div>
+
+      <div class="confirmation-section">
+        <h4>💳 Payment Summary</h4>
+        <ul>
+          <li><strong>Payment Method:</strong> Venmo (@ChanTa-Rivers)</li>
+          <li><strong>Status:</strong> Confirmed</li>
+        </ul>
+      </div>
+
+      <div class="confirmation-section">
+        <h4>📧 Next Steps</h4>
+        <p>A confirmation email will be sent to your family email address.</p>
+        <p>Questions? Contact: <strong>CRivers@artiosacademies.com</strong></p>
+      </div>
+
+      <button class="confirmation-close-btn" id="confirmation-close-btn">
+        Got It! Close
+      </button>
     </div>
   </div>
 
@@ -1112,7 +1287,7 @@
             itemDiv.innerHTML = `
               <div class="item-header">
                 <div class="item-name">${item.name}</div>
-                <div class="item-price">$${item.price.toFixed(2)}</div>
+                <div class="item-price">${item.price.toFixed(2)}</div>
               </div>
               <div class="item-desc">${item.desc}</div>
               <div class="child-checkboxes" id="${item.id}-${day}-checkboxes"></div>
@@ -1150,7 +1325,7 @@
     }
 
     // ============================================
-    // FIXED EVENT LISTENERS
+    // EVENT LISTENERS
     // ============================================
     function setupEventListeners() {
       console.log('Setting up event listeners...');
@@ -1171,7 +1346,7 @@
         validateForm();
       });
 
-      // FIXED: Checkout button event listener with better error handling
+      // Checkout button event listener
       const checkoutBtn = document.getElementById('checkout-btn');
       if (checkoutBtn) {
         console.log('Setting up checkout button listener');
@@ -1179,10 +1354,6 @@
           e.preventDefault();
           e.stopPropagation();
           console.log('🚀 Checkout button clicked!');
-          console.log('Form valid:', validateForm());
-          console.log('Store open:', storeIsOpen);
-          console.log('Current total:', currentTotal);
-          console.log('Order items:', orderItems.length);
           
           if (validateForm() && storeIsOpen) {
             openPaymentModal();
@@ -1195,14 +1366,9 @@
             }
           }
         });
-      } else {
-        console.error('Checkout button not found!');
       }
 
-      // FIXED: Order history button listener REMOVED
-      // No longer needed - parents use email confirmations for records
-
-      // FIXED: Payment modal listeners with proper error checking
+      // Payment modal listeners
       const cancelBtn = document.getElementById('cancel-payment-btn');
       if (cancelBtn) {
         cancelBtn.addEventListener('click', function(e) {
@@ -1233,8 +1399,14 @@
             showNotification('Error submitting order. Please try again.', 'error');
           }
         });
-      } else {
-        console.error('❌ Confirm payment button not found!');
+      }
+
+      // Confirmation modal close button
+      const confirmationCloseBtn = document.getElementById('confirmation-close-btn');
+      if (confirmationCloseBtn) {
+        confirmationCloseBtn.addEventListener('click', function() {
+          closeConfirmationModal();
+        });
       }
 
       // Click outside modal to close
@@ -1244,6 +1416,15 @@
           if (e.target === this) {
             console.log('Modal background clicked - closing');
             closePaymentModal();
+          }
+        });
+      }
+
+      const confirmationModal = document.getElementById('confirmation-modal');
+      if (confirmationModal) {
+        confirmationModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeConfirmationModal();
           }
         });
       }
@@ -1386,18 +1567,16 @@
       orderItems = [];
       currentTotal = 0;
       
-      // Get ALL checked checkboxes - FIXED to ensure we capture everything
+      // Get ALL checked checkboxes
       document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
         const itemId = checkbox.dataset.item;
         const day = checkbox.dataset.day;
         const childId = checkbox.dataset.childId;
         
-        console.log('Processing checked item:', itemId, day, childId); // Debug log
-        
         const child = document.querySelector(`[data-child="${childId}"]`);
         if (!child) {
           console.error('Child not found for childId:', childId);
-          return; // Safety check
+          return;
         }
         
         const childFirstName = child.querySelector('.child-first-name').value;
@@ -1420,10 +1599,9 @@
             grade: childGrade,
             name: item.name,
             price: item.price,
-            day: day.charAt(0).toUpperCase() + day.slice(1) // Ensure proper capitalization
+            day: day.charAt(0).toUpperCase() + day.slice(1)
           };
           
-          console.log('Adding order item:', orderItem); // Debug log
           orderItems.push(orderItem);
           currentTotal += item.price;
         } else {
@@ -1431,15 +1609,9 @@
         }
       });
       
-      console.log('Final orderItems array:', orderItems); // Debug log
-      console.log('Items by day:', orderItems.reduce((acc, item) => {
-        acc[item.day] = (acc[item.day] || 0) + 1;
-        return acc;
-      }, {})); // Debug log
-      
       displayCart();
       validateForm();
-      updateCopyButton(); // Update copy button when cart changes
+      updateCopyButton();
     }
 
     function displayCart() {
@@ -1552,7 +1724,7 @@
     }
 
     // ============================================
-    // FIXED PAYMENT MODAL
+    // PAYMENT MODAL
     // ============================================
     function openPaymentModal() {
       console.log('🚀 Opening payment modal...');
@@ -1658,7 +1830,85 @@
     }
 
     // ============================================
-    // ORDER SUBMISSION - FIXED WITH BETTER ERROR HANDLING
+    // CONFIRMATION MODAL - NEW FUNCTIONS
+    // ============================================
+    function showDetailedOrderConfirmation(order) {
+      console.log('📋 Showing detailed order confirmation');
+      
+      const modal = document.getElementById('confirmation-modal');
+      
+      // Populate order details
+      document.getElementById('conf-order-id').textContent = order.orderId;
+      document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
+      document.getElementById('conf-email').textContent = order.email;
+      document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
+      
+      // Populate children list
+      const childrenListDiv = document.getElementById('conf-children-list');
+      let childrenHtml = '<ul>';
+      if (order.children && order.children.length > 0) {
+        order.children.forEach((child, index) => {
+          childrenHtml += `<li><strong>${child.firstName} ${child.lastName}</strong> (${child.grade})</li>`;
+        });
+      }
+      childrenHtml += '</ul>';
+      childrenListDiv.innerHTML = childrenHtml;
+      
+      // Populate items by day
+      const itemsListDiv = document.getElementById('conf-items-list');
+      const itemsByDay = {};
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      
+      order.items.forEach(item => {
+        if (!itemsByDay[item.day]) {
+          itemsByDay[item.day] = [];
+        }
+        itemsByDay[item.day].push(item);
+      });
+      
+      const sortedDays = Object.keys(itemsByDay).sort((a, b) => 
+        dayOrder.indexOf(a) - dayOrder.indexOf(b)
+      );
+      
+      let itemsHtml = '';
+      sortedDays.forEach(day => {
+        itemsHtml += `<div class="confirmation-day">${day}:</div>`;
+        itemsByDay[day].forEach(item => {
+          itemsHtml += `
+            <div class="confirmation-item">
+              <span>• ${item.name} - ${item.childName || 'Student'}</span>
+              <span><strong>${item.price.toFixed(2)}</strong></span>
+            </div>
+          `;
+        });
+      });
+      itemsListDiv.innerHTML = itemsHtml;
+      
+      // Set total
+      document.getElementById('conf-total').textContent = `Total: ${order.total.toFixed(2)}`;
+      
+      // Show modal
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+      
+      console.log('✅ Confirmation modal displayed');
+    }
+
+    function closeConfirmationModal() {
+      console.log('🚪 Closing confirmation modal...');
+      const modal = document.getElementById('confirmation-modal');
+      
+      if (modal) {
+        modal.classList.remove('show');
+        // Use setTimeout to allow animation to complete
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
+      }
+    }
+
+    // ============================================
+    // ORDER SUBMISSION
     // ============================================
     function submitOrder() {
       console.log('📤 Submitting order...');
@@ -1701,7 +1951,6 @@
       });
       
       console.log('📊 Order data prepared:', orderData);
-      console.log('🔗 Google Sheets URL:', GOOGLE_SHEETS_CONFIG.webAppUrl);
       showNotification('Submitting order to cloud...', 'info');
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
@@ -1740,46 +1989,7 @@
         })
         .catch(error => {
           console.error('❌ Primary submission failed:', error);
-          
-          // If CORS failed, try no-cors mode as fallback
-          if (error.message.includes('CORS') || error.message.includes('Failed to fetch')) {
-            console.log('🔄 Trying no-cors mode as fallback...');
-            
-            fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
-            })
-            .then(() => {
-              console.log('📡 No-cors request sent (cannot verify success)');
-              
-              // Save locally as backup since we can't verify no-cors success
-              if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-                console.log('💾 Saving to localStorage as backup...');
-                saveToLocalStorage(orderData);
-              }
-              
-              closePaymentModal();
-              showDetailedOrderConfirmation(orderData);
-              showNotification(`Order ${orderId} sent to cloud (verification pending)`, 'warning');
-              
-              // Show additional info about no-cors limitation
-              setTimeout(() => {
-                showNotification('Note: Cloud sync status cannot be verified due to browser security', 'info');
-              }, 3000);
-              
-              resetForm();
-            })
-            .catch(noCorsError => {
-              console.error('❌ No-cors fallback also failed:', noCorsError);
-              handleSubmissionFailure(orderData, orderId, 'Both CORS and no-cors methods failed');
-            });
-          } else {
-            handleSubmissionFailure(orderData, orderId, error.message);
-          }
+          handleSubmissionFailure(orderData, orderId, error.message);
         });
       } else {
         console.log('💾 Google Sheets not configured, saving locally only...');
@@ -1807,20 +2017,9 @@
         closePaymentModal();
         showDetailedOrderConfirmation(orderData);
         showNotification('Order saved locally (cloud sync failed)', 'warning');
-        
-        // Show detailed error to help with debugging
-        setTimeout(() => {
-          alert(`Cloud sync failed: ${errorMessage}\n\nYour order has been saved locally. Please contact CRivers@artiosacademies.com if this issue persists.`);
-        }, 1000);
-        
         resetForm();
       } else {
         showNotification('Error submitting order. Please try again.', 'error');
-        
-        // Show detailed error for debugging
-        setTimeout(() => {
-          alert(`Submission Error: ${errorMessage}\n\nPlease try again or contact CRivers@artiosacademies.com for support.`);
-        }, 1000);
       }
     }
 
@@ -1833,59 +2032,6 @@
       } catch (e) {
         console.error('❌ Error saving to localStorage:', e);
       }
-    }
-
-    function showDetailedOrderConfirmation(order) {
-      const itemsByDay = {};
-      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-      order.items.forEach(item => {
-        if (!itemsByDay[item.day]) {
-          itemsByDay[item.day] = [];
-        }
-        itemsByDay[item.day].push(item);
-      });
-
-      const sortedDays = Object.keys(itemsByDay).sort((a, b) => 
-        dayOrder.indexOf(a) - dayOrder.indexOf(b)
-      );
-
-      let message = `✅ ORDER CONFIRMED!\n`;
-      message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-      message += `📋 Order Details:\n`;
-      message += `Order ID: ${order.orderId}\n`;
-      message += `Date: ${new Date(order.timestamp).toLocaleString()}\n\n`;
-
-      message += `👥 Family Information:\n`;
-      message += `Email: ${order.email}\n`;
-      if (order.children && order.children.length > 0) {
-        message += `Children: ${order.children.length}\n`;
-        order.children.forEach((child, index) => {
-          message += `  ${index + 1}. ${child.firstName} ${child.lastName} (${child.grade})\n`;
-        });
-      }
-      message += `\n`;
-
-      message += `🍽️ Items Ordered:\n`;
-      message += `─────────────────────────────\n`;
-
-      sortedDays.forEach(day => {
-        message += `${day}:\n`;
-        itemsByDay[day].forEach(item => {
-          message += `  • ${item.name} - ${item.childName || 'Student'} - ${item.price.toFixed(2)}\n`;
-        });
-        message += `\n`;
-      });
-
-      message += `💰 Payment Summary:\n`;
-      message += `─────────────────────────────\n`;
-      message += `Total: ${order.total.toFixed(2)}\n`;
-      message += `Payment Method: ${order.paymentMethod}\n\n`;
-
-      message += `📧 A confirmation email will be sent to: ${order.email}\n\n`;
-      message += `Questions? Contact: CRivers@artiosacademies.com`;
-
-      alert(message);
     }
 
     function resetForm() {
@@ -1902,284 +2048,6 @@
       currentTotal = 0;
       updateCart();
       validateForm();
-    }
-
-    // ============================================
-    // ORDER HISTORY
-    // ============================================
-    function checkOrderHistory() {
-      const email = document.getElementById('family-email').value.trim();
-      if (!email) return;
-      
-      console.log('🔍 Checking order history for:', email);
-      
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=get_order_history&email=${encodeURIComponent(email)}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.success && data.orders && data.orders.length > 0) {
-              checkOrderHistoryNotification(data.orders, email);
-            }
-          })
-          .catch(error => {
-            console.error('❌ Error fetching history from cloud:', error);
-            checkLocalOrderHistory();
-          });
-      } else {
-        checkLocalOrderHistory();
-      }
-    }
-
-    function checkLocalOrderHistory() {
-      const email = document.getElementById('family-email').value.trim();
-      if (!email) return;
-      
-      try {
-        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
-        const userOrders = orders.filter(order => 
-          order.email.toLowerCase() === email.toLowerCase()
-        );
-        
-        if (userOrders.length > 0) {
-          checkOrderHistoryNotification(userOrders, email);
-        }
-      } catch (e) {
-        console.error('❌ Error checking local order history:', e);
-      }
-    }
-
-    function checkOrderHistoryNotification(orders, email) {
-      const monday = getMonday(new Date());
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-
-      const thisWeekOrders = orders.filter(order => {
-        const orderDate = new Date(order.timestamp);
-        return orderDate >= monday && orderDate <= sunday;
-      });
-
-      if (thisWeekOrders.length > 0) {
-        const students = [...new Set(thisWeekOrders.flatMap(order => 
-          order.children ? order.children.map(child => `${child.firstName} ${child.lastName}`) 
-                         : [`${order.firstName || 'Unknown'} ${order.lastName || 'Student'}`]
-        ))];
-        const message = `Found ${thisWeekOrders.length} order(s) this week for: ${students.join(', ')}`;
-        showNotification(message, 'info');
-
-        const historyBtn = document.getElementById('history-btn');
-        historyBtn.style.background = '#e3f2fd';
-        historyBtn.style.color = '#1976d2';
-        historyBtn.innerHTML = `📋 View Orders <span style="background: #1976d2; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.8em; margin-left: 5px;">${thisWeekOrders.length}</span>`;
-
-        setTimeout(() => {
-          historyBtn.style.background = '';
-          historyBtn.style.color = '';
-          historyBtn.innerHTML = 'View Order History';
-        }, 10000);
-      }
-    }
-
-    function showOrderHistory() {
-      const email = document.getElementById('family-email').value.trim();
-
-      console.log('📋 Showing order history for:', email);
-
-      if (!email) {
-        alert('Please enter your email address to view order history.');
-        document.getElementById('family-email').focus();
-        return;
-      }
-
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        showNotification('Loading order history...', 'info');
-
-        fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=get_order_history&email=${encodeURIComponent(email)}`)
-          .then(response => response.json())
-          .then(data => {
-            console.log('☁️ Cloud history response:', data);
-            if (data.success && data.orders) {
-              const localOrders = JSON.parse(localStorage.getItem('cafeOrders') || '[]')
-                .filter(order => order.email.toLowerCase() === email.toLowerCase());
-              const allOrders = mergeOrders(data.orders, localOrders);
-              displayOrderHistory(allOrders, email);
-            } else {
-              console.log('No cloud history, showing local only');
-              showLocalOrderHistory();
-            }
-          })
-          .catch(error => {
-            console.error('❌ Error fetching from Google Sheets:', error);
-            showNotification('Using local history (cloud sync unavailable)', 'warning');
-            showLocalOrderHistory();
-          });
-      } else {
-        showLocalOrderHistory();
-      }
-    }
-
-    function showLocalOrderHistory() {
-      const email = document.getElementById('family-email').value.trim();
-      console.log('💾 Showing local order history for:', email);
-
-      try {
-        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
-        const userOrders = orders.filter(order => 
-          order.email.toLowerCase() === email.toLowerCase()
-        );
-
-        console.log('Found local orders:', userOrders.length);
-        displayOrderHistory(userOrders, email);
-      } catch (e) {
-        console.error('❌ Error loading order history:', e);
-        alert('Unable to load order history.');
-      }
-    }
-
-    function mergeOrders(sheetOrders, localOrders) {
-      // Mark sheet orders as from sheets
-      const markedSheetOrders = sheetOrders.map(order => ({...order, fromSheets: true}));
-      
-      // Filter out local orders that might already exist in sheets
-      const uniqueLocalOrders = localOrders.filter(localOrder => 
-        !markedSheetOrders.find(sheetOrder => sheetOrder.orderId === localOrder.orderId)
-      );
-      
-      return [...markedSheetOrders, ...uniqueLocalOrders];
-    }
-
-    function displayOrderHistory(orders, email) {
-      console.log('📊 Displaying order history:', orders.length, 'orders');
-      
-      if (orders.length === 0) {
-        alert(`No order history found for ${email}\n\nOnce you place orders, they will appear here.`);
-        return;
-      }
-
-      // Sort orders by timestamp (newest first)
-      orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-      const monday = getMonday(new Date());
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-
-      let message = `📋 ORDER HISTORY for ${email}\n`;
-      message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-
-      // Group orders by student name
-      const ordersByStudent = {};
-      orders.forEach(order => {
-        // Handle both single-child and multi-child orders
-        if (order.children && order.children.length > 0) {
-          // Multi-child order
-          order.children.forEach(child => {
-            const studentKey = `${child.firstName} ${child.lastName}`;
-            if (!ordersByStudent[studentKey]) {
-              ordersByStudent[studentKey] = [];
-            }
-            ordersByStudent[studentKey].push({
-              ...order,
-              studentName: studentKey,
-              grade: child.grade
-            });
-          });
-        } else {
-          // Single-child order (legacy format)
-          const studentKey = `${order.firstName || 'Unknown'} ${order.lastName || 'Student'}`;
-          if (!ordersByStudent[studentKey]) {
-            ordersByStudent[studentKey] = [];
-          }
-          ordersByStudent[studentKey].push({
-            ...order,
-            studentName: studentKey
-          });
-        }
-      });
-
-      Object.keys(ordersByStudent).forEach(studentName => {
-        const studentOrders = ordersByStudent[studentName];
-        message += `👤 ${studentName}${studentOrders[0].grade ? ` (${studentOrders[0].grade})` : ''}\n`;
-        
-        studentOrders.forEach(order => {
-          const orderDate = new Date(order.timestamp);
-          const isThisWeek = orderDate >= monday && orderDate <= sunday;
-          const weekIndicator = isThisWeek ? ' 📅' : '';
-          const syncIndicator = GOOGLE_SHEETS_CONFIG.useGoogleSheets ? (order.fromSheets ? ' ☁️' : ' 💾') : '';
-          
-          message += `   • ${orderDate.toLocaleDateString()} - ${order.total.toFixed(2)} (${order.orderId})${weekIndicator}${syncIndicator}\n`;
-        });
-        message += `\n`;
-      });
-
-      const thisWeekOrders = orders.filter(order => {
-        const orderDate = new Date(order.timestamp);
-        return orderDate >= monday && orderDate <= sunday;
-      });
-
-      if (thisWeekOrders.length > 0) {
-        const weekTotal = thisWeekOrders.reduce((sum, order) => sum + order.total, 0);
-        message += `This Week: ${thisWeekOrders.length} orders (${weekTotal.toFixed(2)})\n`;
-      }
-
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
-        message += `\n☁️ = Cloud synced | 💾 = Local only\n`;
-      }
-      message += `📅 = Current week order\n`;
-      message += `\nQuestions? Contact:\nCRivers@artiosacademies.com`;
-
-      alert(message);
-
-      // Offer to sync local orders if using Google Sheets
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
-        const localOnlyOrders = orders.filter(o => !o.fromSheets);
-        if (localOnlyOrders.length > 0) {
-          setTimeout(() => {
-            if (confirm(`Found ${localOnlyOrders.length} local-only orders. Would you like to sync them to the cloud?`)) {
-              syncLocalOrdersToSheets(localOnlyOrders);
-            }
-          }, 500);
-        }
-      }
-    }
-
-    function syncLocalOrdersToSheets(orders) {
-      showNotification(`Syncing ${orders.length} orders to cloud...`, 'info');
-      
-      let syncCount = 0;
-      let errorCount = 0;
-      
-      orders.forEach(order => {
-        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({...order, sendConfirmation: false})
-        })
-        .then(() => {
-          syncCount++;
-          if (syncCount + errorCount === orders.length) {
-            showNotification(`Sync complete: ${syncCount} succeeded, ${errorCount} failed`, 
-                           errorCount > 0 ? 'warning' : 'success');
-          }
-        })
-        .catch(error => {
-          errorCount++;
-          console.error('Error syncing order:', error);
-          if (syncCount + errorCount === orders.length) {
-            showNotification(`Sync complete: ${syncCount} succeeded, ${errorCount} failed`, 
-                           errorCount > 0 ? 'warning' : 'success');
-          }
-        });
-      });
-    }
-
-    function getMonday(date) {
-      const d = new Date(date);
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      d.setHours(0, 0, 0, 0);
-      return d;
     }
 
     // ============================================
@@ -2202,13 +2070,6 @@
       // Check if current day has any selections
       const currentDayHasSelections = hasSelectionsForDay(currentDay);
 
-      console.log('Copy button update:', {
-        currentDay,
-        availableDays,
-        remainingDays,
-        currentDayHasSelections
-      });
-
       // Clear existing button
       container.innerHTML = '';
 
@@ -2228,32 +2089,7 @@
           button.textContent = 'Copy to Remaining Days ➡️';
         }
 
-        button.style.cssText = `
-          background: #ff9800;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 14px;
-          font-weight: 600;
-          transition: all 0.3s ease;
-          margin-left: 15px;
-          white-space: nowrap;
-        `;
-
-        button.addEventListener('mouseover', () => {
-          button.style.background = '#f57c00';
-          button.style.transform = 'translateY(-1px)';
-        });
-
-        button.addEventListener('mouseout', () => {
-          button.style.background = '#ff9800';
-          button.style.transform = 'translateY(0)';
-        });
-
         button.addEventListener('click', () => copyToRemainingDays(remainingDays));
-
         container.appendChild(button);
       }
     }
@@ -2270,14 +2106,11 @@
       const currentDaySelections = document.querySelectorAll(`input[type="checkbox"][data-day="${currentDay}"]:checked`);
       
       if (currentDaySelections.length === 0) {
-        console.log('No selections to copy from current day');
         return;
       }
 
       // For each target day, clear existing selections and copy current day
       targetDays.forEach(targetDay => {
-        console.log(`Copying to ${targetDay}`);
-        
         // First, uncheck all existing selections for this target day
         const existingSelections = document.querySelectorAll(`input[type="checkbox"][data-day="${targetDay}"]`);
         existingSelections.forEach(checkbox => {
@@ -2296,9 +2129,6 @@
           
           if (targetCheckbox) {
             targetCheckbox.checked = true;
-            console.log(`Copied ${itemId} for child ${childId} to ${targetDay}`);
-          } else {
-            console.error(`Target checkbox not found for ${itemId}, child ${childId}, day ${targetDay}`);
           }
         });
       });
@@ -2316,6 +2146,7 @@
       // Update copy button for new state
       updateCopyButton();
     }
+
     function showNotification(message, type = 'info') {
       // Remove existing notification
       const existingNotif = document.querySelector('.notification');
