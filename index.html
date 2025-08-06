@@ -270,6 +270,12 @@
     .day-tab.disabled {
       opacity: 0.4;
       cursor: not-allowed;
+      color: #999;
+    }
+
+    .day-tab.disabled:hover {
+      background: none;
+      color: #999;
     }
 
     .menu-for-day {
@@ -855,6 +861,10 @@
     let cloudSyncActive = false;
     let childCount = 1;
 
+    // Day names and arrays
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
     // Menu data structure
     const menuData = {
       entrees: [
@@ -901,7 +911,7 @@
       updateCart();
       validateForm();
       
-      // Show secret report button if accessing locally or if URL contains debug parameter
+      // Show secret report button if accessing locally or with debug parameter
       if (window.location.hostname === 'localhost' || 
           window.location.hostname === '127.0.0.1' ||
           window.location.search.includes('debug=true')) {
@@ -938,70 +948,84 @@
       }
     }
 
+    // ============================================
+    // WORKING DAY TAB GENERATION FROM ORIGINAL
+    // ============================================
+    function initializeDates() {
+      const today = new Date();
+      const currentDay = today.getDay();
+      const monday = new Date(today);
+      // Get Monday of current week
+      const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+      monday.setDate(diff);
+      monday.setHours(0, 0, 0, 0);
+      return monday;
+    }
+
     function generateDayTabs() {
       const tabsContainer = document.getElementById('day-tabs');
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-      const today = new Date();
-      const currentHour = today.getHours();
-      const currentDayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, etc.
-      
+      const monday = initializeDates();
+      const now = new Date();
+      const currentHour = now.getHours();
       let firstAvailableDay = null;
-      
+
+      console.log(`Current time: ${now.toLocaleString()}, Hour: ${currentHour}`);
+
       days.forEach((day, index) => {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + index);
+
+        // Create date objects for comparison (without time)
+        const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        const isToday = dateOnly.getTime() === todayOnly.getTime();
+        const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
+
+        // A day is disabled if:
+        // 1. It's before today, OR 
+        // 2. It's today AND past 8:00 AM
+        const isPast = isBeforeToday || (isToday && currentHour >= 8);
+
         const tab = document.createElement('div');
         tab.className = 'day-tab';
-        tab.dataset.day = day.toLowerCase();
-        
-        // Calculate what date this tab represents
-        const mondayOfThisWeek = new Date(today);
-        mondayOfThisWeek.setDate(today.getDate() - currentDayOfWeek + 1); // Get Monday of this week
-        
-        const dayDate = new Date(mondayOfThisWeek);
-        dayDate.setDate(mondayOfThisWeek.getDate() + index); // Add days from Monday
-        
-        const dateStr = `${dayDate.getMonth() + 1}/${dayDate.getDate()}`;
-        
-        // Check if this day should be disabled
-        let isPastDay = false;
-        
-        if (dayDate < today) {
-          // Day is in the past
-          isPastDay = true;
-        } else if (dayDate.toDateString() === today.toDateString() && currentHour >= 8) {
-          // Today but after 8 AM cutoff
-          isPastDay = true;
-        }
-        
+        tab.dataset.day = day;
+
+        console.log(`${dayNames[index]} (${date.toDateString()}): isToday=${isToday}, isBeforeToday=${isBeforeToday}, isPast=${isPast}, currentHour=${currentHour}`);
+
         tab.innerHTML = `
-          <div>${day}</div>
-          <div style="font-size: 0.8em; opacity: 0.8;">${dateStr}</div>
+          <div>${dayNames[index]}</div>
+          <div style="font-size: 0.8em; opacity: 0.8;">${date.getMonth() + 1}/${date.getDate()}</div>
         `;
-        
-        if (isPastDay) {
+
+        if (isPast) {
           tab.classList.add('disabled');
-          tab.title = 'Orders for this day are closed (8:00 AM cutoff)';
-          tab.style.opacity = '0.4';
-          tab.style.cursor = 'not-allowed';
+          tab.title = `Orders for ${dayNames[index]} are closed (8:00 AM cutoff passed)`;
+          console.log(`${dayNames[index]} is disabled`);
         } else {
-          tab.addEventListener('click', () => switchDay(day.toLowerCase()));
+          tab.addEventListener('click', () => switchDay(day));
           if (!firstAvailableDay) {
-            firstAvailableDay = day.toLowerCase();
+            firstAvailableDay = day;
+            console.log(`First available day set to: ${day}`);
           }
         }
-        
+
         tabsContainer.appendChild(tab);
       });
+
+      // Set first available day as active, or Monday if none available
+      const dayToActivate = firstAvailableDay || 'monday';
+      currentDay = dayToActivate;
       
-      // Set the first available day as active
-      if (firstAvailableDay) {
-        currentDay = firstAvailableDay;
-        document.querySelector(`[data-day="${firstAvailableDay}"]`).classList.add('active');
+      const tabToActivate = document.querySelector(`[data-day="${dayToActivate}"]`);
+      if (tabToActivate) {
+        tabToActivate.classList.add('active');
+        console.log(`Activated tab: ${dayToActivate}`);
       }
     }
 
     function generateMenus() {
       const container = document.getElementById('menu-container');
-      const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
       
       days.forEach(day => {
         const dayMenu = document.createElement('div');
@@ -1381,12 +1405,15 @@
     }
 
     // ============================================
-    // FIXED SUBMIT ORDER FUNCTION
+    // WORKING SUBMIT ORDER FUNCTION FROM ORIGINAL
     // ============================================
     function submitOrder() {
-      // Create order data structure for multi-child orders
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substr(2, 5).toUpperCase();
+      const orderId = `LO${timestamp}${randomStr}`;
+      
       const orderData = {
-        orderId: `LO${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+        orderId: orderId,
         timestamp: new Date().toISOString(),
         email: document.getElementById('family-email').value.trim(),
         children: [],
@@ -1394,8 +1421,7 @@
         total: currentTotal,
         paymentMethod: 'Venmo',
         paymentStatus: 'confirmed',
-        sendConfirmation: true,
-        weekStart: getWeekStartDate()
+        sendConfirmation: true
       };
 
       // Add children data
@@ -1407,127 +1433,66 @@
           grade: child.querySelector('.child-grade').value
         });
       });
-
-      console.log('Submitting order data:', orderData);
-      showNotification('Submitting multi-child order...', 'info');
-
-      // **FIXED**: Try different approaches for Google Sheets submission
+      
+      console.log('Submitting order:', orderData);
+      showNotification('Submitting order...', 'info');
+      
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        
-        // Method 1: Try with CORS first
         fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
           method: 'POST',
+          mode: 'no-cors',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(orderData)
         })
-        .then(response => {
-          console.log('Response received:', response);
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Network response was not ok');
-          }
-        })
-        .then(data => {
-          console.log('Success response:', data);
+        .then(() => {
           closePaymentModal();
-          showNotification(`Order ${orderData.orderId} submitted successfully!`, 'success');
           showDetailedOrderConfirmation(orderData);
-          resetMultiChildForm();
+          showNotification(`Order ${orderId} submitted successfully!`, 'success');
+          resetForm();
         })
         .catch(error => {
-          console.log('CORS method failed, trying no-cors...', error);
-          
-          // Method 2: Fallback to no-cors
-          fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData)
-          })
-          .then(() => {
-            // With no-cors, we can't read the response, so assume success
-            console.log('No-cors submission completed');
-            closePaymentModal();
-            showNotification(`Order ${orderData.orderId} submitted successfully!`, 'success');
-            showDetailedOrderConfirmation(orderData);
-            resetMultiChildForm();
-          })
-          .catch(finalError => {
-            console.error('Both submission methods failed:', finalError);
-            showNotification('Error submitting order. Please try again or contact support.', 'error');
-          });
+          console.error('Error submitting to Google Sheets:', error);
+          showNotification('Error submitting order. Please try again.', 'error');
         });
-        
       } else {
-        // Fallback if Google Sheets not configured
         showNotification('Google Sheets integration not configured', 'error');
-        console.error('GOOGLE_SHEETS_CONFIG is not properly configured');
-        console.log('Current config:', GOOGLE_SHEETS_CONFIG);
+        console.error('GOOGLE_SHEETS_CONFIG not configured properly');
       }
     }
 
-    // Helper function to get the week start date (Monday)
-    function getWeekStartDate() {
-      const today = new Date();
-      const day = today.getDay();
-      const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
-      const monday = new Date(today.setDate(diff));
-      monday.setHours(0, 0, 0, 0);
-      return monday.toISOString();
-    }
-
-    // Show detailed order confirmation
-    function showDetailedOrderConfirmation(orderData) {
-      let confirmationMessage = `✅ ORDER CONFIRMED!\n\nOrder ID: ${orderData.orderId}\nTotal: $${orderData.total.toFixed(2)}\n\nChildren:\n`;
+    function showDetailedOrderConfirmation(order) {
+      let confirmationMessage = `✅ ORDER CONFIRMED!\n\nOrder ID: ${order.orderId}\nTotal: $${order.total.toFixed(2)}\n\nChildren:\n`;
       
-      orderData.children.forEach(child => {
+      order.children.forEach(child => {
         confirmationMessage += `• ${child.firstName} ${child.lastName} (${child.grade})\n`;
       });
       
       confirmationMessage += `\nItems Ordered:\n`;
-      orderData.items.forEach(item => {
-        const child = orderData.children.find(c => c.id === item.childId);
-        const childName = child ? `${child.firstName} ${child.lastName}` : 'Unknown';
-        confirmationMessage += `• ${item.name} (${item.day}) - ${childName} - $${item.price.toFixed(2)}\n`;
+      order.items.forEach(item => {
+        confirmationMessage += `• ${item.name} (${item.day}) - ${item.childName} - $${item.price.toFixed(2)}\n`;
       });
       
-      confirmationMessage += `\nPayment: ${orderData.paymentMethod}\n`;
-      confirmationMessage += `\nA confirmation email will be sent to: ${orderData.email}`;
+      confirmationMessage += `\nPayment: ${order.paymentMethod}\nA confirmation email will be sent to: ${order.email}`;
       
       alert(confirmationMessage);
     }
 
-    // Reset the form after successful submission
-    function resetMultiChildForm() {
-      // Clear email
+    function resetForm() {
       document.getElementById('family-email').value = '';
+      document.querySelectorAll('.child-first-name').forEach(input => input.value = '');
+      document.querySelectorAll('.child-last-name').forEach(input => input.value = '');
+      document.querySelectorAll('.child-grade').forEach(select => select.value = '');
       
-      // Reset all child sections
-      document.querySelectorAll('.child-section').forEach(child => {
-        child.querySelector('.child-first-name').value = '';
-        child.querySelector('.child-last-name').value = '';
-        child.querySelector('.child-grade').value = '';
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+        cb.checked = false;
       });
       
-      // Clear all menu selections
-      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-      });
-      
-      // Reset order state
       orderItems = [];
       currentTotal = 0;
-      
-      // Update displays
       updateCart();
       validateForm();
-      
-      showNotification('Form reset - ready for next order', 'info');
     }
 
     // ============================================
@@ -1548,16 +1513,42 @@
       alert('Order history feature coming soon!');
     }
 
+    // ============================================
+    // WORKING REPORT GENERATION FROM ORIGINAL
+    // ============================================
     function generateTestReport() {
-      const dateInput = prompt('Generate report for which date?\n\nFormat: YYYY-MM-DD\nExample: 2025-08-06', 
-                               new Date().toISOString().split('T')[0]);
-      
-      if (!dateInput) return;
-      
-      showNotification('🔄 Generating report for ' + dateInput + '...', 'info');
-      
+      if (!GOOGLE_SHEETS_CONFIG.useGoogleSheets || !GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        alert('Google Sheets integration is not configured!');
+        return;
+      }
+
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+      const dateInput = prompt(`Generate report for which date?\n\nFormat: YYYY-MM-DD\nExample: ${todayStr}`, todayStr);
+
+      if (!dateInput) {
+        return; // User cancelled
+      }
+
+      // Validate date format
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(dateInput)) {
+        alert('Invalid date format! Please use YYYY-MM-DD\nExample: 2025-08-06');
+        return;
+      }
+
+      const selectedDate = new Date(dateInput + 'T12:00:00'); // Add time to avoid timezone issues
+      if (isNaN(selectedDate.getTime())) {
+        alert('Invalid date! Please enter a valid date.');
+        return;
+      }
+
+      showNotification(`📊 Generating report for ${dateInput}...`, 'info');
+
+      // Call the backdoor API
       const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=generate_report&secret=cafe2025&date=${dateInput}`;
-      
+
       fetch(reportUrl)
         .then(response => response.json())
         .then(data => {
@@ -1566,16 +1557,21 @@
                           `Date: ${dateInput}\n` +
                           `Sheet: ${data.sheetName}\n` +
                           `Orders Found: ${data.ordersProcessed}\n\n` +
-                          `${data.sheetUrl ? 'Opening Google Sheet...' : ''}`;
-            
+                          `Check your Google Sheet for the new report tab.\n` +
+                          `The report includes:\n` +
+                          `• Customer order details\n` +
+                          `• Restaurant preparation summary\n` +
+                          `• Item counts by day\n` +
+                          `• Financial totals`;
+
             alert(message);
-            
+
             if (data.ordersProcessed > 0) {
               showNotification(`Report created: ${data.ordersProcessed} orders for ${dateInput}`, 'success');
             } else {
               showNotification(`No orders found for ${dateInput}`, 'warning');
             }
-            
+
             if (data.sheetUrl) {
               setTimeout(() => {
                 if (confirm('Open the Google Sheet to view the report?')) {
