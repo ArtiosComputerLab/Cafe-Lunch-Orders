@@ -943,9 +943,10 @@
       updateCart();
       validateForm();
       
-      // Show secret report button if accessing locally or with debug parameter
+      // Show secret report button if accessing locally, with debug parameter, OR on GitHub Pages for testing
       if (window.location.hostname === 'localhost' || 
           window.location.hostname === '127.0.0.1' ||
+          window.location.hostname === 'artioscomputerlab.github.io' ||
           window.location.search.includes('debug=true')) {
         document.getElementById('secret-report-btn').style.display = 'block';
       }
@@ -958,8 +959,13 @@
       const hours = now.getHours();
       const storeStatus = document.getElementById('store-status');
       
+      // TEMPORARILY DISABLED FOR TESTING - Store hours check disabled
       // Store is CLOSED from 8:00 AM to 1:00 PM (8-13)
-      if (hours >= 8 && hours < 13) {
+      const isTestingMode = window.location.hostname === 'artioscomputerlab.github.io' || 
+                           window.location.search.includes('debug=true') ||
+                           window.location.hostname === 'localhost';
+      
+      if (false && hours >= 8 && hours < 13 && !isTestingMode) { // Disabled the time check
         storeIsOpen = false;
         storeStatus.textContent = '🔒 Store Closed (8 AM - 1 PM)';
         storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
@@ -977,7 +983,7 @@
         `;
       } else {
         storeIsOpen = true;
-        storeStatus.textContent = '✅ Store Open - Orders Accepted';
+        storeStatus.textContent = isTestingMode ? '🧪 Testing Mode - Store Open' : '✅ Store Open - Orders Accepted';
         storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
       }
     }
@@ -1188,7 +1194,21 @@
 
       const reportBtn = document.getElementById('secret-report-btn');
       if (reportBtn) {
-        reportBtn.addEventListener('click', generateTestReport);
+        // Add both report generation AND connection testing
+        reportBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const choice = confirm('Choose test type:\n\nOK = Test Google Sheets Connection\nCancel = Generate Report');
+          
+          if (choice) {
+            testGoogleSheetsConnection();
+          } else {
+            generateTestReport();
+          }
+        });
+        
+        // Update button text to indicate dual function
+        reportBtn.innerHTML = '🧪 Test Connection / Generate Report';
       }
 
       // FIXED: Payment modal listeners
@@ -1589,7 +1609,7 @@
     }
 
     // ============================================
-    // ORDER SUBMISSION
+    // ORDER SUBMISSION - FIXED WITH BETTER ERROR HANDLING
     // ============================================
     function submitOrder() {
       console.log('📤 Submitting order...');
@@ -1606,7 +1626,8 @@
         total: currentTotal,
         paymentMethod: 'Venmo',
         paymentStatus: 'confirmed',
-        sendConfirmation: true
+        sendConfirmation: true,
+        weekStart: new Date().toISOString().split('T')[0] // Add week start for Google Apps Script
       };
 
       // Add children data
@@ -1620,40 +1641,84 @@
       });
       
       console.log('📊 Order data prepared:', orderData);
-      showNotification('Submitting order...', 'info');
+      console.log('🔗 Google Sheets URL:', GOOGLE_SHEETS_CONFIG.webAppUrl);
+      showNotification('Submitting order to cloud...', 'info');
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        console.log('☁️ Submitting to Google Sheets...');
+        console.log('☁️ Attempting to submit to Google Sheets...');
+        
+        // First try with CORS to get actual error messages
         fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
           method: 'POST',
-          mode: 'no-cors',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: JSON.stringify(orderData)
+          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
         })
-        .then(() => {
-          console.log('✅ Google Sheets submission succeeded');
-          if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-            console.log('💾 Also saving to localStorage...');
-            saveToLocalStorage(orderData);
+        .then(response => {
+          console.log('📡 Response received:', response.status, response.statusText);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
-          closePaymentModal();
-          showDetailedOrderConfirmation(orderData);
-          showNotification(`Order ${orderId} submitted successfully!`, 'success');
-          resetForm();
+          return response.json();
         })
-        .catch(error => {
-          console.error('❌ Error submitting to Google Sheets:', error);
-          if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-            console.log('🔄 Falling back to localStorage...');
-            saveToLocalStorage(orderData);
+        .then(result => {
+          console.log('✅ Google Sheets response:', result);
+          if (result.success) {
+            console.log('🎉 Order successfully saved to Google Sheets!');
+            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+              console.log('💾 Also saving to localStorage as backup...');
+              saveToLocalStorage(orderData);
+            }
             closePaymentModal();
             showDetailedOrderConfirmation(orderData);
-            showNotification('Order saved locally (cloud sync failed)', 'warning');
+            showNotification(`Order ${orderId} submitted to cloud successfully!`, 'success');
             resetForm();
           } else {
-            showNotification('Error submitting order. Please try again.', 'error');
+            throw new Error(result.error || 'Unknown error from Google Sheets');
+          }
+        })
+        .catch(error => {
+          console.error('❌ Primary submission failed:', error);
+          
+          // If CORS failed, try no-cors mode as fallback
+          if (error.message.includes('CORS') || error.message.includes('Failed to fetch')) {
+            console.log('🔄 Trying no-cors mode as fallback...');
+            
+            fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
+            })
+            .then(() => {
+              console.log('📡 No-cors request sent (cannot verify success)');
+              
+              // Save locally as backup since we can't verify no-cors success
+              if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+                console.log('💾 Saving to localStorage as backup...');
+                saveToLocalStorage(orderData);
+              }
+              
+              closePaymentModal();
+              showDetailedOrderConfirmation(orderData);
+              showNotification(`Order ${orderId} sent to cloud (verification pending)`, 'warning');
+              
+              // Show additional info about no-cors limitation
+              setTimeout(() => {
+                showNotification('Note: Cloud sync status cannot be verified due to browser security', 'info');
+              }, 3000);
+              
+              resetForm();
+            })
+            .catch(noCorsError => {
+              console.error('❌ No-cors fallback also failed:', noCorsError);
+              handleSubmissionFailure(orderData, orderId, 'Both CORS and no-cors methods failed');
+            });
+          } else {
+            handleSubmissionFailure(orderData, orderId, error.message);
           }
         });
       } else {
@@ -1661,8 +1726,34 @@
         saveToLocalStorage(orderData);
         closePaymentModal();
         showDetailedOrderConfirmation(orderData);
-        showNotification(`Order ${orderId} saved successfully!`, 'success');
+        showNotification(`Order ${orderId} saved locally!`, 'success');
         resetForm();
+      }
+    }
+
+    function handleSubmissionFailure(orderData, orderId, errorMessage) {
+      console.error('💥 Complete submission failure:', errorMessage);
+      
+      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+        console.log('🔄 Falling back to localStorage...');
+        saveToLocalStorage(orderData);
+        closePaymentModal();
+        showDetailedOrderConfirmation(orderData);
+        showNotification('Order saved locally (cloud sync failed)', 'warning');
+        
+        // Show detailed error to help with debugging
+        setTimeout(() => {
+          alert(`Cloud sync failed: ${errorMessage}\n\nYour order has been saved locally. Please contact CRivers@artiosacademies.com if this issue persists.`);
+        }, 1000);
+        
+        resetForm();
+      } else {
+        showNotification('Error submitting order. Please try again.', 'error');
+        
+        // Show detailed error for debugging
+        setTimeout(() => {
+          alert(`Submission Error: ${errorMessage}\n\nPlease try again or contact CRivers@artiosacademies.com for support.`);
+        }, 1000);
       }
     }
 
@@ -2025,8 +2116,59 @@
     }
 
     // ============================================
-    // REPORT GENERATION
+    // TESTING & DEBUGGING FUNCTIONS
     // ============================================
+    function testGoogleSheetsConnection() {
+      console.log('🧪 Testing Google Sheets connection...');
+      
+      if (!GOOGLE_SHEETS_CONFIG.useGoogleSheets || !GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        alert('❌ Google Sheets is not configured!\n\nCheck GOOGLE_SHEETS_CONFIG in the code.');
+        return;
+      }
+      
+      console.log('🔗 Testing URL:', GOOGLE_SHEETS_CONFIG.webAppUrl);
+      showNotification('Testing Google Sheets connection...', 'info');
+      
+      // Test with a simple GET request first
+      fetch(GOOGLE_SHEETS_CONFIG.webAppUrl + '?action=test&test=true')
+        .then(response => {
+          console.log('📡 Test response:', response.status, response.statusText);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.text(); // Use text() first to see raw response
+        })
+        .then(result => {
+          console.log('✅ Raw test response:', result);
+          try {
+            const jsonResult = JSON.parse(result);
+            console.log('✅ Parsed test response:', jsonResult);
+            showNotification('Google Sheets connection successful!', 'success');
+            alert(`✅ Google Sheets Connection Test PASSED!\n\nResponse: ${JSON.stringify(jsonResult, null, 2)}\n\nYour Google Apps Script is working correctly.`);
+          } catch (parseError) {
+            console.log('⚠️ Response is not JSON:', result);
+            showNotification('Connection works but unexpected response format', 'warning');
+            alert(`⚠️ Connection Test Results:\n\nGoogle Sheets responded, but not with expected JSON.\n\nRaw response: ${result.substring(0, 500)}...\n\nThis might indicate a Google Apps Script configuration issue.`);
+          }
+        })
+        .catch(error => {
+          console.error('❌ Test connection failed:', error);
+          showNotification('Google Sheets connection failed!', 'error');
+          
+          let errorMessage = `❌ Google Sheets Connection Test FAILED!\n\n`;
+          errorMessage += `Error: ${error.message}\n\n`;
+          errorMessage += `Possible issues:\n`;
+          errorMessage += `1. Google Apps Script not deployed properly\n`;
+          errorMessage += `2. Wrong URL in configuration\n`;
+          errorMessage += `3. Script permissions not granted\n`;
+          errorMessage += `4. CORS/network issues\n\n`;
+          errorMessage += `URL being tested: ${GOOGLE_SHEETS_CONFIG.webAppUrl}\n\n`;
+          errorMessage += `Please check your Google Apps Script deployment.`;
+          
+          alert(errorMessage);
+        });
+    }
+
     function generateTestReport() {
       if (!GOOGLE_SHEETS_CONFIG.useGoogleSheets || !GOOGLE_SHEETS_CONFIG.webAppUrl) {
         alert('Google Sheets integration is not configured!');
