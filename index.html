@@ -1622,14 +1622,25 @@
     // ============================================
     function submitOrder() {
       console.log('📤 Submitting order...');
-      const timestamp = Date.now();
-      const randomStr = Math.random().toString(36).substr(2, 5).toUpperCase();
-      const orderId = `LO${timestamp}${randomStr}`;
+      
+      // Generate simplified order ID: LASTNAME-MMDD-HH
+      const now = new Date();
+      const familyEmail = document.getElementById('family-email').value.trim();
+      const firstChild = document.querySelector('.child-section');
+      const lastName = firstChild ? firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 'FAMILY';
+      
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hour = String(now.getHours()).padStart(2, '0');
+      const minute = String(now.getMinutes()).padStart(2, '0');
+      
+      const orderId = `${lastName}-${month}${day}-${hour}${minute}`;
+      console.log('Generated Order ID:', orderId);
       
       const orderData = {
         orderId: orderId,
         timestamp: new Date().toISOString(),
-        email: document.getElementById('family-email').value.trim(),
+        email: familyEmail,
         children: [],
         items: orderItems,
         total: currentTotal,
