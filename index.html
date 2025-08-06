@@ -701,6 +701,12 @@
                     <button type="button" class="history-btn" id="history-btn">
                         View Order History
                     </button>
+                    
+                    <!-- Secret Report Generation Button -->
+                    <button type="button" class="history-btn" id="secret-report-btn" style="display: none; background: #ff9800; color: white; border-color: #ff9800;">
+                        🗂️ Generate Test Report
+                    </button>
+                    
                     <div class="cart-items" id="cart-items">
                         <div class="empty-cart">No items selected</div>
                     </div>
@@ -761,7 +767,7 @@
         // CONFIGURATION - UPDATE THIS SECTION
         // ============================================
         const GOOGLE_SHEETS_CONFIG = {
-            webAppUrl: 'https://script.google.com/macros/s/AKfycbzu0GRk0cmowz3-JbMhv-0eIuqcMDTDP99qu-fyl47twDXdds0UjBjNednFs_kns_kW/exec', // Your Web App URL
+            webAppUrl: 'https://script.google.com/macros/s/AKfycbw6B6JPURkI7fbw7Lq6nAfQ-xmELP0eZkZkikPNYUtpbNKZzhJD3uRToFZl_stiob_I/exec', // Updated Web App URL
             useGoogleSheets: true, // Cloud sync enabled
             fallbackToLocalStorage: true
         };
@@ -832,6 +838,9 @@
                 checkStoreStatusFromSheets();
                 setInterval(checkStoreStatusFromSheets, 300000); // Every 5 minutes
             }
+            
+            // Check for secret report mode
+            checkForSecretReportMode();
         });
 
         function initializeDates() {
@@ -850,21 +859,34 @@
         function generateDayTabs() {
             const tabsContainer = document.getElementById('day-tabs');
             const monday = initializeDates();
-            const today = new Date();
-            const currentHour = today.getHours();
+            const now = new Date();
+            const currentHour = now.getHours();
 
             let firstAvailableDay = null;
+
+            console.log(`Current time: ${now.toLocaleString()}, Hour: ${currentHour}`);
 
             days.forEach((day, index) => {
                 const date = new Date(monday);
                 date.setDate(monday.getDate() + index);
 
-                const isToday = date.toDateString() === today.toDateString();
-                const isPast = date < today || (isToday && currentHour >= 8);
+                // Create date objects for comparison (without time)
+                const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                
+                const isToday = dateOnly.getTime() === todayOnly.getTime();
+                const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
+                
+                // A day is disabled if:
+                // 1. It's before today, OR  
+                // 2. It's today AND past 8:00 AM
+                const isPast = isBeforeToday || (isToday && currentHour >= 8);
 
                 const tab = document.createElement('div');
                 tab.className = 'day-tab';
                 tab.dataset.day = day;
+
+                console.log(`${dayNames[index]} (${date.toDateString()}): isToday=${isToday}, isBeforeToday=${isBeforeToday}, isPast=${isPast}, currentHour=${currentHour}`);
 
                 if (isPast) {
                     tab.classList.add('disabled');
@@ -1081,6 +1103,7 @@
 
             document.getElementById('checkout-btn').addEventListener('click', openPaymentModal);
             document.getElementById('history-btn').addEventListener('click', showOrderHistory);
+            document.getElementById('secret-report-btn').addEventListener('click', generateTestReport);
             document.getElementById('cancel-payment-btn').addEventListener('click', closePaymentModal);
             document.getElementById('confirm-payment-btn').addEventListener('click', submitOrder);
 
@@ -1817,6 +1840,85 @@
                     setTimeout(() => notif.remove(), 300);
                 }
             }, duration);
+        }
+
+        // ============================================
+        // SECRET REPORT GENERATION (FOR TESTING)
+        // ============================================
+        
+        /**
+         * Check URL parameters for secret report mode
+         */
+        function checkForSecretReportMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const secret = urlParams.get('report');
+            
+            if (secret === 'test2025') {
+                const reportBtn = document.getElementById('secret-report-btn');
+                reportBtn.style.display = 'block';
+                console.log('🗂️ Secret report mode activated!');
+                
+                // Also add keyboard shortcut
+                document.addEventListener('keydown', function(e) {
+                    if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+                        generateTestReport();
+                    }
+                });
+            }
+        }
+        
+        /**
+         * Generate test report via backdoor API
+         */
+        function generateTestReport() {
+            if (!GOOGLE_SHEETS_CONFIG.useGoogleSheets || !GOOGLE_SHEETS_CONFIG.webAppUrl) {
+                alert('Google Sheets integration is not configured!');
+                return;
+            }
+            
+            const days = prompt('Generate report for how many days back? (1-7)', '1');
+            if (!days || isNaN(days) || days < 1 || days > 7) {
+                return;
+            }
+            
+            showNotification('🗂️ Generating test report...', 'info');
+            
+            // Call the backdoor API
+            const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=generate_report&secret=cafe2025&days=${days}`;
+            
+            fetch(reportUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const message = `✅ Report Generated Successfully!\n\n` +
+                                      `Sheet: ${data.message}\n` +
+                                      `Orders Processed: ${data.ordersProcessed}\n\n` +
+                                      `Check your Google Sheet for the new report tab.\n` +
+                                      `The report includes:\n` +
+                                      `• Customer order details\n` +
+                                      `• Restaurant preparation summary\n` +
+                                      `• Item counts by day\n` +
+                                      `• Financial totals`;
+                        
+                        alert(message);
+                        showNotification(`Report created: ${data.ordersProcessed} orders processed`, 'success');
+                        
+                        if (data.sheetUrl) {
+                            setTimeout(() => {
+                                if (confirm('Open the Google Sheet to view the report?')) {
+                                    window.open(data.sheetUrl, '_blank');
+                                }
+                            }, 1000);
+                        }
+                    } else {
+                        showNotification(`Report generation failed: ${data.error}`, 'error');
+                        console.error('Report error:', data.error);
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error generating report', 'error');
+                    console.error('Report generation error:', error);
+                });
         }
 
         // ============================================
