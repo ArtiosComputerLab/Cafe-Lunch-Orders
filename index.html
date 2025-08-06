@@ -831,9 +831,6 @@
       <div class="sidebar">
         <div class="cart-summary">
           <div class="cart-title">🛒 Your Order</div>
-          <button type="button" class="history-btn" id="history-btn">
-            View Order History
-          </button>
 
           <div class="cart-items" id="cart-items">
             <div class="empty-cart">No items selected</div>
@@ -1171,9 +1168,6 @@
             e.target.classList.contains('child-last-name')) {
           updateChildCheckboxes();
         }
-        if (e.target.id === 'family-email') {
-          checkOrderHistory();
-        }
         validateForm();
       });
 
@@ -1205,17 +1199,8 @@
         console.error('Checkout button not found!');
       }
 
-      // FIXED: Order history button listener
-      const historyBtn = document.getElementById('history-btn');
-      if (historyBtn) {
-        console.log('Setting up history button listener');
-        historyBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('📋 History button clicked!');
-          showOrderHistory();
-        });
-      }
+      // FIXED: Order history button listener REMOVED
+      // No longer needed - parents use email confirmations for records
 
       // FIXED: Payment modal listeners with proper error checking
       const cancelBtn = document.getElementById('cancel-payment-btn');
