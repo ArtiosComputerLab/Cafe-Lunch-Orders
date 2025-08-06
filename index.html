@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Lunch Order Form 2025-2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #202124;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+        
+        .header .notice {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        
+        .store-status {
+            text-align: center;
+            padding: 15px;
+            margin: 20px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .store-open {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        
+        .store-closed {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+        
+        .form-section {
+            padding: 30px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #3c4043;
+        }
+        
+        .required {
+            color: #d93025;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 1px #4285f4;
+        }
+        
+        .week-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .week-selector h3 {
+            margin-bottom: 15px;
+            color: #3c4043;
+        }
+        
+        .day-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .day-tab {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .day-tab:hover {
+            border-color: #4285f4;
+        }
+        
+        .day-tab.active {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+        }
+        
+        .day-tab.disabled {
+            background: #f5f5f5;
+            color: #9aa0a6;
+            cursor: not-allowed;
+            border-color: #e0e0e0;
+        }
+        
+        .day-tab.disabled:hover {
+            border-color: #e0e0e0;
+        }
+        
+        .menu-for-day {
+            display: none;
+        }
+        
+        .menu-for-day.active {
+            display: block;
+        }
+        
+        .menu-category {
+            margin-bottom: 25px;
+        }
+        
+        .category-title {
+            background: #34a853;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px 6px 0 0;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .menu-items {
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+        }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 500;
+            color: #3c4043;
+            margin-bottom: 2px;
+        }
+        
+        .item-description {
+            color: #5f6368;
+            font-size: 0.9em;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            color: #34a853;
+            margin: 0 15px;
+            font-size: 1.1em;
+        }
+        
+        .item-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .cart-summary {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border: 2px solid #4285f4;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .cart-title {
+            color: #4285f4;
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .cart-items {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .cart-total {
+            border-top: 2px solid #4285f4;
+            padding-top: 15px;
+            text-align: center;
+        }
+        
+        .total-amount {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #4285f4;
+            margin-bottom: 15px;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .checkout-btn:hover:not(:disabled) {
+            background: #2e7d32;
+        }
+        
+        .checkout-btn:disabled {
+            background: #dadce0;
+            cursor: not-allowed;
+        }
+        
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .payment-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .payment-steps {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .payment-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .step-number {
+            background: #4285f4;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+            font-size: 0.9em;
+        }
+        
+        .venmo-btn {
+            background: #3D95CE;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .venmo-btn:hover {
+            background: #2980b9;
+        }
+        
+        .confirmation-btn {
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .confirmation-btn:hover {
+            background: #2e7d32;
+        }
+        
+        .cancel-btn {
+            background: #dadce0;
+            color: #3c4043;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .cancel-btn:hover {
+            background: #bdc1c6;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .day-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .day-tab {
+                flex: 1;
+                min-width: 80px;
+            }
+            
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .item-price {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Cafe Lunch Order Form 2025-2026</h1>
+            <div class="notice">
+                <strong>Order & Payment Cutoff Daily at 8:00 AM</strong><br>
+                ONE FORM PER PERSON • Preorder for the whole week or daily<br>
+                Form closed daily from 8:00 AM - 1:00 PM<br>
+                Contact: CRivers@artiosacademies.com
+            </div>
+        </div>
+        
+        <div id="store-status" class="store-status">
+            <span id="status-text">Checking store hours...</span>
+        </div>
+        
+        <div class="form-section">
+            <form id="lunch-order-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first-name">Student First Name <span class="required">*</span></label>
+                        <input type="text" id="first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Student Last Name <span class="required">*</span></label>
+                        <input type="text" id="last-name" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="grade">Grade <span class="required">*</span></label>
+                        <select id="grade" required>
+                            <option value="">Select Grade</option>
+                            <option value="K-2">K-2</option>
+                            <option value="3-4">3-4</option>
+                            <option value="5-6">5-6</option>
+                            <option value="7-8">7-8</option>
+                            <option value="9-12">9-12</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Parent">Parent</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="week-selector">
+                    <h3>Select Days & Menu Items</h3>
+                    <div class="day-tabs">
+                        <div class="day-tab" data-day="monday">
+                            <div class="day-name">Monday</div>
+                            <div class="day-date" id="date-mon"></div>
+                        </div>
+                        <div class="day-tab" data-day="tuesday">
+                            <div class="day-name">Tuesday</div>
+                            <div class="day-date" id="date-tue"></div>
+                        </div>
+                        <div class="day-tab" data-day="wednesday">
+                            <div class="day-name">Wednesday</div>
+                            <div class="day-date" id="date-wed"></div>
+                        </div>
+                        <div class="day-tab" data-day="thursday">
+                            <div class="day-name">Thursday</div>
+                            <div class="day-date" id="date-thu"></div>
+                        </div>
+                        <div class="day-tab" data-day="friday">
+                            <div class="day-name">Friday</div>
+                            <div class="day-date" id="date-fri"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Monday Menu -->
+                    <div class="menu-for-day" data-day="monday">
+                        <div class="menu-category">
+                            <div class="category-title">Entrees</div>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Chicken Sandwich</div>
+                                        <div class="item-description">Classic boneless breast of chicken</div>
+                                    </div>
+                                    <div class="item-price">$6.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-sandwich" data-price="6.50" data-item="Chicken Sandwich" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Spicy Chicken Sandwich</div>
+                                        <div class="item-description">Boneless breast with spicy seasoning</div>
+                                    </div>
+                                    <div class="item-price">$6.75</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-spicy-sandwich" data-price="6.75" data-item="Spicy Chicken Sandwich" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Nuggets (8ct)</div>
+                                        <div class="item-description">Bite-sized boneless chicken pieces</div>
+                                    </div>
+                                    <div class="item-price">$6.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-nuggets" data-price="6.50" data-item="Nuggets (8ct)" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Grilled Nuggets (8ct)</div>
+                                        <div class="item-description">Grilled boneless chicken pieces</div>
+                                    </div>
+                                    <div class="item-price">$7.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-grilled-nuggets" data-price="7.50" data-item="Grilled Nuggets (8ct)" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Grilled Sandwich</div>
+                                        <div class="item-description">Grilled chicken breast sandwich</div>
+                                    </div>
+                                    <div class="item-price">$8.25</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-grilled-sandwich" data-price="8.25" data-item="Grilled Sandwich" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Grilled Sandwich (GF Bun)</div>
+                                        <div class="item-description">Grilled chicken with gluten-free bun</div>
+                                    </div>
+                                    <div class="item-price">$9.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-grilled-gf" data-price="9.50" data-item="Grilled Sandwich (GF Bun)" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Chicken Wrap</div>
+                                        <div class="item-description">Chicken with fresh vegetables in a wrap</div>
+                                    </div>
+                                    <div class="item-price">$9.75</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-chicken-wrap" data-price="9.75" data-item="Chicken Wrap" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Southwest Veggie Wrap</div>
+                                        <div class="item-description">Fresh vegetables with southwest flavors</div>
+                                    </div>
+                                    <div class="item-price">$9.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-veggie-wrap" data-price="9.50" data-item="Southwest Veggie Wrap" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Chicken Strips (3ct)</div>
+                                        <div class="item-description">Hand-breaded chicken strips</div>
+                                    </div>
+                                    <div class="item-price">$6.75</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-strips" data-price="6.75" data-item="Chicken Strips (3ct)" data-day="Monday">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="menu-category">
+                            <div class="category-title">Add-Ons (Save $1.50 vs separate!)</div>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Chips & Drink</div>
+                                        <div class="item-description">Add to any entree</div>
+                                    </div>
+                                    <div class="item-price">+$1.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-combo-chips" data-price="1.50" data-item="Chips & Drink" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Fries & Drink</div>
+                                        <div class="item-description">Add to any entree</div>
+                                    </div>
+                                    <div class="item-price">+$3.75</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-combo-fries" data-price="3.75" data-item="Fries & Drink" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Fruit Cup & Drink</div>
+                                        <div class="item-description">Add to any entree</div>
+                                    </div>
+                                    <div class="item-price">+$5.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-combo-fruit" data-price="5.50" data-item="Fruit Cup & Drink" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Mac & Cheese & Drink</div>
+                                        <div class="item-description">Add to any entree</div>
+                                    </div>
+                                    <div class="item-price">+$5.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-combo-mac" data-price="5.50" data-item="Mac & Cheese & Drink" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Side Salad & Drink</div>
+                                        <div class="item-description">Add to any entree</div>
+                                    </div>
+                                    <div class="item-price">+$5.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-combo-salad" data-price="5.50" data-item="Side Salad & Drink" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Cookie Parfait & Drink</div>
+                                        <div class="item-description">Add to any entree</div>
+                                    </div>
+                                    <div class="item-price">+$5.75</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-combo-cookie" data-price="5.75" data-item="Cookie Parfait & Drink" data-day="Monday">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="menu-category">
+                            <div class="category-title">Sides Only</div>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Fries</div>
+                                    </div>
+                                    <div class="item-price">$3.75</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-fries" data-price="3.75" data-item="Fries" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Fruit Cup</div>
+                                    </div>
+                                    <div class="item-price">$5.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-fruit" data-price="5.50" data-item="Fruit Cup" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Mac & Cheese</div>
+                                    </div>
+                                    <div class="item-price">$5.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-mac" data-price="5.50" data-item="Mac & Cheese" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Side Salad</div>
+                                    </div>
+                                    <div class="item-price">$5.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-salad" data-price="5.50" data-item="Side Salad" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Cookie Parfait</div>
+                                    </div>
+                                    <div class="item-price">$5.75</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-cookie" data-price="5.75" data-item="Cookie Parfait" data-day="Monday">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="menu-category">
+                            <div class="category-title">Salads</div>
+                            <div class="menu-items">
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Cobb Salad</div>
+                                        <div class="item-description">Mixed greens with chicken, bacon, cheese</div>
+                                    </div>
+                                    <div class="item-price">$11.25</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-cobb" data-price="11.25" data-item="Cobb Salad" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Southwest Salad</div>
+                                        <div class="item-description">Mixed greens with southwest flavors</div>
+                                    </div>
+                                    <div class="item-price">$11.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-southwest" data-price="11.50" data-item="Southwest Salad" data-day="Monday">
+                                </div>
+                                <div class="menu-item">
+                                    <div class="item-info">
+                                        <div class="item-name">Market Fresh Salad</div>
+                                        <div class="item-description">Seasonal fresh vegetables and greens</div>
+                                    </div>
+                                    <div class="item-price">$11.50</div>
+                                    <input type="checkbox" class="item-checkbox" name="monday-market" data-price="11.50" data-item="Market Fresh Salad" data-day="Monday">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Duplicate menu structure for other days -->
+                    <!-- Tuesday through Friday would have identical menu structures with different name attributes -->
+                    <!-- I'll create them dynamically with JavaScript for efficiency -->
+                </div>
+                
+                <div class="cart-summary">
+                    <div class="cart-title">📋 Your Order</div>
+                    <div class="cart-items" id="cart-items">
+                        <div style="text-align: center; color: #9aa0a6; font-style: italic;">No items selected</div>
+                    </div>
+                    <div class="cart-total">
+                        <div class="total-amount">Total: $<span id="total-amount">0.00</span></div>
+                        <button type="button" class="checkout-btn" id="checkout-btn" disabled>
+                            Review & Pay Order
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="payment-modal">
+        <div class="payment-content">
+            <h2 style="color: #4285f4; margin-bottom: 20px;">Complete Your Order</h2>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                <strong>Total: $<span id="modal-total">0.00</span></strong>
+            </div>
+            
+            <div class="payment-steps">
+                <div class="payment-step">
+                    <div class="step-number">1</div>
+                    <div>Click "Pay with Venmo" to open Venmo with your order details</div>
+                </div>
+                <div class="payment-step">
+                    <div class="step-number">2</div>
+                    <div>Complete payment to <strong>@ChanTa-Rivers</strong> in Venmo</div>
+                </div>
+                <div class="payment-step">
+                    <div class="step-number">3</div>
+                    <div>Return here and click "I've Paid" to submit your order</div>
+                </div>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <a href="#" id="venmo-payment-link" class="venmo-btn">
+                    💳 Pay with Venmo ($<span id="venmo-total">0.00</span>)
+                </a>
+            </div>
+            
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                <button type="button" class="confirmation-btn" id="confirm-payment-btn">
+                    ✅ I've Paid - Submit Order
+                </button>
+                <button type="button" class="cancel-btn" id="cancel-payment-btn">
+                    Cancel
+                </button>
+            </div>
+            
+            <div style="font-size: 0.85em; color: #5f6368; margin-top: 15px;">
+                <strong>Important:</strong> Only click "I've Paid" after completing payment in Venmo
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTotal = 0;
+        let orderItems = [];
+        let activeDays = [];
+        
+        // Menu data structure
+        const menuData = {
+            entrees: [
+                { name: "Chicken Sandwich", price: 6.50, desc: "Classic boneless breast of chicken" },
+                { name: "Spicy Chicken Sandwich", price: 6.75, desc: "Boneless breast with spicy seasoning" },
+                { name: "Nuggets (8ct)", price: 6.50, desc: "Bite-sized boneless chicken pieces" },
+                { name: "Grilled Nuggets (8ct)", price: 7.50, desc: "Grilled boneless chicken pieces" },
+                { name: "Grilled Sandwich", price: 8.25, desc: "Grilled chicken breast sandwich" },
+                { name: "Grilled Sandwich (GF Bun)", price: 9.50, desc: "Grilled chicken with gluten-free bun" },
+                { name: "Chicken Wrap", price: 9.75, desc: "Chicken with fresh vegetables in a wrap" },
+                { name: "Southwest Veggie Wrap", price: 9.50, desc: "Fresh vegetables with southwest flavors" },
+                { name: "Chicken Strips (3ct)", price: 6.75, desc: "Hand-breaded chicken strips" }
+            ],
+            addons: [
+                { name: "Chips & Drink", price: 1.50, desc: "Add to any entree" },
+                { name: "Fries & Drink", price: 3.75, desc: "Add to any entree" },
+                { name: "Fruit Cup & Drink", price: 5.50, desc: "Add to any entree" },
+                { name: "Mac & Cheese & Drink", price: 5.50, desc: "Add to any entree" },
+                { name: "Side Salad & Drink", price: 5.50, desc: "Add to any entree" },
+                { name: "Cookie Parfait & Drink", price: 5.75, desc: "Add to any entree" }
+            ],
+            sides: [
+                { name: "Fries", price: 3.75 },
+                { name: "Fruit Cup", price: 5.50 },
+                { name: "Mac & Cheese", price: 5.50 },
+                { name: "Side Salad", price: 5.50 },
+                { name: "Cookie Parfait", price: 5.75 }
+            ],
+            salads: [
+                { name: "Cobb Salad", price: 11.25, desc: "Mixed greens with chicken, bacon, cheese" },
+                { name: "Southwest Salad", price: 11.50, desc: "Mixed greens with southwest flavors" },
+                { name: "Market Fresh Salad", price: 11.50, desc: "Seasonal fresh vegetables and greens" }
+            ]
+        };
+        
+        // Initialize the form
+        function initializeForm() {
+            initializeDates();
+            generateMenuForAllDays();
+            checkStoreHours();
+            setupEventListeners();
+            
+            // Set first available day as active
+            const firstAvailableDay = document.querySelector('.day-tab:not(.disabled)');
+            if (firstAvailableDay) {
+                firstAvailableDay.click();
+            }
+        }
+        
+        // Generate menu for all days
+        function generateMenuForAllDays() {
+            const days = ['tuesday', 'wednesday', 'thursday', 'friday'];
+            const container = document.querySelector('.week-selector');
+            
+            days.forEach(day => {
+                const dayCapitalized = day.charAt(0).toUpperCase() + day.slice(1);
+                const menuHTML = generateMenuHTML(day, dayCapitalized);
+                container.insertAdjacentHTML('beforeend', menuHTML);
+            });
+        }
+        
+        // Generate menu HTML for a specific day
+        function generateMenuHTML(day, dayName) {
+            return `
+                <div class="menu-for-day" data-day="${day}">
+                    ${generateCategoryHTML('entrees', 'Entrees', day, dayName)}
+                    ${generateCategoryHTML('addons', 'Add-Ons (Save $1.50 vs separate!)', day, dayName)}
+                    ${generateCategoryHTML('sides', 'Sides Only', day, dayName)}
+                    ${generateCategoryHTML('salads', 'Salads', day, dayName)}
+                </div>
+            `;
+        }
+        
+        // Generate category HTML
+        function generateCategoryHTML(category, title, day, dayName) {
+            const items = menuData[category];
+            const itemsHTML = items.map((item, index) => {
+                const itemId = item.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                const name = `${day}-${itemId}`;
+                
+                return `
+                    <div class="menu-item">
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            ${item.desc ? `<div class="item-description">${item.desc}</div>` : ''}
+                        </div>
+                        <div class="item-price">${category === 'addons' ? '+' : ''}${item.price.toFixed(2)}</div>
+                        <input type="checkbox" class="item-checkbox" name="${name}" 
+                               data-price="${item.price}" data-item="${item.name}" data-day="${dayName}">
+                    </div>
+                `;
+            }).join('');
+            
+            return `
+                <div class="menu-category">
+                    <div class="category-title">${title}</div>
+                    <div class="menu-items">
+                        ${itemsHTML}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Date and availability functions
+        function getCurrentWeekDates() {
+            const today = new Date();
+            const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+            
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - currentDay + 1);
+            
+            const dates = [];
+            for (let i = 0; i < 5; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                dates.push(date);
+            }
+            
+            return dates;
+        }
+        
+        function isPastDate(date) {
+            const today = new Date();
+            const currentHour = today.getHours();
+            
+            if (date.toDateString() === today.toDateString() && currentHour >= 8) {
+                return true;
+            }
+            
+            return date < today;
+        }
+        
+        function initializeDates() {
+            const weekDates = getCurrentWeekDates();
+            const dayAbbrevs = ['mon', 'tue', 'wed', 'thu', 'fri'];
+            const dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+            
+            weekDates.forEach((date, index) => {
+                const dateStr = (date.getMonth() + 1) + '/' + date.getDate();
+                const dateElement = document.getElementById(`date-${dayAbbrevs[index]}`);
+                if (dateElement) {
+                    dateElement.textContent = dateStr;
+                }
+                
+                const dayTab = document.querySelector(`[data-day="${dayNames[index]}"]`);
+                if (isPastDate(date)) {
+                    dayTab.classList.add('disabled');
+                    // Disable all checkboxes for this day
+                    const dayCheckboxes = document.querySelectorAll(`input[data-day="${dayNames[index].charAt(0).toUpperCase() + dayNames[index].slice(1)}"]`);
+                    dayCheckboxes.forEach(cb => cb.disabled = true);
+                } else {
+                    activeDays.push(dayNames[index]);
+                }
+            });
+        }
+        
+        function checkStoreHours() {
+            const now = new Date();
+            const hours = now.getHours();
+            
+            const statusElement = document.getElementById('store-status');
+            const statusText = document.getElementById('status-text');
+            
+            if (hours >= 8 && hours < 13) {
+                statusElement.className = 'store-status store-closed';
+                statusText.textContent = 'Store is currently CLOSED. Orders open at 1:00 PM for next available days.';
+                disableAllOrdering(true);
+            } else {
+                statusElement.className = 'store-status store-open';
+                statusText.textContent = 'Store is OPEN! Orders close at 8:00 AM daily.';
+                disableAllOrdering(false);
+            }
+        }
+        
+        function disableAllOrdering(disabled) {
+            const formInputs = document.querySelectorAll('#email, #first-name, #last-name, #grade');
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:not(:disabled)');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            
+            formInputs.forEach(input => input.disabled = disabled);
+            checkboxes.forEach(cb => cb.disabled = disabled);
+            
+            if (disabled) {
+                checkoutBtn.disabled = true;
+            }
+        }
+        
+        // Event handlers
+        function setupEventListeners() {
+            // Day tab switching
+            document.querySelectorAll('.day-tab:not(.disabled)').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const day = this.dataset.day;
+                    switchToDay(day);
+                });
+            });
+            
+            // Checkout button
+            document.getElementById('checkout-btn').addEventListener('click', openPaymentModal);
+            
+            // Payment modal buttons
+            document.getElementById('cancel-payment-btn').addEventListener('click', closePaymentModal);
+            document.getElementById('confirm-payment-btn').addEventListener('click', submitOrder);
+            
+            // Form field changes
+            ['email', 'first-name', 'last-name', 'grade'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateCheckoutButton);
+            });
+            
+            // Store hours check
+            setInterval(checkStoreHours, 60000);
+        }
+        
+        function switchToDay(day) {
+            // Update active tab
+            document.querySelectorAll('.day-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-day="${day}"]`).classList.add('active');
+            
+            // Update active menu
+            document.querySelectorAll('.menu-for-day').forEach(menu => {
+                menu.classList.remove('active');
+            });
+            document.querySelector(`.menu-for-day[data-day="${day}"]`).classList.add('active');
+            
+            // Add event listeners to checkboxes in this day's menu
+            const dayMenu = document.querySelector(`.menu-for-day[data-day="${day}"]`);
+            if (dayMenu) {
+                dayMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    cb.addEventListener('change', updateCart);
+                });
+            }
+        }
+        
+        function updateCart() {
+            orderItems = [];
+            currentTotal = 0;
+            
+            const checkedItems = document.querySelectorAll('input[type="checkbox"]:checked');
+            
+            checkedItems.forEach(item => {
+                const price = parseFloat(item.dataset.price);
+                const itemName = item.dataset.item;
+                const day = item.dataset.day;
+                
+                orderItems.push({
+                    name: itemName,
+                    day: day,
+                    price: price
+                });
+                
+                currentTotal += price;
+            });
+            
+            updateCartDisplay();
+            updateCheckoutButton();
+        }
+        
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            const totalAmount = document.getElementById('total-amount');
+            
+            if (orderItems.length === 0) {
+                cartItems.innerHTML = '<div style="text-align: center; color: #9aa0a6; font-style: italic;">No items selected</div>';
+            } else {
+                const itemsHTML = orderItems.map(item => `
+                    <div class="cart-item">
+                        <span>${item.name} (${item.day})</span>
+                        <span>${item.price.toFixed(2)}</span>
+                    </div>
+                `).join('');
+                cartItems.innerHTML = itemsHTML;
+            }
+            
+            totalAmount.textContent = currentTotal.toFixed(2);
+        }
+        
+        function updateCheckoutButton() {
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const email = document.getElementById('email').value;
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const grade = document.getElementById('grade').value;
+            
+            const hasOrder = orderItems.length > 0;
+            const formComplete = email && firstName && lastName && grade;
+            
+            checkoutBtn.disabled = !(hasOrder && formComplete);
+            
+            if (hasOrder && formComplete) {
+                checkoutBtn.textContent = `Review & Pay Order (${currentTotal.toFixed(2)})`;
+            } else {
+                checkoutBtn.textContent = 'Review & Pay Order';
+            }
+        }
+        
+        function openPaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const modalTotal = document.getElementById('modal-total');
+            const venmoTotal = document.getElementById('venmo-total');
+            const venmoLink = document.getElementById('venmo-payment-link');
+            
+            modalTotal.textContent = currentTotal.toFixed(2);
+            venmoTotal.textContent = currentTotal.toFixed(2);
+            
+            // Create Venmo payment link
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            
+            let orderNote = `Lunch order for ${firstName} ${lastName}: `;
+            orderItems.forEach(item => {
+                orderNote += `${item.name} (${item.day}), `;
+            });
+            orderNote = orderNote.slice(0, -2); // Remove last comma
+            
+            const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal}&note=${encodeURIComponent(orderNote)}`;
+            venmoLink.href = venmoUrl;
+            
+            // For desktop users, provide web fallback
+            venmoLink.onclick = function(e) {
+                if (!navigator.userAgent.match(/iPhone|iPad|Android/)) {
+                    e.preventDefault();
+                    window.open('https://venmo.com/u/ChanTa-Rivers', '_blank');
+                    alert('Please complete payment to @ChanTa-Rivers in Venmo, then return here to confirm.');
+                }
+            };
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+        
+        function submitOrder() {
+            const orderData = {
+                timestamp: new Date().toISOString(),
+                email: document.getElementById('email').value,
+                firstName: document.getElementById('first-name').value,
+                lastName: document.getElementById('last-name').value,
+                grade: document.getElementById('grade').value,
+                orderItems: orderItems,
+                total: currentTotal,
+                paymentMethod: 'venmo'
+            };
+            
+            // Here you would send to Google Sheets
+            console.log('Order submitted:', orderData);
+            
+            // Close modal and show success
+            closePaymentModal();
+            alert(`Thank you ${orderData.firstName}! Your order has been submitted successfully. Total: ${currentTotal.toFixed(2)}`);
+            
+            // Reset form
+            document.getElementById('lunch-order-form').reset();
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => cb.checked = false);
+            orderItems = [];
+            currentTotal = 0;
+            updateCartDisplay();
+            updateCheckoutButton();
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    </script>
+</body>
+</html>
