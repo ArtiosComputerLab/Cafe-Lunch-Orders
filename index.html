@@ -1577,8 +1577,567 @@
       }
     }
 
-    // Rest of the JavaScript continues with all the existing functions...
-    // (submitOrder, saveToLocalStorage, showDetailedOrderConfirmation, resetForm, checkOrderHistory, etc.)
+    // ============================================
+    // ORDER SUBMISSION - FIXED WITH BETTER ERROR HANDLING
+    // ============================================
+    function submitOrder() {
+      console.log('📤 Submitting order...');
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substr(2, 5).toUpperCase();
+      const orderId = `LO${timestamp}${randomStr}`;
+      
+      const orderData = {
+        orderId: orderId,
+        timestamp: new Date().toISOString(),
+        email: document.getElementById('family-email').value.trim(),
+        children: [],
+        items: orderItems,
+        total: currentTotal,
+        paymentMethod: 'Venmo',
+        paymentStatus: 'confirmed',
+        sendConfirmation: true,
+        weekStart: new Date().toISOString().split('T')[0] // Add week start for Google Apps Script
+      };
+
+      // Add children data
+      document.querySelectorAll('.child-section').forEach(child => {
+        orderData.children.push({
+          id: child.dataset.child,
+          firstName: child.querySelector('.child-first-name').value.trim(),
+          lastName: child.querySelector('.child-last-name').value.trim(),
+          grade: child.querySelector('.child-grade').value
+        });
+      });
+      
+      console.log('📊 Order data prepared:', orderData);
+      console.log('🔗 Google Sheets URL:', GOOGLE_SHEETS_CONFIG.webAppUrl);
+      showNotification('Submitting order to cloud...', 'info');
+      
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        console.log('☁️ Attempting to submit to Google Sheets...');
+        
+        // First try with CORS to get actual error messages
+        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
+        })
+        .then(response => {
+          console.log('📡 Response received:', response.status, response.statusText);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(result => {
+          console.log('✅ Google Sheets response:', result);
+          if (result.success) {
+            console.log('🎉 Order successfully saved to Google Sheets!');
+            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+              console.log('💾 Also saving to localStorage as backup...');
+              saveToLocalStorage(orderData);
+            }
+            closePaymentModal();
+            showDetailedOrderConfirmation(orderData);
+            showNotification(`Order ${orderId} submitted to cloud successfully!`, 'success');
+            resetForm();
+          } else {
+            throw new Error(result.error || 'Unknown error from Google Sheets');
+          }
+        })
+        .catch(error => {
+          console.error('❌ Primary submission failed:', error);
+          
+          // If CORS failed, try no-cors mode as fallback
+          if (error.message.includes('CORS') || error.message.includes('Failed to fetch')) {
+            console.log('🔄 Trying no-cors mode as fallback...');
+            
+            fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
+            })
+            .then(() => {
+              console.log('📡 No-cors request sent (cannot verify success)');
+              
+              // Save locally as backup since we can't verify no-cors success
+              if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+                console.log('💾 Saving to localStorage as backup...');
+                saveToLocalStorage(orderData);
+              }
+              
+              closePaymentModal();
+              showDetailedOrderConfirmation(orderData);
+              showNotification(`Order ${orderId} sent to cloud (verification pending)`, 'warning');
+              
+              // Show additional info about no-cors limitation
+              setTimeout(() => {
+                showNotification('Note: Cloud sync status cannot be verified due to browser security', 'info');
+              }, 3000);
+              
+              resetForm();
+            })
+            .catch(noCorsError => {
+              console.error('❌ No-cors fallback also failed:', noCorsError);
+              handleSubmissionFailure(orderData, orderId, 'Both CORS and no-cors methods failed');
+            });
+          } else {
+            handleSubmissionFailure(orderData, orderId, error.message);
+          }
+        });
+      } else {
+        console.log('💾 Google Sheets not configured, saving locally only...');
+        saveToLocalStorage(orderData);
+        closePaymentModal();
+        showDetailedOrderConfirmation(orderData);
+        showNotification(`Order ${orderId} saved locally!`, 'success');
+        resetForm();
+      }
+    }
+
+    function handleSubmissionFailure(orderData, orderId, errorMessage) {
+      console.error('💥 Complete submission failure:', errorMessage);
+      
+      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+        console.log('🔄 Falling back to localStorage...');
+        saveToLocalStorage(orderData);
+        closePaymentModal();
+        showDetailedOrderConfirmation(orderData);
+        showNotification('Order saved locally (cloud sync failed)', 'warning');
+        
+        // Show detailed error to help with debugging
+        setTimeout(() => {
+          alert(`Cloud sync failed: ${errorMessage}\n\nYour order has been saved locally. Please contact CRivers@artiosacademies.com if this issue persists.`);
+        }, 1000);
+        
+        resetForm();
+      } else {
+        showNotification('Error submitting order. Please try again.', 'error');
+        
+        // Show detailed error for debugging
+        setTimeout(() => {
+          alert(`Submission Error: ${errorMessage}\n\nPlease try again or contact CRivers@artiosacademies.com for support.`);
+        }, 1000);
+      }
+    }
+
+    function saveToLocalStorage(orderData) {
+      try {
+        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+        orders.push(orderData);
+        localStorage.setItem('cafeOrders', JSON.stringify(orders));
+        console.log('💾 Order saved to localStorage:', orderData.orderId);
+      } catch (e) {
+        console.error('❌ Error saving to localStorage:', e);
+      }
+    }
+
+    function showDetailedOrderConfirmation(order) {
+      const itemsByDay = {};
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+      order.items.forEach(item => {
+        if (!itemsByDay[item.day]) {
+          itemsByDay[item.day] = [];
+        }
+        itemsByDay[item.day].push(item);
+      });
+
+      const sortedDays = Object.keys(itemsByDay).sort((a, b) => 
+        dayOrder.indexOf(a) - dayOrder.indexOf(b)
+      );
+
+      let message = `✅ ORDER CONFIRMED!\n`;
+      message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      message += `📋 Order Details:\n`;
+      message += `Order ID: ${order.orderId}\n`;
+      message += `Date: ${new Date(order.timestamp).toLocaleString()}\n\n`;
+
+      message += `👥 Family Information:\n`;
+      message += `Email: ${order.email}\n`;
+      if (order.children && order.children.length > 0) {
+        message += `Children: ${order.children.length}\n`;
+        order.children.forEach((child, index) => {
+          message += `  ${index + 1}. ${child.firstName} ${child.lastName} (${child.grade})\n`;
+        });
+      }
+      message += `\n`;
+
+      message += `🍽️ Items Ordered:\n`;
+      message += `─────────────────────────────\n`;
+
+      sortedDays.forEach(day => {
+        message += `${day}:\n`;
+        itemsByDay[day].forEach(item => {
+          message += `  • ${item.name} - ${item.childName || 'Student'} - ${item.price.toFixed(2)}\n`;
+        });
+        message += `\n`;
+      });
+
+      message += `💰 Payment Summary:\n`;
+      message += `─────────────────────────────\n`;
+      message += `Total: ${order.total.toFixed(2)}\n`;
+      message += `Payment Method: ${order.paymentMethod}\n\n`;
+
+      message += `📧 A confirmation email will be sent to: ${order.email}\n\n`;
+      message += `Questions? Contact: CRivers@artiosacademies.com`;
+
+      alert(message);
+    }
+
+    function resetForm() {
+      document.getElementById('family-email').value = '';
+      document.querySelectorAll('.child-first-name').forEach(input => input.value = '');
+      document.querySelectorAll('.child-last-name').forEach(input => input.value = '');
+      document.querySelectorAll('.child-grade').forEach(select => select.value = '');
+      
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+        cb.checked = false;
+      });
+      
+      orderItems = [];
+      currentTotal = 0;
+      updateCart();
+      validateForm();
+    }
+
+    // ============================================
+    // ORDER HISTORY
+    // ============================================
+    function checkOrderHistory() {
+      const email = document.getElementById('family-email').value.trim();
+      if (!email) return;
+      
+      console.log('🔍 Checking order history for:', email);
+      
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=get_order_history&email=${encodeURIComponent(email)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success && data.orders && data.orders.length > 0) {
+              checkOrderHistoryNotification(data.orders, email);
+            }
+          })
+          .catch(error => {
+            console.error('❌ Error fetching history from cloud:', error);
+            checkLocalOrderHistory();
+          });
+      } else {
+        checkLocalOrderHistory();
+      }
+    }
+
+    function checkLocalOrderHistory() {
+      const email = document.getElementById('family-email').value.trim();
+      if (!email) return;
+      
+      try {
+        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+        const userOrders = orders.filter(order => 
+          order.email.toLowerCase() === email.toLowerCase()
+        );
+        
+        if (userOrders.length > 0) {
+          checkOrderHistoryNotification(userOrders, email);
+        }
+      } catch (e) {
+        console.error('❌ Error checking local order history:', e);
+      }
+    }
+
+    function checkOrderHistoryNotification(orders, email) {
+      const monday = getMonday(new Date());
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      const thisWeekOrders = orders.filter(order => {
+        const orderDate = new Date(order.timestamp);
+        return orderDate >= monday && orderDate <= sunday;
+      });
+
+      if (thisWeekOrders.length > 0) {
+        const students = [...new Set(thisWeekOrders.flatMap(order => 
+          order.children ? order.children.map(child => `${child.firstName} ${child.lastName}`) 
+                         : [`${order.firstName || 'Unknown'} ${order.lastName || 'Student'}`]
+        ))];
+        const message = `Found ${thisWeekOrders.length} order(s) this week for: ${students.join(', ')}`;
+        showNotification(message, 'info');
+
+        const historyBtn = document.getElementById('history-btn');
+        historyBtn.style.background = '#e3f2fd';
+        historyBtn.style.color = '#1976d2';
+        historyBtn.innerHTML = `📋 View Orders <span style="background: #1976d2; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.8em; margin-left: 5px;">${thisWeekOrders.length}</span>`;
+
+        setTimeout(() => {
+          historyBtn.style.background = '';
+          historyBtn.style.color = '';
+          historyBtn.innerHTML = 'View Order History';
+        }, 10000);
+      }
+    }
+
+    function showOrderHistory() {
+      const email = document.getElementById('family-email').value.trim();
+
+      console.log('📋 Showing order history for:', email);
+
+      if (!email) {
+        alert('Please enter your email address to view order history.');
+        document.getElementById('family-email').focus();
+        return;
+      }
+
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        showNotification('Loading order history...', 'info');
+
+        fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=get_order_history&email=${encodeURIComponent(email)}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log('☁️ Cloud history response:', data);
+            if (data.success && data.orders) {
+              const localOrders = JSON.parse(localStorage.getItem('cafeOrders') || '[]')
+                .filter(order => order.email.toLowerCase() === email.toLowerCase());
+              const allOrders = mergeOrders(data.orders, localOrders);
+              displayOrderHistory(allOrders, email);
+            } else {
+              console.log('No cloud history, showing local only');
+              showLocalOrderHistory();
+            }
+          })
+          .catch(error => {
+            console.error('❌ Error fetching from Google Sheets:', error);
+            showNotification('Using local history (cloud sync unavailable)', 'warning');
+            showLocalOrderHistory();
+          });
+      } else {
+        showLocalOrderHistory();
+      }
+    }
+
+    function showLocalOrderHistory() {
+      const email = document.getElementById('family-email').value.trim();
+      console.log('💾 Showing local order history for:', email);
+
+      try {
+        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+        const userOrders = orders.filter(order => 
+          order.email.toLowerCase() === email.toLowerCase()
+        );
+
+        console.log('Found local orders:', userOrders.length);
+        displayOrderHistory(userOrders, email);
+      } catch (e) {
+        console.error('❌ Error loading order history:', e);
+        alert('Unable to load order history.');
+      }
+    }
+
+    function mergeOrders(sheetOrders, localOrders) {
+      // Mark sheet orders as from sheets
+      const markedSheetOrders = sheetOrders.map(order => ({...order, fromSheets: true}));
+      
+      // Filter out local orders that might already exist in sheets
+      const uniqueLocalOrders = localOrders.filter(localOrder => 
+        !markedSheetOrders.find(sheetOrder => sheetOrder.orderId === localOrder.orderId)
+      );
+      
+      return [...markedSheetOrders, ...uniqueLocalOrders];
+    }
+
+    function displayOrderHistory(orders, email) {
+      console.log('📊 Displaying order history:', orders.length, 'orders');
+      
+      if (orders.length === 0) {
+        alert(`No order history found for ${email}\n\nOnce you place orders, they will appear here.`);
+        return;
+      }
+
+      // Sort orders by timestamp (newest first)
+      orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      const monday = getMonday(new Date());
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      let message = `📋 ORDER HISTORY for ${email}\n`;
+      message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+      // Group orders by student name
+      const ordersByStudent = {};
+      orders.forEach(order => {
+        // Handle both single-child and multi-child orders
+        if (order.children && order.children.length > 0) {
+          // Multi-child order
+          order.children.forEach(child => {
+            const studentKey = `${child.firstName} ${child.lastName}`;
+            if (!ordersByStudent[studentKey]) {
+              ordersByStudent[studentKey] = [];
+            }
+            ordersByStudent[studentKey].push({
+              ...order,
+              studentName: studentKey,
+              grade: child.grade
+            });
+          });
+        } else {
+          // Single-child order (legacy format)
+          const studentKey = `${order.firstName || 'Unknown'} ${order.lastName || 'Student'}`;
+          if (!ordersByStudent[studentKey]) {
+            ordersByStudent[studentKey] = [];
+          }
+          ordersByStudent[studentKey].push({
+            ...order,
+            studentName: studentKey
+          });
+        }
+      });
+
+      Object.keys(ordersByStudent).forEach(studentName => {
+        const studentOrders = ordersByStudent[studentName];
+        message += `👤 ${studentName}${studentOrders[0].grade ? ` (${studentOrders[0].grade})` : ''}\n`;
+        
+        studentOrders.forEach(order => {
+          const orderDate = new Date(order.timestamp);
+          const isThisWeek = orderDate >= monday && orderDate <= sunday;
+          const weekIndicator = isThisWeek ? ' 📅' : '';
+          const syncIndicator = GOOGLE_SHEETS_CONFIG.useGoogleSheets ? (order.fromSheets ? ' ☁️' : ' 💾') : '';
+          
+          message += `   • ${orderDate.toLocaleDateString()} - ${order.total.toFixed(2)} (${order.orderId})${weekIndicator}${syncIndicator}\n`;
+        });
+        message += `\n`;
+      });
+
+      const thisWeekOrders = orders.filter(order => {
+        const orderDate = new Date(order.timestamp);
+        return orderDate >= monday && orderDate <= sunday;
+      });
+
+      if (thisWeekOrders.length > 0) {
+        const weekTotal = thisWeekOrders.reduce((sum, order) => sum + order.total, 0);
+        message += `This Week: ${thisWeekOrders.length} orders (${weekTotal.toFixed(2)})\n`;
+      }
+
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+        message += `\n☁️ = Cloud synced | 💾 = Local only\n`;
+      }
+      message += `📅 = Current week order\n`;
+      message += `\nQuestions? Contact:\nCRivers@artiosacademies.com`;
+
+      alert(message);
+
+      // Offer to sync local orders if using Google Sheets
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+        const localOnlyOrders = orders.filter(o => !o.fromSheets);
+        if (localOnlyOrders.length > 0) {
+          setTimeout(() => {
+            if (confirm(`Found ${localOnlyOrders.length} local-only orders. Would you like to sync them to the cloud?`)) {
+              syncLocalOrdersToSheets(localOnlyOrders);
+            }
+          }, 500);
+        }
+      }
+    }
+
+    function syncLocalOrdersToSheets(orders) {
+      showNotification(`Syncing ${orders.length} orders to cloud...`, 'info');
+      
+      let syncCount = 0;
+      let errorCount = 0;
+      
+      orders.forEach(order => {
+        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({...order, sendConfirmation: false})
+        })
+        .then(() => {
+          syncCount++;
+          if (syncCount + errorCount === orders.length) {
+            showNotification(`Sync complete: ${syncCount} succeeded, ${errorCount} failed`, 
+                           errorCount > 0 ? 'warning' : 'success');
+          }
+        })
+        .catch(error => {
+          errorCount++;
+          console.error('Error syncing order:', error);
+          if (syncCount + errorCount === orders.length) {
+            showNotification(`Sync complete: ${syncCount} succeeded, ${errorCount} failed`, 
+                           errorCount > 0 ? 'warning' : 'success');
+          }
+        });
+      });
+    }
+
+    function getMonday(date) {
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+    function showNotification(message, type = 'info') {
+      // Remove existing notification
+      const existingNotif = document.querySelector('.notification');
+      if (existingNotif) {
+        existingNotif.remove();
+      }
+      
+      let bgColor, textColor, borderColor, icon;
+      switch(type) {
+        case 'success':
+          bgColor = '#d4edda';
+          textColor = '#155724';
+          borderColor = '#c3e6cb';
+          icon = '✅ ';
+          break;
+        case 'error':
+          bgColor = '#f8d7da';
+          textColor = '#721c24';
+          borderColor = '#f5c6cb';
+          icon = '❌ ';
+          break;
+        case 'warning':
+          bgColor = '#fff3cd';
+          textColor = '#856404';
+          borderColor = '#ffeaa7';
+          icon = '⚠️ ';
+          break;
+        default:
+          bgColor = '#e3f2fd';
+          textColor = '#1976d2';
+          borderColor = '#bbdefb';
+          icon = 'ℹ️ ';
+      }
+      
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.style.cssText = `
+        background: ${bgColor};
+        color: ${textColor};
+        border: 2px solid ${borderColor};
+      `;
+      notif.textContent = icon + message;
+      
+      document.body.appendChild(notif);
+      
+      setTimeout(() => {
+        if (notif.parentNode) {
+          notif.remove();
+        }
+      }, 5000);
+    }
 
     // Make removeChild available globally
     window.removeChild = removeChild;
