@@ -1347,13 +1347,19 @@
       orderItems = [];
       currentTotal = 0;
       
+      // Get ALL checked checkboxes - FIXED to ensure we capture everything
       document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
         const itemId = checkbox.dataset.item;
         const day = checkbox.dataset.day;
         const childId = checkbox.dataset.childId;
         
+        console.log('Processing checked item:', itemId, day, childId); // Debug log
+        
         const child = document.querySelector(`[data-child="${childId}"]`);
-        if (!child) return; // Safety check
+        if (!child) {
+          console.error('Child not found for childId:', childId);
+          return; // Safety check
+        }
         
         const childFirstName = child.querySelector('.child-first-name').value;
         const childLastName = child.querySelector('.child-last-name').value;
@@ -1367,7 +1373,7 @@
         });
         
         if (item) {
-          orderItems.push({
+          const orderItem = {
             childId: childId,
             childName: `${childFirstName} ${childLastName}`,
             firstName: childFirstName,
@@ -1375,12 +1381,22 @@
             grade: childGrade,
             name: item.name,
             price: item.price,
-            day: day.charAt(0).toUpperCase() + day.slice(1)
-          });
+            day: day.charAt(0).toUpperCase() + day.slice(1) // Ensure proper capitalization
+          };
           
+          console.log('Adding order item:', orderItem); // Debug log
+          orderItems.push(orderItem);
           currentTotal += item.price;
+        } else {
+          console.error('Menu item not found:', itemId);
         }
       });
+      
+      console.log('Final orderItems array:', orderItems); // Debug log
+      console.log('Items by day:', orderItems.reduce((acc, item) => {
+        acc[item.day] = (acc[item.day] || 0) + 1;
+        return acc;
+      }, {})); // Debug log
       
       displayCart();
       validateForm();
