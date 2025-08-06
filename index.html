@@ -901,8 +901,10 @@
       updateCart();
       validateForm();
       
-      // Show secret report button in development
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      // Show secret report button if accessing locally or if URL contains debug parameter
+      if (window.location.hostname === 'localhost' || 
+          window.location.hostname === '127.0.0.1' ||
+          window.location.search.includes('debug=true')) {
         document.getElementById('secret-report-btn').style.display = 'block';
       }
     });
@@ -941,18 +943,34 @@
       const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       const today = new Date();
       const currentHour = today.getHours();
+      const currentDayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, etc.
+      
+      let firstAvailableDay = null;
       
       days.forEach((day, index) => {
         const tab = document.createElement('div');
         tab.className = 'day-tab';
         tab.dataset.day = day.toLowerCase();
         
-        const dayDate = new Date(today);
-        dayDate.setDate(today.getDate() + index);
+        // Calculate what date this tab represents
+        const mondayOfThisWeek = new Date(today);
+        mondayOfThisWeek.setDate(today.getDate() - currentDayOfWeek + 1); // Get Monday of this week
+        
+        const dayDate = new Date(mondayOfThisWeek);
+        dayDate.setDate(mondayOfThisWeek.getDate() + index); // Add days from Monday
+        
         const dateStr = `${dayDate.getMonth() + 1}/${dayDate.getDate()}`;
         
-        // Disable past days after 8 AM cutoff
-        const isPastDay = index === 0 && currentHour >= 8;
+        // Check if this day should be disabled
+        let isPastDay = false;
+        
+        if (dayDate < today) {
+          // Day is in the past
+          isPastDay = true;
+        } else if (dayDate.toDateString() === today.toDateString() && currentHour >= 8) {
+          // Today but after 8 AM cutoff
+          isPastDay = true;
+        }
         
         tab.innerHTML = `
           <div>${day}</div>
@@ -961,18 +979,24 @@
         
         if (isPastDay) {
           tab.classList.add('disabled');
-          tab.title = 'Orders for today close at 8:00 AM';
+          tab.title = 'Orders for this day are closed (8:00 AM cutoff)';
+          tab.style.opacity = '0.4';
+          tab.style.cursor = 'not-allowed';
         } else {
           tab.addEventListener('click', () => switchDay(day.toLowerCase()));
-        }
-        
-        if (index === (isPastDay ? 1 : 0)) {
-          tab.classList.add('active');
-          currentDay = day.toLowerCase();
+          if (!firstAvailableDay) {
+            firstAvailableDay = day.toLowerCase();
+          }
         }
         
         tabsContainer.appendChild(tab);
       });
+      
+      // Set the first available day as active
+      if (firstAvailableDay) {
+        currentDay = firstAvailableDay;
+        document.querySelector(`[data-day="${firstAvailableDay}"]`).classList.add('active');
+      }
     }
 
     function generateMenus() {
@@ -1384,37 +1408,66 @@
         });
       });
 
+      console.log('Submitting order data:', orderData);
       showNotification('Submitting multi-child order...', 'info');
 
-      // **FIXED**: Actually submit to Google Sheets instead of demo mode
+      // **FIXED**: Try different approaches for Google Sheets submission
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        
+        // Method 1: Try with CORS first
         fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
           method: 'POST',
-          mode: 'no-cors',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(orderData)
         })
-        .then(() => {
-          // Success - order submitted to Google Sheets
+        .then(response => {
+          console.log('Response received:', response);
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Network response was not ok');
+          }
+        })
+        .then(data => {
+          console.log('Success response:', data);
           closePaymentModal();
           showNotification(`Order ${orderData.orderId} submitted successfully!`, 'success');
-          
-          // Show detailed confirmation
           showDetailedOrderConfirmation(orderData);
-          
-          // Reset form for next order
           resetMultiChildForm();
         })
         .catch(error => {
-          console.error('Error submitting to Google Sheets:', error);
-          showNotification('Error submitting order. Please try again.', 'error');
+          console.log('CORS method failed, trying no-cors...', error);
+          
+          // Method 2: Fallback to no-cors
+          fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
+          })
+          .then(() => {
+            // With no-cors, we can't read the response, so assume success
+            console.log('No-cors submission completed');
+            closePaymentModal();
+            showNotification(`Order ${orderData.orderId} submitted successfully!`, 'success');
+            showDetailedOrderConfirmation(orderData);
+            resetMultiChildForm();
+          })
+          .catch(finalError => {
+            console.error('Both submission methods failed:', finalError);
+            showNotification('Error submitting order. Please try again or contact support.', 'error');
+          });
         });
+        
       } else {
         // Fallback if Google Sheets not configured
         showNotification('Google Sheets integration not configured', 'error');
         console.error('GOOGLE_SHEETS_CONFIG is not properly configured');
+        console.log('Current config:', GOOGLE_SHEETS_CONFIG);
       }
     }
 
