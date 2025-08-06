@@ -712,6 +712,11 @@
                 
                 <div class="cart-summary">
                     <div class="cart-title">📋 Your Order</div>
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <button type="button" id="history-btn" class="cancel-btn" style="padding: 8px 15px; font-size: 0.9em;" onclick="checkForExistingOrders()">
+                            View Order History
+                        </button>
+                    </div>
                     <div class="cart-items" id="cart-items">
                         <div style="text-align: center; color: #9aa0a6; font-style: italic;">No items selected</div>
                     </div>
@@ -984,6 +989,15 @@
                 document.getElementById(id).addEventListener('input', updateCheckoutButton);
             });
             
+            // Check for order history when email is entered
+            document.getElementById('email').addEventListener('blur', function() {
+                setTimeout(checkForExistingOrders, 500); // Small delay to avoid interrupting typing
+            });
+            
+            // Store hours check
+            setInterval(checkStoreHours, 60000);
+        }
+            
             // Store hours check
             setInterval(checkStoreHours, 60000);
         }
@@ -1094,16 +1108,70 @@
             const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal}&note=${encodeURIComponent(orderNote)}`;
             venmoLink.href = venmoUrl;
             
-            // For desktop users, provide web fallback
+            // Enhanced desktop experience
             venmoLink.onclick = function(e) {
                 if (!navigator.userAgent.match(/iPhone|iPad|Android/)) {
                     e.preventDefault();
                     window.open('https://venmo.com/u/ChanTa-Rivers', '_blank');
-                    alert('Please complete payment to @ChanTa-Rivers in Venmo, then return here to confirm.');
+                    
+                    // Copy payment details to clipboard for desktop users
+                    const paymentDetails = `Amount: ${currentTotal.toFixed(2)}\nTo: @ChanTa-Rivers\nNote: ${orderNote}`;
+                    
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(paymentDetails).then(() => {
+                            alert('Payment details copied to clipboard!\n\nPay @ChanTa-Rivers 
+        
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+        
+        function submitOrder() {
+            const orderData = {
+                timestamp: new Date().toISOString(),
+                email: document.getElementById('email').value,
+                firstName: document.getElementById('first-name').value,
+                lastName: document.getElementById('last-name').value,
+                grade: document.getElementById('grade').value,
+                orderItems: orderItems,
+                total: currentTotal,
+                paymentMethod: 'venmo'
+            };
+            
+            // Here you would send to Google Sheets
+            console.log('Order submitted:', orderData);
+            
+            // Close modal and show success
+            closePaymentModal();
+            alert(`Thank you ${orderData.firstName}! Your order has been submitted successfully. Total: ${currentTotal.toFixed(2)}`);
+            
+            // Reset form
+            document.getElementById('lunch-order-form').reset();
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => cb.checked = false);
+            orderItems = [];
+            currentTotal = 0;
+            updateCartDisplay();
+            updateCheckoutButton();
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    </script>
+</body>
+</html> + currentTotal.toFixed(2) + '\n\nNote: ' + orderNote + '\n\nComplete payment in Venmo, then return here to confirm.');
+                        }).catch(() => {
+                            showDesktopPaymentInstructions(orderNote);
+                        });
+                    } else {
+                        showDesktopPaymentInstructions(orderNote);
+                    }
                 }
             };
             
             modal.style.display = 'flex';
+        }
+        
+        function showDesktopPaymentInstructions(orderNote) {
+            alert(`Please complete this payment in Venmo:\n\nPay: @ChanTa-Rivers\nAmount: ${currentTotal.toFixed(2)}\nNote: ${orderNote}\n\nThen return here and click "I've Paid"`);
         }
         
         function closePaymentModal() {
