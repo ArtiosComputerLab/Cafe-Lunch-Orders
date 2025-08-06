@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cafe Admin - Report Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .admin-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .admin-header {
+      margin-bottom: 30px;
+    }
+
+    .admin-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #4285f4;
+      margin-bottom: 10px;
+    }
+
+    .admin-subtitle {
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .date-input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .date-input:focus {
+      outline: none;
+      border-color: #4285f4;
+      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+    }
+
+    .generate-btn {
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+      color: white;
+      border: none;
+      padding: 18px 35px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(66, 133, 244, 0.4);
+    }
+
+    .generate-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .test-connection-btn {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .test-connection-btn:hover {
+      background: #f57c00;
+      transform: translateY(-1px);
+    }
+
+    .status-message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .status-message.show {
+      opacity: 1;
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-message.info {
+      background: #e3f2fd;
+      color: #1976d2;
+      border: 1px solid #bbdefb;
+    }
+
+    .quick-dates {
+      margin-top: 20px;
+    }
+
+    .quick-dates h4 {
+      margin-bottom: 10px;
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .quick-date-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .quick-date-btn {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .quick-date-btn:hover {
+      background: #4285f4;
+      color: white;
+      border-color: #4285f4;
+    }
+
+    .config-info {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 25px;
+      text-align: left;
+      font-size: 0.85em;
+    }
+
+    .config-info h4 {
+      margin-bottom: 8px;
+      color: #495057;
+    }
+
+    .config-url {
+      font-family: monospace;
+      background: #e9ecef;
+      padding: 4px 6px;
+      border-radius: 4px;
+      word-break: break-all;
+      font-size: 0.8em;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1 class="admin-title">📊 Cafe Admin</h1>
+      <p class="admin-subtitle">Generate Daily Reports</p>
+    </div>
+
+    <form id="report-form">
+      <div class="form-group">
+        <label for="report-date">Select Report Date:</label>
+        <input type="date" id="report-date" class="date-input" required>
+      </div>
+
+      <button type="submit" class="generate-btn" id="generate-btn">
+        📋 Generate Report
+      </button>
+
+      <button type="button" class="test-connection-btn" id="test-btn">
+        🔧 Test Google Sheets Connection
+      </button>
+
+      <div class="quick-dates">
+        <h4>Quick Select:</h4>
+        <div class="quick-date-buttons">
+          <button type="button" class="quick-date-btn" data-offset="0">Today</button>
+          <button type="button" class="quick-date-btn" data-offset="1">Tomorrow</button>
+          <button type="button" class="quick-date-btn" data-offset="2">Day After</button>
+          <button type="button" class="quick-date-btn" data-offset="-1">Yesterday</button>
+        </div>
+      </div>
+
+      <div class="status-message" id="status-message"></div>
+
+      <div class="config-info">
+        <h4>Configuration Status:</h4>
+        <p><strong>Google Sheets URL:</strong></p>
+        <div class="config-url" id="config-url">Loading...</div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Configuration - UPDATE THIS SECTION TO MATCH YOUR MAIN FORM
+    const GOOGLE_SHEETS_CONFIG = {
+      webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
+      useGoogleSheets: true
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default date to today
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      document.getElementById('report-date').value = todayStr;
+
+      // Show configuration
+      document.getElementById('config-url').textContent = GOOGLE_SHEETS_CONFIG.webAppUrl || 'Not configured';
+
+      // Setup event listeners
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      // Form submission
+      document.getElementById('report-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        generateReport();
+      });
+
+      // Test connection
+      document.getElementById('test-btn').addEventListener('click', testConnection);
+
+      // Quick date buttons
+      document.querySelectorAll('.quick-date-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const offset = parseInt(this.dataset.offset);
+          const date = new Date();
+          date.setDate(date.getDate() + offset);
+          const dateStr = date.toISOString().split('T')[0];
+          document.getElementById('report-date').value = dateStr;
+        });
+      });
+    }
+
+    function generateReport() {
+      const dateInput = document.getElementById('report-date').value;
+      const generateBtn = document.getElementById('generate-btn');
+
+      if (!dateInput) {
+        showStatus('Please select a date', 'error');
+        return;
+      }
+
+      if (!GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        showStatus('Google Sheets URL not configured', 'error');
+        return;
+      }
+
+      generateBtn.disabled = true;
+      generateBtn.textContent = '⏳ Generating Report...';
+      showStatus(`Generating report for ${dateInput}...`, 'info');
+
+      const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=generate_report&secret=cafe2025&date=${dateInput}`;
+
+      fetch(reportUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Report response:', data);
+          
+          if (data.success) {
+            let message = `✅ Report Generated Successfully!\n\n`;
+            message += `📅 Date: ${dateInput}\n`;
+            message += `📊 Sheet: ${data.sheetName}\n`;
+            message += `🍽️ Orders Found: ${data.ordersProcessed}\n\n`;
+            
+            if (data.ordersProcessed > 0) {
+              message += `The report includes:\n`;
+              message += `• Customer order details\n`;
+              message += `• Restaurant preparation summary\n`;
+              message += `• Item counts and totals\n`;
+              message += `• Copy-friendly ordering format\n\n`;
+              message += `📧 Email report sent to admin\n`;
+              showStatus(`Report created: ${data.ordersProcessed} orders for ${dateInput}`, 'success');
+            } else {
+              message += `No orders found for this date.\n`;
+              message += `✅ No Chick-fil-A order needed!\n\n`;
+              showStatus(`No orders found for ${dateInput}`, 'info');
+            }
+
+            message += `Check your Google Sheet and email for details.`;
+            alert(message);
+
+            if (data.sheetUrl) {
+              setTimeout(() => {
+                if (confirm('Open the Google Sheet to view the report?')) {
+                  window.open(data.sheetUrl, '_blank');
+                }
+              }, 1000);
+            }
+          } else {
+            showStatus(`Report failed: ${data.error}`, 'error');
+            alert(`❌ Report Generation Failed!\n\nError: ${data.error}\n\nPlease check your Google Apps Script configuration.`);
+          }
+        })
+        .catch(error => {
+          console.error('Report error:', error);
+          showStatus('Network error generating report', 'error');
+          alert(`❌ Network Error!\n\nFailed to generate report: ${error.message}\n\nPlease check your internet connection and Google Apps Script URL.`);
+        })
+        .finally(() => {
+          generateBtn.disabled = false;
+          generateBtn.textContent = '📋 Generate Report';
+        });
+    }
+
+    function testConnection() {
+      const testBtn = document.getElementById('test-btn');
+      
+      if (!GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        showStatus('Google Sheets URL not configured', 'error');
+        return;
+      }
+
+      testBtn.disabled = true;
+      testBtn.textContent = '🔧 Testing...';
+      showStatus('Testing Google Sheets connection...', 'info');
+
+      const testUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=test&test=true`;
+
+      fetch(testUrl)
+        .then(response => {
+          console.log('Test response status:', response.status, response.statusText);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.text();
+        })
+        .then(result => {
+          console.log('Raw test response:', result);
+          
+          try {
+            const jsonResult = JSON.parse(result);
+            console.log('Parsed test response:', jsonResult);
+            showStatus('✅ Google Sheets connection successful!', 'success');
+            
+            let message = `✅ Connection Test PASSED!\n\n`;
+            message += `Google Apps Script is working correctly.\n`;
+            message += `Response: ${JSON.stringify(jsonResult, null, 2)}`;
+            alert(message);
+          } catch (parseError) {
+            console.log('Response is not JSON:', result);
+            showStatus('⚠️ Connection works but unexpected response', 'info');
+            
+            let message = `⚠️ Connection Test Results:\n\n`;
+            message += `Google Sheets responded, but not with expected JSON.\n\n`;
+            message += `Raw response: ${result.substring(0, 500)}...\n\n`;
+            message += `This might indicate a Google Apps Script configuration issue.`;
+            alert(message);
+          }
+        })
+        .catch(error => {
+          console.error('Connection test failed:', error);
+          showStatus('❌ Google Sheets connection failed', 'error');
+          
+          let message = `❌ Connection Test FAILED!\n\n`;
+          message += `Error: ${error.message}\n\n`;
+          message += `Possible issues:\n`;
+          message += `• Google Apps Script not deployed properly\n`;
+          message += `• Wrong URL in configuration\n`;
+          message += `• Script permissions not granted\n`;
+          message += `• CORS/network issues\n\n`;
+          message += `URL: ${GOOGLE_SHEETS_CONFIG.webAppUrl}`;
+          alert(message);
+        })
+        .finally(() => {
+          testBtn.disabled = false;
+          testBtn.textContent = '🔧 Test Google Sheets Connection';
+        });
+    }
+
+    function showStatus(message, type) {
+      const statusDiv = document.getElementById('status-message');
+      statusDiv.textContent = message;
+      statusDiv.className = `status-message ${type} show`;
+
+      setTimeout(() => {
+        statusDiv.classList.remove('show');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
