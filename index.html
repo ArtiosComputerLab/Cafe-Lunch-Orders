@@ -835,6 +835,11 @@
                     <button type="button" class="history-btn" id="history-btn">
                         View Order History
                     </button>
+                    
+                    <!-- Secret Report Generation Button -->
+                    <button type="button" class="history-btn" id="secret-report-btn" style="display: none; background: #ff9800; color: white; border-color: #ff9800;">
+                        📊 Generate Test Report
+                    </button>
                     <div class="cart-items" id="cart-items">
                         <div class="empty-cart">No items selected</div>
                     </div>
@@ -892,7 +897,7 @@
     
     <script>
         // ============================================
-        // CONFIGURATION
+        // CONFIGURATION - UPDATE THIS SECTION
         // ============================================
         const GOOGLE_SHEETS_CONFIG = {
             webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
@@ -966,6 +971,9 @@
                 checkStoreStatusFromSheets();
                 setInterval(checkStoreStatusFromSheets, 300000);
             }
+            
+            // Check for secret report mode
+            checkForSecretReportMode();
         });
         
         function initializeDates() {
@@ -1130,6 +1138,7 @@
             
             document.getElementById('checkout-btn').addEventListener('click', openPaymentModal);
             document.getElementById('history-btn').addEventListener('click', showOrderHistory);
+            document.getElementById('secret-report-btn').addEventListener('click', generateTestReport);
             document.getElementById('cancel-payment-btn').addEventListener('click', closePaymentModal);
             document.getElementById('confirm-payment-btn').addEventListener('click', submitOrder);
             
@@ -1634,6 +1643,108 @@
                     notif.remove();
                 }
             }, type === 'success' ? 3000 : 5000);
+        }
+        
+        // ============================================
+        // SECRET REPORT GENERATION (FOR TESTING)
+        // ============================================
+        
+        /**
+         * Check URL parameters for secret report mode
+         */
+        function checkForSecretReportMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const secret = urlParams.get('report');
+            
+            if (secret === 'test2025') {
+                const reportBtn = document.getElementById('secret-report-btn');
+                reportBtn.style.display = 'block';
+                console.log('📊 Secret report mode activated!');
+                
+                // Also add keyboard shortcut
+                document.addEventListener('keydown', function(e) {
+                    if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+                        generateTestReport();
+                    }
+                });
+            }
+        }
+        
+        /**
+         * Generate test report via backdoor API
+         */
+        function generateTestReport() {
+            if (!GOOGLE_SHEETS_CONFIG.useGoogleSheets || !GOOGLE_SHEETS_CONFIG.webAppUrl) {
+                alert('Google Sheets integration is not configured!');
+                return;
+            }
+            
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+            
+            const dateInput = prompt(`Generate report for which date?\n\nFormat: YYYY-MM-DD\nExample: ${todayStr}`, todayStr);
+            
+            if (!dateInput) {
+                return; // User cancelled
+            }
+            
+            // Validate date format
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(dateInput)) {
+                alert('Invalid date format! Please use YYYY-MM-DD\nExample: 2025-08-06');
+                return;
+            }
+            
+            const selectedDate = new Date(dateInput + 'T12:00:00'); // Add time to avoid timezone issues
+            if (isNaN(selectedDate.getTime())) {
+                alert('Invalid date! Please enter a valid date.');
+                return;
+            }
+            
+            showNotification(`📊 Generating report for ${dateInput}...`, 'info');
+            
+            // Call the backdoor API
+            const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=generate_report&secret=cafe2025&date=${dateInput}`;
+            
+            fetch(reportUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const message = `✅ Report Generated Successfully!\n\n` +
+                            `Date: ${dateInput}\n` +
+                            `Sheet: ${data.sheetName}\n` +
+                            `Orders Found: ${data.ordersProcessed}\n\n` +
+                            `Check your Google Sheet for the new report tab.\n` +
+                            `The report includes:\n` +
+                            `• Customer order details\n` +
+                            `• Restaurant preparation summary\n` +
+                            `• Item counts by day\n` +
+                            `• Financial totals${data.emailSent ? '\n• Email sent to jedaws@gmail.com' : ''}`;
+                        
+                        alert(message);
+                        
+                        if (data.ordersProcessed > 0) {
+                            showNotification(`Report created: ${data.ordersProcessed} orders for ${dateInput}`, 'success');
+                        } else {
+                            showNotification(`No orders found for ${dateInput}`, 'warning');
+                        }
+                        
+                        if (data.sheetUrl) {
+                            setTimeout(() => {
+                                if (confirm('Open the Google Sheet to view the report?')) {
+                                    window.open(data.sheetUrl, '_blank');
+                                }
+                            }, 1000);
+                        }
+                    } else {
+                        showNotification(`Report generation failed: ${data.error}`, 'error');
+                        console.error('Report error:', data.error);
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error generating report', 'error');
+                    console.error('Report generation error:', error);
+                });
         }
         
         // Make removeChild available globally
