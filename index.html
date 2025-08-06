@@ -241,6 +241,29 @@
       margin-bottom: 20px;
       border-bottom: 2px solid #e0e0e0;
       overflow-x: auto;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .copy-days-btn {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-left: 15px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .copy-days-btn:hover {
+      background: #f57c00;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
     }
 
     .day-tab {
@@ -1041,6 +1064,16 @@
         tabsContainer.appendChild(tab);
       });
 
+      // Add copy button container after tabs
+      const copyButtonContainer = document.createElement('div');
+      copyButtonContainer.id = 'copy-button-container';
+      copyButtonContainer.style.cssText = `
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+      `;
+      tabsContainer.appendChild(copyButtonContainer);
+
       // Set first available day as active, or Monday if none available
       const dayToActivate = firstAvailableDay || 'monday';
       currentDay = dayToActivate;
@@ -1050,6 +1083,9 @@
         tabToActivate.classList.add('active');
         console.log(`Activated tab: ${dayToActivate}`);
       }
+
+      // Update copy button initially
+      updateCopyButton();
     }
 
     function generateMenus() {
@@ -1113,6 +1149,7 @@
       });
 
       currentDay = day;
+      updateCopyButton(); // Update copy button when switching days
     }
 
     // ============================================
@@ -1246,7 +1283,7 @@
             <div class="child-icon">${childCount}</div>
             Child ${childCount}
           </div>
-          <button type="button" class="remove-child" onclick="removeChild(${childCount})">✕</button>
+          <button type="button" class="remove-child" data-child-id="${childCount}">✕</button>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -1272,6 +1309,13 @@
           </div>
         </div>
       `;
+      
+      // Add event listener to the new remove button
+      const removeBtn = childDiv.querySelector('.remove-child');
+      removeBtn.addEventListener('click', function() {
+        const childId = this.dataset.childId;
+        removeChild(parseInt(childId));
+      });
       
       container.appendChild(childDiv);
       updateChildCheckboxes();
@@ -1300,9 +1344,19 @@
         section.dataset.child = newChildId;
         section.querySelector('.child-icon').textContent = newChildId;
         section.querySelector('.child-title').lastChild.textContent = ` Child ${newChildId}`;
+        
         const removeBtn = section.querySelector('.remove-child');
         if (removeBtn) {
-          removeBtn.setAttribute('onclick', `removeChild(${newChildId})`);
+          // Update data attribute and event listener
+          removeBtn.dataset.childId = newChildId;
+          
+          // Remove old event listener and add new one
+          const newRemoveBtn = removeBtn.cloneNode(true);
+          newRemoveBtn.addEventListener('click', function() {
+            const childId = this.dataset.childId;
+            removeChild(parseInt(childId));
+          });
+          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
         }
       });
     }
@@ -1400,6 +1454,7 @@
       
       displayCart();
       validateForm();
+      updateCopyButton(); // Update copy button when cart changes
     }
 
     function displayCart() {
@@ -2143,8 +2198,139 @@
     }
 
     // ============================================
-    // UTILITY FUNCTIONS
+    // COPY TO REMAINING DAYS FUNCTIONALITY
     // ============================================
+    function updateCopyButton() {
+      const container = document.getElementById('copy-button-container');
+      if (!container) return;
+
+      // Get available days (not disabled)
+      const availableDays = days.filter(day => {
+        const tab = document.querySelector(`[data-day="${day}"]`);
+        return tab && !tab.classList.contains('disabled');
+      });
+
+      // Get remaining days (available days after current day)
+      const currentDayIndex = availableDays.indexOf(currentDay);
+      const remainingDays = availableDays.slice(currentDayIndex + 1);
+
+      // Check if current day has any selections
+      const currentDayHasSelections = hasSelectionsForDay(currentDay);
+
+      console.log('Copy button update:', {
+        currentDay,
+        availableDays,
+        remainingDays,
+        currentDayHasSelections
+      });
+
+      // Clear existing button
+      container.innerHTML = '';
+
+      // Show button only if current day has selections AND there are remaining days
+      if (currentDayHasSelections && remainingDays.length > 0) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'copy-days-btn';
+        
+        // Smart button text based on remaining days
+        if (remainingDays.length === 1) {
+          const targetDay = remainingDays[0].charAt(0).toUpperCase() + remainingDays[0].slice(1);
+          button.textContent = `Copy to ${targetDay} ➡️`;
+        } else if (remainingDays.length === days.length - 1) {
+          button.textContent = 'Copy to All Days ➡️';
+        } else {
+          button.textContent = 'Copy to Remaining Days ➡️';
+        }
+
+        button.style.cssText = `
+          background: #ff9800;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          margin-left: 15px;
+          white-space: nowrap;
+        `;
+
+        button.addEventListener('mouseover', () => {
+          button.style.background = '#f57c00';
+          button.style.transform = 'translateY(-1px)';
+        });
+
+        button.addEventListener('mouseout', () => {
+          button.style.background = '#ff9800';
+          button.style.transform = 'translateY(0)';
+        });
+
+        button.addEventListener('click', () => copyToRemainingDays(remainingDays));
+
+        container.appendChild(button);
+      }
+    }
+
+    function hasSelectionsForDay(day) {
+      const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-day="${day}"]:checked`);
+      return checkboxes.length > 0;
+    }
+
+    function copyToRemainingDays(targetDays) {
+      console.log('Copying from', currentDay, 'to', targetDays);
+
+      // Get all selections from current day
+      const currentDaySelections = document.querySelectorAll(`input[type="checkbox"][data-day="${currentDay}"]:checked`);
+      
+      if (currentDaySelections.length === 0) {
+        console.log('No selections to copy from current day');
+        return;
+      }
+
+      // For each target day, clear existing selections and copy current day
+      targetDays.forEach(targetDay => {
+        console.log(`Copying to ${targetDay}`);
+        
+        // First, uncheck all existing selections for this target day
+        const existingSelections = document.querySelectorAll(`input[type="checkbox"][data-day="${targetDay}"]`);
+        existingSelections.forEach(checkbox => {
+          checkbox.checked = false;
+        });
+
+        // Then copy selections from current day
+        currentDaySelections.forEach(sourceCheckbox => {
+          const itemId = sourceCheckbox.dataset.item;
+          const childId = sourceCheckbox.dataset.childId;
+          
+          // Find corresponding checkbox for target day
+          const targetCheckbox = document.querySelector(
+            `input[type="checkbox"][data-item="${itemId}"][data-day="${targetDay}"][data-child-id="${childId}"]`
+          );
+          
+          if (targetCheckbox) {
+            targetCheckbox.checked = true;
+            console.log(`Copied ${itemId} for child ${childId} to ${targetDay}`);
+          } else {
+            console.error(`Target checkbox not found for ${itemId}, child ${childId}, day ${targetDay}`);
+          }
+        });
+      });
+
+      // Update cart and UI
+      updateCart();
+      
+      // Show success notification
+      const dayText = targetDays.length === 1 
+        ? targetDays[0].charAt(0).toUpperCase() + targetDays[0].slice(1)
+        : `${targetDays.length} remaining days`;
+      
+      showNotification(`Selections copied to ${dayText}!`, 'success');
+
+      // Update copy button for new state
+      updateCopyButton();
+    }
     function showNotification(message, type = 'info') {
       // Remove existing notification
       const existingNotif = document.querySelector('.notification');
