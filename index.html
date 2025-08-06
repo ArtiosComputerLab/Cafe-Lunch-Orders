@@ -76,9 +76,6 @@
     .form-section {
       flex: 2;
       padding: 30px;
-    }
-
-    .form-section {
       background: white;
     }
 
@@ -510,7 +507,7 @@
       box-shadow: none;
     }
 
-    /* Payment Modal */
+    /* Payment Modal - FIXED STYLES */
     .payment-modal {
       display: none;
       position: fixed;
@@ -518,10 +515,20 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
+      background: rgba(0,0,0,0.7);
+      z-index: 10000;
       justify-content: center;
       align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .payment-modal.show {
+      display: flex !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .payment-content {
@@ -533,6 +540,19 @@
       max-height: 90vh;
       overflow-y: auto;
       text-align: center;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    @keyframes slideUp {
+      from { 
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to { 
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .payment-header {
@@ -547,6 +567,9 @@
       font-weight: 700;
       color: #34a853;
       margin-bottom: 25px;
+      background: #f0f9ff;
+      padding: 15px;
+      border-radius: 8px;
     }
 
     .payment-steps {
@@ -586,11 +609,15 @@
       font-size: 16px;
       transition: all 0.3s ease;
       margin: 10px 0;
+      border: none;
+      cursor: pointer;
     }
 
     .venmo-btn:hover {
       background: #357ca5;
       transform: translateY(-2px);
+      text-decoration: none;
+      color: white;
     }
 
     .confirmation-btn {
@@ -608,6 +635,7 @@
 
     .confirmation-btn:hover {
       background: #2e7d32;
+      transform: translateY(-2px);
     }
 
     .cancel-btn {
@@ -625,6 +653,7 @@
 
     .cancel-btn:hover {
       background: #555;
+      transform: translateY(-2px);
     }
 
     /* Notifications */
@@ -635,7 +664,7 @@
       padding: 15px 20px;
       border-radius: 8px;
       font-weight: 600;
-      z-index: 1001;
+      z-index: 10001;
       animation: slideIn 0.3s ease;
       max-width: 300px;
     }
@@ -676,6 +705,7 @@
       .payment-content {
         margin: 20px;
         width: calc(100% - 40px);
+        padding: 20px;
       }
 
       .header h1 {
@@ -920,31 +950,6 @@
         document.getElementById('secret-report-btn').style.display = 'block';
       }
       
-      // Additional debugging - check if button exists and is clickable
-      setTimeout(() => {
-        const checkoutBtn = document.getElementById('checkout-btn');
-        if (checkoutBtn) {
-          console.log('Checkout button status:', {
-            exists: true,
-            disabled: checkoutBtn.disabled,
-            style: checkoutBtn.style.cssText,
-            className: checkoutBtn.className
-          });
-          
-          // Add a direct test click listener
-          checkoutBtn.addEventListener('click', function(e) {
-            console.log('DIRECT CLICK DETECTED on checkout button');
-            console.log('Event:', e);
-            console.log('Button disabled:', checkoutBtn.disabled);
-            console.log('Current total:', currentTotal);
-            console.log('Order items:', orderItems);
-          });
-          
-        } else {
-          console.error('Checkout button still not found after DOM load!');
-        }
-      }, 1000);
-      
       console.log('Initialization complete');
     });
 
@@ -978,7 +983,7 @@
     }
 
     // ============================================
-    // WORKING DAY TAB GENERATION FROM ORIGINAL
+    // DAY TAB GENERATION
     // ============================================
     function initializeDates() {
       const today = new Date();
@@ -1117,7 +1122,7 @@
     }
 
     // ============================================
-    // MULTI-CHILD FUNCTIONALITY
+    // FIXED EVENT LISTENERS
     // ============================================
     function setupEventListeners() {
       console.log('Setting up event listeners...');
@@ -1141,22 +1146,44 @@
         validateForm();
       });
 
-      // Debug the checkout button setup
+      // FIXED: Checkout button event listener with better error handling
       const checkoutBtn = document.getElementById('checkout-btn');
       if (checkoutBtn) {
-        console.log('Checkout button found, adding event listener');
+        console.log('Setting up checkout button listener');
         checkoutBtn.addEventListener('click', function(e) {
-          console.log('Checkout button clicked!');
           e.preventDefault();
-          openPaymentModal();
+          e.stopPropagation();
+          console.log('🚀 Checkout button clicked!');
+          console.log('Form valid:', validateForm());
+          console.log('Store open:', storeIsOpen);
+          console.log('Current total:', currentTotal);
+          console.log('Order items:', orderItems.length);
+          
+          if (validateForm() && storeIsOpen) {
+            openPaymentModal();
+          } else {
+            console.log('Checkout blocked - form invalid or store closed');
+            if (!storeIsOpen) {
+              showNotification('Store is closed. Orders cannot be placed now.', 'error');
+            } else {
+              showNotification('Please complete all required fields and add items to your order.', 'warning');
+            }
+          }
         });
       } else {
         console.error('Checkout button not found!');
       }
 
+      // FIXED: Order history button listener
       const historyBtn = document.getElementById('history-btn');
       if (historyBtn) {
-        historyBtn.addEventListener('click', showOrderHistory);
+        console.log('Setting up history button listener');
+        historyBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('📋 History button clicked!');
+          showOrderHistory();
+        });
       }
 
       const reportBtn = document.getElementById('secret-report-btn');
@@ -1164,32 +1191,42 @@
         reportBtn.addEventListener('click', generateTestReport);
       }
 
+      // FIXED: Payment modal listeners
       const cancelBtn = document.getElementById('cancel-payment-btn');
       if (cancelBtn) {
-        cancelBtn.addEventListener('click', closePaymentModal);
+        cancelBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Cancel payment clicked');
+          closePaymentModal();
+        });
       }
 
       const confirmBtn = document.getElementById('confirm-payment-btn');
       if (confirmBtn) {
         confirmBtn.addEventListener('click', function(e) {
           e.preventDefault();
-          console.log('Submit order button clicked!');
+          console.log('Confirm payment clicked');
           submitOrder();
         });
       }
 
+      // Click outside modal to close
       const paymentModal = document.getElementById('payment-modal');
       if (paymentModal) {
         paymentModal.addEventListener('click', function(e) {
           if (e.target === this) {
+            console.log('Modal background clicked - closing');
             closePaymentModal();
           }
         });
       }
       
-      console.log('Event listeners setup complete');
+      console.log('✅ All event listeners setup complete');
     }
 
+    // ============================================
+    // MULTI-CHILD FUNCTIONALITY
+    // ============================================
     function addChild() {
       childCount++;
       const container = document.getElementById('children-container');
@@ -1311,6 +1348,8 @@
         const childId = checkbox.dataset.childId;
         
         const child = document.querySelector(`[data-child="${childId}"]`);
+        if (!child) return; // Safety check
+        
         const childFirstName = child.querySelector('.child-first-name').value;
         const childLastName = child.querySelector('.child-last-name').value;
         const childGrade = child.querySelector('.child-grade').value;
@@ -1396,7 +1435,7 @@
       
       // Check if we have items and required info
       const hasItems = orderItems.length > 0;
-      const hasEmail = email.length > 0;
+      const hasEmail = email.length > 0 && email.includes('@');
       
       // Check if all children have required info
       const children = document.querySelectorAll('.child-section');
@@ -1410,40 +1449,55 @@
         }
       });
       
-      const isValid = hasItems && hasEmail && allChildrenComplete;
+      const isValid = hasItems && hasEmail && allChildrenComplete && storeIsOpen;
       
-      console.log('Form validation:', {
+      console.log('🔍 Form validation:', {
         hasItems,
         hasEmail, 
         allChildrenComplete,
+        storeIsOpen,
         isValid,
         itemsCount: orderItems.length,
         email: email,
         childrenCount: children.length
       });
       
+      // Update button state
       checkoutBtn.disabled = !isValid;
       
       if (isValid) {
+        checkoutBtn.textContent = `Review & Pay Order ($${currentTotal.toFixed(2)})`;
         checkoutBtn.style.opacity = '1';
         checkoutBtn.style.cursor = 'pointer';
-        console.log('Checkout button enabled');
+        console.log('✅ Checkout button enabled');
       } else {
+        if (!storeIsOpen) {
+          checkoutBtn.textContent = 'Store Closed';
+        } else if (!hasItems) {
+          checkoutBtn.textContent = 'Select Items to Continue';
+        } else if (!hasEmail) {
+          checkoutBtn.textContent = 'Enter Email to Continue';
+        } else if (!allChildrenComplete) {
+          checkoutBtn.textContent = 'Complete Child Info';
+        } else {
+          checkoutBtn.textContent = 'Review & Pay Order';
+        }
         checkoutBtn.style.opacity = '0.6';
         checkoutBtn.style.cursor = 'not-allowed';
-        console.log('Checkout button disabled');
+        console.log('❌ Checkout button disabled');
       }
       
       return isValid;
     }
 
     // ============================================
-    // PAYMENT & ORDER SUBMISSION
+    // FIXED PAYMENT MODAL
     // ============================================
     function openPaymentModal() {
-      console.log('Opening payment modal...');
+      console.log('🚀 Opening payment modal...');
+      
       if (!validateForm()) {
-        console.log('Form validation failed');
+        console.log('❌ Form validation failed, cannot open modal');
         return;
       }
       
@@ -1452,12 +1506,18 @@
       const venmoTotal = document.getElementById('venmo-total');
       const venmoLink = document.getElementById('venmo-payment-link');
       
-      console.log('Setting modal totals:', currentTotal);
+      if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
+        console.error('❌ Modal elements not found!');
+        showNotification('Payment system error. Please refresh the page.', 'error');
+        return;
+      }
+      
+      console.log('💰 Setting modal totals:', currentTotal);
       modalTotal.textContent = currentTotal.toFixed(2);
       venmoTotal.textContent = currentTotal.toFixed(2);
       
       // Create order summary for Venmo
-      let orderSummary = `Cafe Lunch Order - ${currentTotal.toFixed(2)}`;
+      let orderSummary = `Cafe Lunch Order - $${currentTotal.toFixed(2)}`;
       const children = [...new Set(orderItems.map(item => item.childName))];
       if (children.length <= 2) {
         orderSummary += ` for ${children.join(' & ')}`;
@@ -1465,55 +1525,74 @@
         orderSummary += ` for ${children.length} children`;
       }
       
-      console.log('Order summary:', orderSummary);
+      console.log('📋 Order summary:', orderSummary);
       
-      // Generate Venmo URL
+      // Generate Venmo URLs
       const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent(orderSummary)}`;
       const venmoWebUrl = `https://venmo.com/ChanTa-Rivers?txn=pay&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent(orderSummary)}`;
       
-      // Try to detect mobile for Venmo app link
+      // Detect mobile for Venmo app link
       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
       if (isMobile) {
         venmoLink.href = venmoUrl;
-        console.log('Mobile detected, using app link');
+        console.log('📱 Mobile detected, using app link');
       } else {
         venmoLink.href = venmoWebUrl;
         venmoLink.target = '_blank';
-        console.log('Desktop detected, using web link');
+        console.log('💻 Desktop detected, using web link');
         
-        const paymentDetails = `Pay @ChanTa-Rivers ${currentTotal.toFixed(2)} for: ${orderSummary}`;
+        const paymentDetails = `Pay @ChanTa-Rivers $${currentTotal.toFixed(2)} for: ${orderSummary}`;
         
-        venmoLink.addEventListener('click', function(e) {
+        // Add click handler for desktop
+        venmoLink.onclick = function(e) {
           e.preventDefault();
           window.open(venmoWebUrl, '_blank');
           
           // Try to copy payment details to clipboard
           if (navigator.clipboard) {
             navigator.clipboard.writeText(paymentDetails).then(() => {
-              alert('Payment details copied to clipboard!\n\n' + paymentDetails);
+              showNotification('Payment details copied to clipboard!', 'success');
             }).catch(() => {
               alert('Please send payment to:\n\n' + paymentDetails);
             });
           } else {
             alert('Please send payment to:\n\n' + paymentDetails);
           }
-        });
+        };
       }
       
-      console.log('Showing modal...');
+      // Show modal with animation
+      console.log('🎭 Displaying modal...');
       modal.style.display = 'flex';
+      modal.classList.add('show');
+      
+      // Focus trap for accessibility
+      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
+      
+      console.log('✅ Payment modal opened successfully');
     }
 
     function closePaymentModal() {
-      document.getElementById('payment-modal').style.display = 'none';
+      console.log('🚪 Closing payment modal...');
+      const modal = document.getElementById('payment-modal');
+      if (modal) {
+        modal.classList.remove('show');
+        // Use setTimeout to allow animation to complete
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
+      }
     }
 
     // ============================================
-    // WORKING SUBMIT ORDER FUNCTION FROM ORIGINAL
+    // ORDER SUBMISSION
     // ============================================
     function submitOrder() {
-      console.log('submitOrder() called');
+      console.log('📤 Submitting order...');
       const timestamp = Date.now();
       const randomStr = Math.random().toString(36).substr(2, 5).toUpperCase();
       const orderId = `LO${timestamp}${randomStr}`;
@@ -1540,12 +1619,11 @@
         });
       });
       
-      console.log('Order data prepared:', orderData);
-      console.log('Google Sheets config:', GOOGLE_SHEETS_CONFIG);
+      console.log('📊 Order data prepared:', orderData);
       showNotification('Submitting order...', 'info');
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        console.log('Attempting to submit to Google Sheets...');
+        console.log('☁️ Submitting to Google Sheets...');
         fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
           method: 'POST',
           mode: 'no-cors',
@@ -1555,9 +1633,9 @@
           body: JSON.stringify(orderData)
         })
         .then(() => {
-          console.log('Google Sheets submission succeeded');
+          console.log('✅ Google Sheets submission succeeded');
           if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-            console.log('Also saving to localStorage...');
+            console.log('💾 Also saving to localStorage...');
             saveToLocalStorage(orderData);
           }
           closePaymentModal();
@@ -1566,9 +1644,9 @@
           resetForm();
         })
         .catch(error => {
-          console.error('Error submitting to Google Sheets:', error);
+          console.error('❌ Error submitting to Google Sheets:', error);
           if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-            console.log('Falling back to localStorage...');
+            console.log('🔄 Falling back to localStorage...');
             saveToLocalStorage(orderData);
             closePaymentModal();
             showDetailedOrderConfirmation(orderData);
@@ -1579,7 +1657,7 @@
           }
         });
       } else {
-        console.log('Google Sheets not configured, saving locally only...');
+        console.log('💾 Google Sheets not configured, saving locally only...');
         saveToLocalStorage(orderData);
         closePaymentModal();
         showDetailedOrderConfirmation(orderData);
@@ -1593,9 +1671,9 @@
         const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
         orders.push(orderData);
         localStorage.setItem('cafeOrders', JSON.stringify(orders));
-        console.log('Order saved to localStorage:', orderData.orderId);
+        console.log('💾 Order saved to localStorage:', orderData.orderId);
       } catch (e) {
-        console.error('Error saving to localStorage:', e);
+        console.error('❌ Error saving to localStorage:', e);
       }
     }
 
@@ -1636,14 +1714,14 @@
       sortedDays.forEach(day => {
         message += `${day}:\n`;
         itemsByDay[day].forEach(item => {
-          message += `  • ${item.name} - ${item.childName || 'Student'} - ${item.price.toFixed(2)}\n`;
+          message += `  • ${item.name} - ${item.childName || 'Student'} - $${item.price.toFixed(2)}\n`;
         });
         message += `\n`;
       });
 
       message += `💰 Payment Summary:\n`;
       message += `─────────────────────────────\n`;
-      message += `Total: ${order.total.toFixed(2)}\n`;
+      message += `Total: $${order.total.toFixed(2)}\n`;
       message += `Payment Method: ${order.paymentMethod}\n\n`;
 
       message += `📧 A confirmation email will be sent to: ${order.email}\n\n`;
@@ -1669,11 +1747,13 @@
     }
 
     // ============================================
-    // ORDER HISTORY & REPORTING - WORKING FROM ORIGINAL
+    // FIXED ORDER HISTORY
     // ============================================
     function checkOrderHistory() {
       const email = document.getElementById('family-email').value.trim();
       if (!email) return;
+      
+      console.log('🔍 Checking order history for:', email);
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
         fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=get_order_history&email=${encodeURIComponent(email)}`)
@@ -1684,7 +1764,7 @@
             }
           })
           .catch(error => {
-            console.error('Error fetching history:', error);
+            console.error('❌ Error fetching history from cloud:', error);
             checkLocalOrderHistory();
           });
       } else {
@@ -1706,7 +1786,7 @@
           checkOrderHistoryNotification(userOrders, email);
         }
       } catch (e) {
-        console.error('Error checking order history:', e);
+        console.error('❌ Error checking local order history:', e);
       }
     }
 
@@ -1721,7 +1801,10 @@
       });
 
       if (thisWeekOrders.length > 0) {
-        const students = [...new Set(thisWeekOrders.map(o => `${o.firstName} ${o.lastName}`))];
+        const students = [...new Set(thisWeekOrders.flatMap(order => 
+          order.children ? order.children.map(child => `${child.firstName} ${child.lastName}`) 
+                         : [`${order.firstName || 'Unknown'} ${order.lastName || 'Student'}`]
+        ))];
         const message = `Found ${thisWeekOrders.length} order(s) this week for: ${students.join(', ')}`;
         showNotification(message, 'info');
 
@@ -1741,6 +1824,8 @@
     function showOrderHistory() {
       const email = document.getElementById('family-email').value.trim();
 
+      console.log('📋 Showing order history for:', email);
+
       if (!email) {
         alert('Please enter your email address to view order history.');
         document.getElementById('family-email').focus();
@@ -1753,17 +1838,19 @@
         fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=get_order_history&email=${encodeURIComponent(email)}`)
           .then(response => response.json())
           .then(data => {
+            console.log('☁️ Cloud history response:', data);
             if (data.success && data.orders) {
               const localOrders = JSON.parse(localStorage.getItem('cafeOrders') || '[]')
                 .filter(order => order.email.toLowerCase() === email.toLowerCase());
               const allOrders = mergeOrders(data.orders, localOrders);
               displayOrderHistory(allOrders, email);
             } else {
+              console.log('No cloud history, showing local only');
               showLocalOrderHistory();
             }
           })
           .catch(error => {
-            console.error('Error fetching from Google Sheets:', error);
+            console.error('❌ Error fetching from Google Sheets:', error);
             showNotification('Using local history (cloud sync unavailable)', 'warning');
             showLocalOrderHistory();
           });
@@ -1774,6 +1861,7 @@
 
     function showLocalOrderHistory() {
       const email = document.getElementById('family-email').value.trim();
+      console.log('💾 Showing local order history for:', email);
 
       try {
         const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
@@ -1781,9 +1869,10 @@
           order.email.toLowerCase() === email.toLowerCase()
         );
 
+        console.log('Found local orders:', userOrders.length);
         displayOrderHistory(userOrders, email);
       } catch (e) {
-        console.error('Error loading order history:', e);
+        console.error('❌ Error loading order history:', e);
         alert('Unable to load order history.');
       }
     }
@@ -1801,6 +1890,8 @@
     }
 
     function displayOrderHistory(orders, email) {
+      console.log('📊 Displaying order history:', orders.length, 'orders');
+      
       if (orders.length === 0) {
         alert(`No order history found for ${email}\n\nOnce you place orders, they will appear here.`);
         return;
@@ -1856,7 +1947,7 @@
           const weekIndicator = isThisWeek ? ' 📅' : '';
           const syncIndicator = GOOGLE_SHEETS_CONFIG.useGoogleSheets ? (order.fromSheets ? ' ☁️' : ' 💾') : '';
           
-          message += `   • ${orderDate.toLocaleDateString()} - ${order.total.toFixed(2)} (${order.orderId})${weekIndicator}${syncIndicator}\n`;
+          message += `   • ${orderDate.toLocaleDateString()} - $${order.total.toFixed(2)} (${order.orderId})${weekIndicator}${syncIndicator}\n`;
         });
         message += `\n`;
       });
@@ -1868,7 +1959,7 @@
 
       if (thisWeekOrders.length > 0) {
         const weekTotal = thisWeekOrders.reduce((sum, order) => sum + order.total, 0);
-        message += `This Week: ${thisWeekOrders.length} orders (${weekTotal.toFixed(2)})\n`;
+        message += `This Week: ${thisWeekOrders.length} orders ($${weekTotal.toFixed(2)})\n`;
       }
 
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
@@ -1929,13 +2020,12 @@
       const d = new Date(date);
       const day = d.getDay();
       const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      d.setDate(diff);
       d.setHours(0, 0, 0, 0);
       return d;
     }
 
     // ============================================
-    // WORKING REPORT GENERATION FROM ORIGINAL
+    // REPORT GENERATION
     // ============================================
     function generateTestReport() {
       if (!GOOGLE_SHEETS_CONFIG.useGoogleSheets || !GOOGLE_SHEETS_CONFIG.webAppUrl) {
@@ -2015,6 +2105,7 @@
     // UTILITY FUNCTIONS
     // ============================================
     function showNotification(message, type = 'info') {
+      // Remove existing notification
       const existingNotif = document.querySelector('.notification');
       if (existingNotif) {
         existingNotif.remove();
