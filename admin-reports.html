@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Artios Academies Admin - Report Generator</title>
+  <title>Artios Academies Cafe Admin Portal</title>
   <style>
     * {
       margin: 0;
@@ -27,7 +27,7 @@
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       padding: 40px;
-      max-width: 800px;
+      max-width: 900px;
       width: 100%;
       text-align: center;
     }
@@ -55,14 +55,15 @@
     .tab-buttons {
       display: flex;
       background: #f5f5f5;
-      border-radius: 10px;
-      padding: 5px;
-      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: 6px;
+      margin-bottom: 25px;
+      gap: 4px;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 12px 20px;
+      padding: 14px 18px;
       border: none;
       background: transparent;
       border-radius: 8px;
@@ -70,6 +71,7 @@
       font-weight: 600;
       transition: all 0.3s ease;
       color: #666;
+      font-size: 0.95em;
     }
 
     .tab-btn.active {
@@ -91,7 +93,7 @@
       display: block;
     }
 
-    /* Report Generation Styles */
+    /* Form Styles */
     .form-group {
       margin-bottom: 25px;
       text-align: left;
@@ -120,6 +122,132 @@
       box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
     }
 
+    /* Report Type Selection */
+    .report-type-selector {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .report-type-option {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .report-type-option:hover {
+      border-color: #4285f4;
+      background: rgba(66, 133, 244, 0.05);
+    }
+
+    .report-type-option input[type="radio"] {
+      margin: 0 0 12px 0;
+      width: 20px;
+      height: 20px;
+    }
+
+    .report-type-option input[type="radio"]:checked + span {
+      color: #4285f4;
+      font-weight: 700;
+    }
+
+    .report-type-option span {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .report-type-option small {
+      color: #666;
+      font-size: 0.9em;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Day Display */
+    .day-display {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+      border: 2px solid #4285f4;
+      border-radius: 8px;
+      font-weight: 700;
+      color: #1565c0;
+      text-align: center;
+      font-size: 1.1em;
+      display: none;
+    }
+
+    /* Date Range Inputs */
+    .date-range-inputs {
+      display: flex;
+      gap: 20px;
+    }
+
+    .date-range-input {
+      flex: 1;
+    }
+
+    .date-range-input label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #666;
+      font-size: 0.95em;
+    }
+
+    .range-day-display {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      font-weight: 600;
+      color: #495057;
+      text-align: center;
+      font-size: 0.9em;
+      display: none;
+    }
+
+    /* Daily Orders Specific Styles */
+    .daily-orders-section {
+      background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
+      border: 2px solid #ff9800;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .daily-orders-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .daily-orders-title {
+      color: #f57c00;
+      font-size: 1.3em;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .daily-orders-desc {
+      color: #ef6c00;
+      font-size: 0.95em;
+      font-style: italic;
+    }
+
     /* Email Recipients Section */
     .email-recipients {
       background: #f8f9fa;
@@ -128,6 +256,15 @@
       padding: 20px;
       margin-bottom: 25px;
       text-align: left;
+    }
+
+    .admin-recipients {
+      background: linear-gradient(135deg, rgba(66, 133, 244, 0.1) 0%, rgba(52, 168, 83, 0.1) 100%);
+      border: 2px solid #4285f4;
+    }
+
+    .admin-recipients h4 {
+      color: #4285f4;
     }
 
     .email-recipients h4 {
@@ -147,8 +284,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 12px;
       background: white;
+      padding: 12px;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
       transition: all 0.3s ease;
@@ -184,53 +321,31 @@
       font-size: 0.9em;
     }
 
-    /* Custom Email Input Styles */
-    .custom-email {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .custom-email label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    /* Custom Email Input */
+    .worker-email-input {
       width: 100%;
-    }
-
-    .custom-email-input {
-      flex: 1;
-      padding: 8px 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 6px;
-      font-size: 14px;
+      padding: 12px;
+      border: 2px solid #ff9800;
+      border-radius: 8px;
+      font-size: 16px;
       font-family: monospace;
+      background: white;
       transition: all 0.3s ease;
-      min-width: 200px;
     }
 
-    .custom-email-input:focus {
+    .worker-email-input:focus {
       outline: none;
-      border-color: #4285f4;
-      box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.1);
+      border-color: #f57c00;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
     }
 
-    .custom-email-input:disabled {
-      background: #f5f5f5;
+    .worker-email-input::placeholder {
       color: #999;
-      cursor: not-allowed;
-    }
-
-    .email-error {
-      color: #d32f2f;
-      font-size: 0.85em;
-      margin-top: 8px;
-      display: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     }
 
     /* Button Styles */
-    .generate-btn, .upload-btn, .reconcile-btn {
-      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+    .generate-btn, .daily-orders-btn, .upload-btn, .reconcile-btn {
       color: white;
       border: none;
       padding: 18px 35px;
@@ -243,42 +358,34 @@
       margin-bottom: 20px;
     }
 
+    .generate-btn {
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+    }
+
+    .daily-orders-btn {
+      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    }
+
     .reconcile-btn {
       background: linear-gradient(135deg, #3d95ce 0%, #2980b9 100%);
     }
 
     .generate-btn:hover:not(:disabled),
+    .daily-orders-btn:hover:not(:disabled),
     .upload-btn:hover:not(:disabled),
     .reconcile-btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(66, 133, 244, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
     .generate-btn:disabled,
+    .daily-orders-btn:disabled,
     .upload-btn:disabled,
     .reconcile-btn:disabled {
       background: #ccc;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
-    }
-
-    .test-connection-btn {
-      background: #ff9800;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      width: 100%;
-    }
-
-    .test-connection-btn:hover {
-      background: #f57c00;
-      transform: translateY(-1px);
     }
 
     /* Status Messages */
@@ -313,38 +420,170 @@
       border: 1px solid #bbdefb;
     }
 
-    /* Quick Dates */
-    .quick-dates {
-      margin-top: 20px;
+    /* Venmo Upload Section */
+    .venmo-upload {
+      background: linear-gradient(135deg, #3d95ce 0%, #2980b9 100%);
+      color: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 25px;
+      text-align: left;
     }
 
-    .quick-dates h4 {
-      margin-bottom: 10px;
-      color: #666;
+    .venmo-upload h4 {
+      color: white;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .upload-instructions {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
       font-size: 0.9em;
     }
 
-    .quick-date-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .upload-instructions ol {
+      margin-left: 20px;
     }
 
-    .quick-date-btn {
-      background: #f5f5f5;
-      border: 1px solid #ddd;
-      padding: 8px 12px;
-      border-radius: 6px;
+    .upload-instructions li {
+      margin-bottom: 8px;
+    }
+
+    .file-upload-area {
+      border: 2px dashed rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
       cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .quick-date-btn:hover {
+    .file-upload-area:hover {
+      border-color: white;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .file-upload-area.dragover {
+      border-color: #34a853;
+      background: rgba(52, 168, 83, 0.2);
+    }
+
+    .upload-icon {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .file-info {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      display: none;
+    }
+
+    /* Results Section */
+    .results-section {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 25px;
+      display: none;
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .results-stats {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      flex: 1;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .stat-matched {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .stat-missing {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .stat-review {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .results-table th {
       background: #4285f4;
       color: white;
-      border-color: #4285f4;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .results-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .results-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-matched {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-missing {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .status-review {
+      background: #fff3cd;
+      color: #856404;
     }
 
     /* Responsive Design */
@@ -358,32 +597,94 @@
         flex-direction: column;
         gap: 5px;
       }
+
+      .report-type-selector {
+        flex-direction: column;
+      }
+
+      .date-range-inputs {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .results-stats {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .results-table {
+        font-size: 0.9em;
+      }
+
+      .results-table th,
+      .results-table td {
+        padding: 8px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="admin-container">
     <div class="admin-header">
-      <h1 class="admin-title">📊 Artios Academies Admin Portal</h1>
-      <p class="admin-subtitle">Report Generation System</p>
+      <h1 class="admin-title">🏢 Artios Academies Cafe Admin Portal</h1>
+      <p class="admin-subtitle">Administrative Tools & Reports</p>
     </div>
 
     <div class="tab-container">
       <div class="tab-buttons">
-        <button class="tab-btn active" data-tab="reports">📋 Generate Reports</button>
+        <button class="tab-btn active" data-tab="reports">📊 Generate Reports</button>
+        <button class="tab-btn" data-tab="daily-orders">🍽️ Daily Orders</button>
+        <button class="tab-btn" data-tab="payments">💳 Payment Reconciliation</button>
       </div>
 
-      <!-- Reports Tab -->
+      <!-- Generate Reports Tab -->
       <div class="tab-content active" id="reports-tab">
         <form id="report-form">
+          
+          <!-- Report Type Selection -->
           <div class="form-group">
-            <label for="report-date">Select Report Date:</label>
-            <input type="date" id="report-date" class="date-input" required>
+            <label>Choose Report Type:</label>
+            <div class="report-type-selector">
+              <label class="report-type-option">
+                <input type="radio" name="report-type" value="daily" checked>
+                <span>📅 Daily Report</span>
+                <small>Single day financial analysis</small>
+              </label>
+              <label class="report-type-option">
+                <input type="radio" name="report-type" value="range">
+                <span>📊 Monthly/Yearly Report</span>
+                <small>Date range business analysis</small>
+              </label>
+            </div>
           </div>
 
-          <!-- Email Recipients Section -->
-          <div class="email-recipients">
-            <h4>📧 Email Report To:</h4>
+          <!-- Daily Report Date -->
+          <div class="form-group" id="daily-date-section">
+            <label for="daily-report-date">Select Report Date:</label>
+            <input type="date" id="daily-report-date" class="date-input" required>
+            <div class="day-display" id="day-display"></div>
+          </div>
+
+          <!-- Range Report Dates -->
+          <div class="form-group" id="range-date-section" style="display: none;">
+            <label for="range-dates">Select Date Range:</label>
+            <div class="date-range-inputs">
+              <div class="date-range-input">
+                <label for="range-start-date">From Date:</label>
+                <input type="date" id="range-start-date" class="date-input">
+                <div class="range-day-display" id="start-day-display"></div>
+              </div>
+              <div class="date-range-input">
+                <label for="range-end-date">To Date:</label>
+                <input type="date" id="range-end-date" class="date-input">
+                <div class="range-day-display" id="end-day-display"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Recipients Section -->
+          <div class="email-recipients admin-recipients">
+            <h4>👨‍💼 Admin Recipients</h4>
             <div class="email-checkbox-group">
               <div class="email-checkbox" id="admin-checkbox">
                 <input type="checkbox" id="email-admin" checked>
@@ -399,41 +700,135 @@
                   <div class="email-address">CRivers@artiosacademies.com</div>
                 </label>
               </div>
-              <div class="email-checkbox custom-email" id="custom-checkbox">
-                <input type="checkbox" id="email-custom">
-                <label for="email-custom">
-                  <strong>Cafe Worker (Simple List):</strong>
-                  <input type="email" 
-                         id="custom-email-input" 
-                         class="custom-email-input" 
-                         placeholder="worker@example.com">
-                </label>
-              </div>
-            </div>
-            <div class="email-error" id="email-error">
-              Please select at least one email recipient or enter a cafe worker email
             </div>
           </div>
 
           <button type="submit" class="generate-btn" id="generate-btn">
-            📋 Generate Report
+            📊 Generate Admin Report
           </button>
-
-          <button type="button" class="test-connection-btn" id="test-btn">
-            🔧 Test Google Sheets Connection
-          </button>
-
-          <div class="quick-dates">
-            <h4>Quick Select:</h4>
-            <div class="quick-date-buttons">
-              <button type="button" class="quick-date-btn" data-offset="0">Today</button>
-              <button type="button" class="quick-date-btn" data-offset="1">Tomorrow</button>
-              <button type="button" class="quick-date-btn" data-offset="-1">Yesterday</button>
-            </div>
-          </div>
 
           <div class="status-message" id="status-message"></div>
         </form>
+      </div>
+
+      <!-- Daily Orders Tab -->
+      <div class="tab-content" id="daily-orders-tab">
+        <div class="daily-orders-section">
+          <div class="daily-orders-header">
+            <div class="daily-orders-title">
+              🍽️ Daily Orders
+            </div>
+            <div class="daily-orders-desc">
+              Send simple food lists to cafe workers - no financial information
+            </div>
+          </div>
+
+          <form id="daily-orders-form">
+            <div class="form-group">
+              <label for="orders-date">Select Date for Food Orders:</label>
+              <input type="date" id="orders-date" class="date-input" required>
+              <div class="day-display" id="orders-day-display"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="worker-email">Cafe Worker Email:</label>
+              <input type="email" 
+                     id="worker-email" 
+                     class="worker-email-input" 
+                     placeholder="worker@example.com"
+                     required>
+            </div>
+
+            <button type="submit" class="daily-orders-btn" id="daily-orders-btn">
+              📋 Send Daily Food Orders
+            </button>
+
+            <div class="status-message" id="daily-orders-status"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Payment Reconciliation Tab -->
+      <div class="tab-content" id="payments-tab">
+        <div class="venmo-upload">
+          <h4>💳 Venmo Payment Reconciliation</h4>
+          
+          <div class="upload-instructions">
+            <strong>How to get your Venmo transaction data:</strong>
+            <ol>
+              <li>Open Venmo app → Settings → Privacy</li>
+              <li>Tap "Export Data" → "Transaction History"</li>
+              <li>Download the CSV file when ready</li>
+              <li>Upload it below to automatically match against orders</li>
+            </ol>
+          </div>
+
+          <div class="file-upload-area" id="file-upload-area">
+            <div class="upload-icon">📁</div>
+            <div>
+              <strong>Drop your Venmo CSV file here</strong><br>
+              <span>or click to browse</span>
+            </div>
+            <input type="file" id="venmo-file" class="file-input" accept=".csv">
+          </div>
+
+          <div class="file-info" id="file-info">
+            <strong>File selected:</strong> <span id="file-name"></span><br>
+            <strong>Size:</strong> <span id="file-size"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reconciliation-date-range">Date Range for Reconciliation:</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="date" id="reconcile-start-date" class="date-input" style="flex: 1;" placeholder="Start Date">
+            <input type="date" id="reconcile-end-date" class="date-input" style="flex: 1;" placeholder="End Date">
+          </div>
+        </div>
+
+        <button type="button" class="reconcile-btn" id="reconcile-btn" disabled>
+          🔍 Analyze Payments
+        </button>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results-section">
+          <div class="results-header">
+            <h3>Payment Reconciliation Results</h3>
+            <div class="results-stats">
+              <div class="stat-card stat-matched">
+                <div id="matched-count">0</div>
+                <div>✅ Matched</div>
+              </div>
+              <div class="stat-card stat-missing">
+                <div id="missing-count">0</div>
+                <div>❌ Missing</div>
+              </div>
+              <div class="stat-card stat-review">
+                <div id="review-count">0</div>
+                <div>⚠️ Review</div>
+              </div>
+            </div>
+          </div>
+
+          <table class="results-table" id="results-table">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Order Amount</th>
+                <th>Venmo Amount</th>
+                <th>Date</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="results-tbody">
+              <!-- Results will be populated here -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="status-message" id="payment-status-message"></div>
       </div>
     </div>
   </div>
@@ -445,11 +840,28 @@
       useGoogleSheets: true
     };
 
+    let uploadedVenmoData = null;
+    let reconciliationResults = null;
+
     document.addEventListener('DOMContentLoaded', function() {
-      // Set default date to today
+      // Set default dates
       const today = new Date();
       const todayStr = today.toISOString().split('T')[0];
-      document.getElementById('report-date').value = todayStr;
+      
+      // Reports tab dates
+      document.getElementById('daily-report-date').value = todayStr;
+      updateDayDisplay();
+
+      // Daily orders tab date
+      document.getElementById('orders-date').value = todayStr;
+      updateOrdersDayDisplay();
+
+      // Set default range (current month)
+      const firstDayThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDayThisMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      document.getElementById('range-start-date').value = firstDayThisMonth.toISOString().split('T')[0];
+      document.getElementById('range-end-date').value = lastDayThisMonth.toISOString().split('T')[0];
+      updateRangeDayDisplays();
 
       // Setup event listeners
       setupEventListeners();
@@ -457,59 +869,197 @@
     });
 
     function setupEventListeners() {
-      // Report form submission
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tabId = this.dataset.tab;
+          switchTab(tabId);
+        });
+      });
+
+      // Reports form submission
       document.getElementById('report-form').addEventListener('submit', function(e) {
         e.preventDefault();
         generateReport();
       });
 
-      // Test connection
-      document.getElementById('test-btn').addEventListener('click', testConnection);
+      // Daily orders form submission
+      document.getElementById('daily-orders-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        sendDailyOrders();
+      });
 
-      // Quick date buttons
-      document.querySelectorAll('.quick-date-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const offset = parseInt(this.dataset.offset);
-          const date = new Date();
-          date.setDate(date.getDate() + offset);
-          const dateStr = date.toISOString().split('T')[0];
-          document.getElementById('report-date').value = dateStr;
+      // Report type selection
+      document.querySelectorAll('input[name="report-type"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          const reportType = this.value;
+          toggleReportType(reportType);
         });
       });
+
+      // Date change listeners
+      const dailyDateInput = document.getElementById('daily-report-date');
+      if (dailyDateInput) {
+        dailyDateInput.addEventListener('change', updateDayDisplay);
+      }
+
+      const ordersDateInput = document.getElementById('orders-date');
+      if (ordersDateInput) {
+        ordersDateInput.addEventListener('change', updateOrdersDayDisplay);
+      }
+
+      const startDateInput = document.getElementById('range-start-date');
+      const endDateInput = document.getElementById('range-end-date');
+      if (startDateInput) {
+        startDateInput.addEventListener('change', updateRangeDayDisplays);
+      }
+      if (endDateInput) {
+        endDateInput.addEventListener('change', updateRangeDayDisplays);
+      }
 
       // Email checkbox events
       document.querySelectorAll('.email-checkbox input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', updateEmailCheckboxStyles);
       });
 
-      // Custom email input events
-      const customEmailInput = document.getElementById('custom-email-input');
-      const customEmailCheckbox = document.getElementById('email-custom');
-      
-      // Enable/disable custom email input based on checkbox
-      customEmailCheckbox.addEventListener('change', function() {
-        customEmailInput.disabled = !this.checked;
-        if (!this.checked) {
-          customEmailInput.value = '';
-        }
-        updateEmailCheckboxStyles();
-      });
+      // File upload events (for payment reconciliation)
+      const fileUploadArea = document.getElementById('file-upload-area');
+      const fileInput = document.getElementById('venmo-file');
 
-      // Auto-check the custom checkbox when typing in the input
-      customEmailInput.addEventListener('input', function() {
-        if (this.value.trim() && !customEmailCheckbox.checked) {
-          customEmailCheckbox.checked = true;
-        }
-        updateEmailCheckboxStyles();
-      });
+      if (fileUploadArea && fileInput) {
+        fileUploadArea.addEventListener('click', () => fileInput.click());
+        fileUploadArea.addEventListener('dragover', handleDragOver);
+        fileUploadArea.addEventListener('dragleave', handleDragLeave);
+        fileUploadArea.addEventListener('drop', handleFileDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+      }
 
-      // Initialize custom email input as disabled
-      customEmailInput.disabled = true;
+      // Reconciliation button
+      const reconcileBtn = document.getElementById('reconcile-btn');
+      if (reconcileBtn) {
+        reconcileBtn.addEventListener('click', performReconciliation);
+      }
+
+      // Date range validation for reconciliation
+      const reconcileStartDate = document.getElementById('reconcile-start-date');
+      const reconcileEndDate = document.getElementById('reconcile-end-date');
+      if (reconcileStartDate && reconcileEndDate) {
+        reconcileStartDate.addEventListener('change', validateDateRange);
+        reconcileEndDate.addEventListener('change', validateDateRange);
+        
+        // Set default date range (last 7 days)
+        const today = new Date();
+        const lastWeek = new Date();
+        lastWeek.setDate(lastWeek.getDate() - 7);
+        reconcileStartDate.value = lastWeek.toISOString().split('T')[0];
+        reconcileEndDate.value = today.toISOString().split('T')[0];
+      }
     }
 
-    // Report Generation Functions
+    function switchTab(tabId) {
+      // Update button states
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.tab === tabId) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Update content visibility
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      const targetTab = document.getElementById(tabId + '-tab');
+      if (targetTab) {
+        targetTab.classList.add('active');
+      }
+    }
+
+    function toggleReportType(reportType) {
+      const dailySection = document.getElementById('daily-date-section');
+      const rangeSection = document.getElementById('range-date-section');
+      const generateBtn = document.getElementById('generate-btn');
+      
+      if (reportType === 'daily') {
+        dailySection.style.display = 'block';
+        rangeSection.style.display = 'none';
+        generateBtn.innerHTML = '📅 Generate Daily Report';
+      } else {
+        dailySection.style.display = 'none';
+        rangeSection.style.display = 'block';
+        generateBtn.innerHTML = '📊 Generate Range Report';
+      }
+    }
+
+    function updateDayDisplay() {
+      const dateInput = document.getElementById('daily-report-date');
+      const dayDisplay = document.getElementById('day-display');
+      
+      if (dateInput && dayDisplay && dateInput.value) {
+        const selectedDate = new Date(dateInput.value + 'T12:00:00');
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayName = dayNames[selectedDate.getDay()];
+        
+        dayDisplay.textContent = `📅 ${dayName}, ${selectedDate.toLocaleDateString('en-US', { 
+          month: 'long', 
+          day: 'numeric', 
+          year: 'numeric' 
+        })}`;
+        dayDisplay.style.display = 'block';
+      } else if (dayDisplay) {
+        dayDisplay.style.display = 'none';
+      }
+    }
+
+    function updateOrdersDayDisplay() {
+      const dateInput = document.getElementById('orders-date');
+      const dayDisplay = document.getElementById('orders-day-display');
+      
+      if (dateInput && dayDisplay && dateInput.value) {
+        const selectedDate = new Date(dateInput.value + 'T12:00:00');
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayName = dayNames[selectedDate.getDay()];
+        
+        dayDisplay.textContent = `🍽️ ${dayName}, ${selectedDate.toLocaleDateString('en-US', { 
+          month: 'long', 
+          day: 'numeric', 
+          year: 'numeric' 
+        })}`;
+        dayDisplay.style.display = 'block';
+      } else if (dayDisplay) {
+        dayDisplay.style.display = 'none';
+      }
+    }
+
+    function updateRangeDayDisplays() {
+      const startDateInput = document.getElementById('range-start-date');
+      const endDateInput = document.getElementById('range-end-date');
+      const startDayDisplay = document.getElementById('start-day-display');
+      const endDayDisplay = document.getElementById('end-day-display');
+      
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      
+      if (startDateInput && startDayDisplay && startDateInput.value) {
+        const startDate = new Date(startDateInput.value + 'T12:00:00');
+        const startDayName = dayNames[startDate.getDay()];
+        startDayDisplay.textContent = `${startDayName}`;
+        startDayDisplay.style.display = 'block';
+      } else if (startDayDisplay) {
+        startDayDisplay.style.display = 'none';
+      }
+      
+      if (endDateInput && endDayDisplay && endDateInput.value) {
+        const endDate = new Date(endDateInput.value + 'T12:00:00');
+        const endDayName = dayNames[endDate.getDay()];
+        endDayDisplay.textContent = `${endDayName}`;
+        endDayDisplay.style.display = 'block';
+      } else if (endDayDisplay) {
+        endDayDisplay.style.display = 'none';
+      }
+    }
+
     function updateEmailCheckboxStyles() {
-      // Update checkbox styling
+      // Update checkbox styling for admin recipients
       document.querySelectorAll('.email-checkbox').forEach(checkboxDiv => {
         const checkbox = checkboxDiv.querySelector('input[type="checkbox"]');
         if (checkbox.checked) {
@@ -518,51 +1068,48 @@
           checkboxDiv.classList.remove('checked');
         }
       });
-
-      // Validate at least one is selected or custom email is entered
-      const adminChecked = document.getElementById('email-admin').checked;
-      const criversChecked = document.getElementById('email-crivers').checked;
-      const customChecked = document.getElementById('email-custom').checked;
-      const customEmail = document.getElementById('custom-email-input').value.trim();
-      const errorDiv = document.getElementById('email-error');
-
-      const hasValidSelection = adminChecked || criversChecked || (customChecked && customEmail && customEmail.includes('@'));
-
-      if (!hasValidSelection) {
-        errorDiv.style.display = 'block';
-        if (customChecked && !customEmail) {
-          errorDiv.textContent = 'Please enter a valid cafe worker email address';
-        } else {
-          errorDiv.textContent = 'Please select at least one email recipient or enter a cafe worker email';
-        }
-      } else {
-        errorDiv.style.display = 'none';
-      }
     }
 
     function generateReport() {
-      const dateInput = document.getElementById('report-date').value;
+      const reportType = document.querySelector('input[name="report-type"]:checked').value;
       const generateBtn = document.getElementById('generate-btn');
       
-      // Get email recipients
+      // Get dates based on report type
+      let reportParams = {};
+      if (reportType === 'daily') {
+        const dateInput = document.getElementById('daily-report-date').value;
+        if (!dateInput) {
+          showStatus('Please select a report date', 'error');
+          return;
+        }
+        reportParams.date = dateInput;
+        reportParams.action = 'generate_report';
+      } else {
+        const startDate = document.getElementById('range-start-date').value;
+        const endDate = document.getElementById('range-end-date').value;
+        if (!startDate || !endDate) {
+          showStatus('Please select start and end dates', 'error');
+          return;
+        }
+        if (startDate > endDate) {
+          showStatus('Start date must be before end date', 'error');
+          return;
+        }
+        reportParams.startDate = startDate;
+        reportParams.endDate = endDate;
+        reportParams.action = 'generate_range_report';
+      }
+      
+      // Get admin email recipients only
       const emailAdmin = document.getElementById('email-admin').checked;
       const emailCrivers = document.getElementById('email-crivers').checked;
-      const emailCustom = document.getElementById('email-custom').checked;
-      const customEmail = document.getElementById('custom-email-input').value.trim();
       
-      // Validate recipients
-      if (!emailAdmin && !emailCrivers && !emailCustom) {
-        showStatus('Please select at least one email recipient', 'error');
-        return;
-      }
-
-      if (emailCustom && (!customEmail || !customEmail.includes('@'))) {
-        showStatus('Please enter a valid cafe worker email address', 'error');
-        return;
-      }
-
-      if (!dateInput) {
-        showStatus('Please select a date', 'error');
+      const adminRecipients = [];
+      if (emailAdmin) adminRecipients.push('jedaws@gmail.com');
+      if (emailCrivers) adminRecipients.push('CRivers@artiosacademies.com');
+      
+      if (adminRecipients.length === 0) {
+        showStatus('Please select at least one admin recipient', 'error');
         return;
       }
 
@@ -574,18 +1121,16 @@
       generateBtn.disabled = true;
       generateBtn.textContent = '⏳ Generating Report...';
       
-      // Build recipients list - separate admin emails from worker email
-      const adminRecipients = [];
-      const workerRecipients = [];
-      
-      if (emailAdmin) adminRecipients.push('jedaws@gmail.com');
-      if (emailCrivers) adminRecipients.push('CRivers@artiosacademies.com');
-      if (emailCustom && customEmail) workerRecipients.push(customEmail);
-      
-      const totalRecipients = adminRecipients.length + workerRecipients.length;
-      showStatus(`Generating report for ${dateInput} (sending to ${totalRecipients} recipient${totalRecipients > 1 ? 's' : ''})...`, 'info');
+      const reportTypeText = reportType === 'daily' ? 'Daily' : 'Range';
+      showStatus(`Generating ${reportTypeText} admin report (sending to ${adminRecipients.length} recipient${adminRecipients.length > 1 ? 's' : ''})...`, 'info');
 
-      const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=generate_report&secret=cafe2025&date=${dateInput}&admin_recipients=${encodeURIComponent(adminRecipients.join(','))}&worker_recipients=${encodeURIComponent(workerRecipients.join(','))}`;
+      // Build URL with parameters
+      let reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?secret=cafe2025`;
+      Object.keys(reportParams).forEach(key => {
+        reportUrl += `&${key}=${encodeURIComponent(reportParams[key])}`;
+      });
+      
+      reportUrl += `&admin_recipients=${encodeURIComponent(adminRecipients.join(','))}`;
 
       fetch(reportUrl)
         .then(response => response.json())
@@ -593,35 +1138,24 @@
           console.log('Report response:', data);
           
           if (data.success) {
-            let message = `✅ Report Generated Successfully!\n\n`;
-            message += `📅 Date: ${dateInput}\n`;
-            message += `🍽️ Orders Found: ${data.ordersProcessed}\n`;
+            let message = `✅ ${reportTypeText} Admin Report Generated!\n\n`;
             
-            if (adminRecipients.length > 0) {
-              message += `📧 Detailed admin report sent to:\n`;
-              adminRecipients.forEach(email => {
-                if (email === 'jedaws@gmail.com') message += `  • Jeremiah Daws (${email})\n`;
-                else if (email === 'CRivers@artiosacademies.com') message += `  • Chan Ta Rivers (${email})\n`;
-                else message += `  • ${email}\n`;
-              });
-            }
-            
-            if (workerRecipients.length > 0) {
-              message += `👷 Simple cafe worker list sent to:\n`;
-              workerRecipients.forEach(email => {
-                message += `  • ${email}\n`;
-              });
-            }
-            
-            if (data.ordersProcessed > 0) {
-              message += `\nThe report includes customer order details and restaurant preparation summary.`;
-              showStatus(`Report sent: ${data.ordersProcessed} orders for ${dateInput}`, 'success');
+            if (reportType === 'daily') {
+              message += `📅 Date: ${reportParams.date}\n`;
+              message += `🍽️ Orders Found: ${data.ordersProcessed || 0}\n`;
             } else {
-              message += `\nNo orders found for this date. ✅ No Chick-fil-A order needed!`;
-              showStatus(`No orders found for ${dateInput}`, 'info');
+              message += `📊 Date Range: ${reportParams.startDate} to ${reportParams.endDate}\n`;
+              message += `📈 Total Orders: ${data.ordersProcessed || 0}\n`;
             }
-
-            // Show simple success message on page instead of popup
+            
+            message += `📧 Detailed admin report sent to:\n`;
+            adminRecipients.forEach(email => {
+              if (email === 'jedaws@gmail.com') message += `  • Jeremiah Daws (${email})\n`;
+              else if (email === 'CRivers@artiosacademies.com') message += `  • Chan Ta Rivers (${email})\n`;
+              else message += `  • ${email}\n`;
+            });
+            
+            // Show success message
             const statusDiv = document.getElementById('status-message');
             statusDiv.innerHTML = message.replace(/\n/g, '<br>');
             statusDiv.className = 'status-message success show';
@@ -636,36 +1170,72 @@
         })
         .finally(() => {
           generateBtn.disabled = false;
-          generateBtn.textContent = '📋 Generate Report';
+          generateBtn.textContent = reportType === 'daily' ? '📅 Generate Daily Report' : '📊 Generate Range Report';
         });
     }
 
-    function testConnection() {
-      const testBtn = document.getElementById('test-btn');
+    function sendDailyOrders() {
+      const dateInput = document.getElementById('orders-date').value;
+      const workerEmail = document.getElementById('worker-email').value.trim();
+      const dailyOrdersBtn = document.getElementById('daily-orders-btn');
       
-      if (!GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        showStatus('Google Sheets URL not configured', 'error');
+      // Validate inputs
+      if (!dateInput) {
+        showDailyOrdersStatus('Please select a date', 'error');
+        return;
+      }
+      
+      if (!workerEmail || !workerEmail.includes('@')) {
+        showDailyOrdersStatus('Please enter a valid cafe worker email', 'error');
         return;
       }
 
-      testBtn.disabled = true;
-      testBtn.textContent = '🔧 Testing...';
-      showStatus('Testing Google Sheets connection...', 'info');
+      if (!GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        showDailyOrdersStatus('Google Sheets URL not configured', 'error');
+        return;
+      }
 
-      const testUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=test&test=true`;
+      dailyOrdersBtn.disabled = true;
+      dailyOrdersBtn.textContent = '⏳ Sending Daily Orders...';
+      
+      showDailyOrdersStatus(`Sending daily food orders for ${dateInput} to ${workerEmail}...`, 'info');
 
-      fetch(testUrl)
+      // Build URL for daily orders (worker report)
+      const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?secret=cafe2025&action=generate_report&date=${encodeURIComponent(dateInput)}&worker_recipients=${encodeURIComponent(workerEmail)}`;
+
+      fetch(reportUrl)
         .then(response => response.json())
-        .then(result => {
-          showStatus('✅ Google Sheets connection successful!', 'success');
+        .then(data => {
+          console.log('Daily orders response:', data);
+          
+          if (data.success) {
+            let message = `✅ Daily Food Orders Sent!\n\n`;
+            message += `📅 Date: ${dateInput}\n`;
+            message += `🍽️ Orders Found: ${data.ordersProcessed || 0}\n`;
+            message += `👷 Simple food list sent to: ${workerEmail}\n`;
+            
+            if (data.ordersProcessed > 0) {
+              message += `\nThe cafe worker will receive a simple list of food items to order from Chick-fil-A.`;
+            } else {
+              message += `\nNo orders found for this date - worker notified that no Chick-fil-A order is needed.`;
+            }
+            
+            // Show success message
+            const statusDiv = document.getElementById('daily-orders-status');
+            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
+            statusDiv.className = 'status-message success show';
+
+          } else {
+            showDailyOrdersStatus(`Daily orders failed: ${data.error}`, 'error');
+          }
         })
         .catch(error => {
-          console.error('Connection test failed:', error);
-          showStatus('❌ Google Sheets connection failed', 'error');
+          console.error('Daily orders error:', error);
+          showDailyOrdersStatus('Network error sending daily orders', 'error');
         })
         .finally(() => {
-          testBtn.disabled = false;
-          testBtn.textContent = '🔧 Test Google Sheets Connection';
+          dailyOrdersBtn.disabled = false;
+          dailyOrdersBtn.textContent = '📋 Send Daily Food Orders';
         });
     }
 
@@ -677,6 +1247,162 @@
       setTimeout(() => {
         statusDiv.classList.remove('show');
       }, 8000);
+    }
+
+    function showDailyOrdersStatus(message, type) {
+      const statusDiv = document.getElementById('daily-orders-status');
+      statusDiv.textContent = message;
+      statusDiv.className = `status-message ${type} show`;
+
+      setTimeout(() => {
+        statusDiv.classList.remove('show');
+      }, 8000);
+    }
+
+    // File Upload Handlers
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.currentTarget.classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.currentTarget.classList.remove('dragover');
+    }
+
+    function handleFileDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.currentTarget.classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        processVenmoFile(files[0]);
+      }
+    }
+
+    function handleFileSelect(e) {
+      const files = e.target.files;
+      if (files.length > 0) {
+        processVenmoFile(files[0]);
+      }
+    }
+
+    function processVenmoFile(file) {
+      if (!file.name.toLowerCase().endsWith('.csv')) {
+        showPaymentStatus('Please select a CSV file', 'error');
+        return;
+      }
+
+      // Show file info
+      const fileInfo = document.getElementById('file-info');
+      const fileName = document.getElementById('file-name');
+      const fileSize = document.getElementById('file-size');
+      
+      if (fileInfo && fileName && fileSize) {
+        fileName.textContent = file.name;
+        fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+        fileInfo.style.display = 'block';
+      }
+
+      // Read and parse CSV
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const csvText = e.target.result;
+        try {
+          uploadedVenmoData = parseVenmoCSV(csvText);
+          showPaymentStatus(`Successfully loaded ${uploadedVenmoData.length} Venmo transactions`, 'success');
+          
+          // Enable reconciliation button
+          const reconcileBtn = document.getElementById('reconcile-btn');
+          if (reconcileBtn) {
+            reconcileBtn.disabled = false;
+            reconcileBtn.textContent = `🔍 Analyze ${uploadedVenmoData.length} Transactions`;
+          }
+          
+        } catch (error) {
+          console.error('Error parsing CSV:', error);
+          showPaymentStatus('Error parsing CSV file. Please check the format.', 'error');
+        }
+      };
+      
+      reader.readAsText(file);
+    }
+
+    function parseVenmoCSV(csvText) {
+      const lines = csvText.split('\n').filter(line => line.trim());
+      const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
+      
+      console.log('CSV Headers:', headers);
+      
+      const transactions = [];
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        if (values.length >= headers.length) {
+          const transaction = {};
+          headers.forEach((header, index) => {
+            transaction[header] = values[index] ? values[index].replace(/"/g, '').trim() : '';
+          });
+          
+          // Only include payments TO Chan Ta (not from her)
+          if (transaction.type && transaction.type.toLowerCase().includes('payment') && 
+              transaction.to && transaction.to.toLowerCase().includes('chanta-rivers')) {
+            transactions.push(transaction);
+          }
+        }
+      }
+      
+      console.log('Parsed Venmo transactions:', transactions);
+      return transactions;
+    }
+
+    function parseCSVLine(line) {
+      const values = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          values.push(current);
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      values.push(current);
+      return values;
+    }
+
+    function validateDateRange() {
+      const startDate = document.getElementById('reconcile-start-date').value;
+      const endDate = document.getElementById('reconcile-end-date').value;
+      
+      if (startDate && endDate && startDate > endDate) {
+        showPaymentStatus('End date must be after start date', 'error');
+        return false;
+      }
+      return true;
+    }
+
+    function performReconciliation() {
+      showPaymentStatus('Payment reconciliation feature coming soon...', 'info');
+    }
+
+    function showPaymentStatus(message, type) {
+      const statusDiv = document.getElementById('payment-status-message');
+      if (statusDiv) {
+        statusDiv.textContent = message;
+        statusDiv.className = `status-message ${type} show`;
+
+        setTimeout(() => {
+          statusDiv.classList.remove('show');
+        }, 8000);
+      }
     }
   </script>
 </body>
