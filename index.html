@@ -934,6 +934,11 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .main-content {
@@ -1025,6 +1030,7 @@
         <strong>Order & Payment Cutoff: Daily at 8:00 AM</strong><br>
         ONE FORM PER FAMILY • Order for multiple children with one email<br>
         Form closed daily from 8:00 AM - 1:00 PM<br>
+        <em>💾 Your family info is automatically saved for convenience</em><br>
         Contact: CRivers@artiosacademies.com | Artios Academies of Sugar Hill
       </div>
     </div>
@@ -1102,11 +1108,11 @@
 
           <!-- Promo Code Section -->
           <div class="promo-section">
-            <h4>🎟️ Staff Discount Code</h4>
+            <h4>🎟️ Discount Codes</h4>
             <input type="text" 
                    id="promo-code" 
                    class="promo-input" 
-                   placeholder="Enter code for staff discount"
+                   placeholder="Enter discount code"
                    maxlength="20">
             <div class="promo-status" id="promo-status"></div>
           </div>
@@ -1115,7 +1121,7 @@
             <div class="total-label">Order Total</div>
             <div class="total-amount">$<span id="total-amount">0.00</span></div>
             <div id="discount-line" style="display: none; color: #4caf50; font-weight: 600; margin-bottom: 10px;">
-              Staff Discount (10%): -$<span id="discount-amount">0.00</span>
+              Discount Applied: -$<span id="discount-amount">0.00</span>
             </div>
             <button type="button" class="checkout-btn" id="checkout-btn" disabled>
               Review & Pay Order
@@ -1219,7 +1225,7 @@
 
   <script>
     // ============================================
-    // CONFIGURATION - UPDATE THIS SECTION
+    // CONFIGURATION
     // ============================================
     const GOOGLE_SHEETS_CONFIG = {
       webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
@@ -1236,15 +1242,12 @@
     let orderItems = [];
     let currentDay = 'monday';
     let storeIsOpen = true;
-    let cloudSyncActive = false;
     let childCount = 1;
-    let isStaffDiscount = false;
+    let discountType = 'none';
 
-    // Day names and arrays
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
     const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-    // Menu data structure - FIXED: Remove drink restrictions, simplified structure
     const menuData = {
       entrees: [
         { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken' },
@@ -1267,13 +1270,168 @@
         { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit' },
         { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese' },
         { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings' },
-        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream' }
+        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream' },
+        { id: 'chips-only', name: 'Chips', price: 1.50, desc: 'Variety of chips (provided by Artios)' }
       ],
       drinks: [
         { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
         { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
       ]
     };
+
+    // ============================================
+    // COOKIE FUNCTIONALITY
+    // ============================================
+    function saveUserDataToCookies(showIndicator) {
+      if (showIndicator === undefined) showIndicator = true;
+      
+      try {
+        const familyData = {
+          email: document.getElementById('family-email').value.trim(),
+          children: []
+        };
+        
+        document.querySelectorAll('.child-section').forEach(function(child) {
+          const childData = {
+            firstName: child.querySelector('.child-first-name').value.trim(),
+            lastName: child.querySelector('.child-last-name').value.trim(),
+            grade: child.querySelector('.child-grade').value
+          };
+          
+          if (childData.firstName) {
+            familyData.children.push(childData);
+          }
+        });
+        
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
+        document.cookie = 'artios_family_data=' + encodeURIComponent(JSON.stringify(familyData)) + '; expires=' + expires.toUTCString() + '; path=/';
+        
+        console.log('Family data saved to cookies:', familyData);
+        
+        if (showIndicator && Math.random() < 0.3) {
+          showSavedIndicator();
+        }
+        
+      } catch (error) {
+        console.error('Error saving family data to cookies:', error);
+      }
+    }
+
+    function saveUserDataQuietly() {
+      saveUserDataToCookies(false);
+    }
+
+    function loadUserDataFromCookies() {
+      try {
+        const cookies = document.cookie.split(';');
+        let familyData = null;
+        
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          const parts = cookie.split('=');
+          if (parts[0] === 'artios_family_data') {
+            familyData = JSON.parse(decodeURIComponent(parts[1]));
+            break;
+          }
+        }
+        
+        if (!familyData) {
+          console.log('No saved family data found');
+          setTimeout(function() {
+            showNotification('💾 Your family info will be automatically saved as you type for convenience!', 'info');
+          }, 2000);
+          return;
+        }
+        
+        console.log('Loading saved family data:', familyData);
+        
+        if (familyData.email) {
+          document.getElementById('family-email').value = familyData.email;
+        }
+        
+        if (familyData.children && familyData.children.length > 0) {
+          const defaultChild = document.querySelector('.child-section');
+          if (defaultChild && familyData.children.length > 0) {
+            const firstChild = familyData.children[0];
+            defaultChild.querySelector('.child-first-name').value = firstChild.firstName || '';
+            defaultChild.querySelector('.child-last-name').value = firstChild.lastName || '';
+            defaultChild.querySelector('.child-grade').value = firstChild.grade || '';
+            
+            for (let i = 1; i < familyData.children.length; i++) {
+              addChild();
+              const newChild = document.querySelector('[data-child="' + (i + 1) + '"]');
+              if (newChild) {
+                const childData = familyData.children[i];
+                newChild.querySelector('.child-first-name').value = childData.firstName || '';
+                newChild.querySelector('.child-last-name').value = childData.lastName || '';
+                newChild.querySelector('.child-grade').value = childData.grade || '';
+              }
+            }
+          }
+          
+          updateChildCheckboxes();
+        }
+        
+        showNotification('Welcome back! Your family info has been loaded.', 'info');
+        
+      } catch (error) {
+        console.error('Error loading family data from cookies:', error);
+      }
+    }
+
+    function showSavedIndicator() {
+      const existingIndicator = document.querySelector('.saved-indicator');
+      if (existingIndicator) {
+        existingIndicator.remove();
+      }
+      
+      const indicator = document.createElement('div');
+      indicator.className = 'saved-indicator';
+      indicator.textContent = '✓ Saved';
+      indicator.style.cssText = 'position: fixed; top: 70px; right: 20px; background: #4caf50; color: white; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; z-index: 10003; animation: slideIn 0.2s ease, fadeOut 0.2s ease 1s forwards; pointer-events: none; opacity: 0.9;';
+      
+      document.body.appendChild(indicator);
+      
+      setTimeout(function() {
+        if (indicator.parentNode) {
+          indicator.remove();
+        }
+      }, 1200);
+    }
+
+    function setupAutoSave() {
+      document.getElementById('family-email').addEventListener('input', debounce(function() {
+        saveUserDataToCookies(false);
+      }, 3000));
+      
+      document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('child-first-name') || e.target.classList.contains('child-last-name')) {
+          debounce(function() {
+            saveUserDataToCookies(false);
+          }, 3000)();
+        }
+      });
+      
+      document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('child-grade')) {
+          saveUserDataQuietly();
+        }
+      });
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction() {
+        const args = arguments;
+        const later = function() {
+          clearTimeout(timeout);
+          func.apply(null, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
 
     // ============================================
     // INITIALIZATION
@@ -1285,6 +1443,8 @@
       generateDayTabs();
       generateMenus();
       setupEventListeners();
+      loadUserDataFromCookies();
+      setupAutoSave();
       updateCart();
       validateForm();
       
@@ -1296,27 +1456,20 @@
       const hours = now.getHours();
       const storeStatus = document.getElementById('store-status');
       
-      // Store is CLOSED from 8:00 AM to 1:00 PM (8-13)
       const isTestingMode = window.location.hostname === 'artioscomputerlab.github.io' || 
                            window.location.search.includes('debug=true') ||
                            window.location.hostname === 'localhost';
       
-      if (false && hours >= 8 && hours < 13 && !isTestingMode) { // Temporarily disabled for testing
+      if (false && hours >= 8 && hours < 13 && !isTestingMode) {
         storeIsOpen = false;
         storeStatus.textContent = '🔒 Store Closed (8 AM - 1 PM)';
         storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
         
-        // Disable the form
         document.body.style.pointerEvents = 'none';
         document.body.style.opacity = '0.7';
         
         const notice = document.querySelector('.notice');
-        notice.innerHTML = `
-          <strong style="color: #ff5722;">⚠️ ORDERING CLOSED</strong><br>
-          Form reopens daily at 1:00 PM<br>
-          Current time: ${now.toLocaleTimeString()}<br>
-          Contact: CRivers@artiosacademies.com
-        `;
+        notice.innerHTML = '<strong style="color: #ff5722;">⚠️ ORDERING CLOSED</strong><br>Form reopens daily at 1:00 PM<br>Current time: ' + now.toLocaleTimeString() + '<br>Contact: CRivers@artiosacademies.com';
       } else {
         storeIsOpen = true;
         storeStatus.textContent = isTestingMode ? '🧪 Testing Mode - Store Open' : '✅ Store Open - Orders Accepted';
@@ -1324,14 +1477,10 @@
       }
     }
 
-    // ============================================
-    // DAY TAB GENERATION
-    // ============================================
     function initializeDates() {
       const today = new Date();
       const currentDay = today.getDay();
       const monday = new Date(today);
-      // Get Monday of current week
       const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
       monday.setDate(diff);
       monday.setHours(0, 0, 0, 0);
@@ -1345,65 +1494,49 @@
       const currentHour = now.getHours();
       let firstAvailableDay = null;
 
-      console.log(`Current time: ${now.toLocaleString()}, Hour: ${currentHour}`);
-
-      days.forEach((day, index) => {
+      days.forEach(function(day, index) {
         const date = new Date(monday);
         date.setDate(monday.getDate() + index);
 
-        // Create date objects for comparison (without time)
         const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
         const isToday = dateOnly.getTime() === todayOnly.getTime();
         const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
-
-        // A day is disabled if:
-        // 1. It's before today, OR 
-        // 2. It's today AND past 8:00 AM
         const isPast = isBeforeToday || (isToday && currentHour >= 8);
 
         const tab = document.createElement('div');
         tab.className = 'day-tab';
         tab.dataset.day = day;
 
-        console.log(`${dayNames[index]} (${date.toDateString()}): isToday=${isToday}, isBeforeToday=${isBeforeToday}, isPast=${isPast}, currentHour=${currentHour}`);
-
-        tab.innerHTML = `
-          <div>${dayNames[index]}</div>
-          <div style="font-size: 0.8em; opacity: 0.8;">${date.getMonth() + 1}/${date.getDate()}</div>
-        `;
+        tab.innerHTML = '<div>' + dayNames[index] + '</div><div style="font-size: 0.8em; opacity: 0.8;">' + (date.getMonth() + 1) + '/' + date.getDate() + '</div>';
 
         if (isPast) {
           tab.classList.add('disabled');
-          tab.title = `Orders for ${dayNames[index]} are closed (8:00 AM cutoff passed)`;
-          console.log(`${dayNames[index]} is disabled`);
+          tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:00 AM cutoff passed)';
         } else {
-          tab.addEventListener('click', () => switchDay(day));
+          tab.addEventListener('click', function() { switchDay(day); });
           if (!firstAvailableDay) {
             firstAvailableDay = day;
-            console.log(`First available day set to: ${day}`);
           }
         }
 
         tabsContainer.appendChild(tab);
       });
 
-      // Set first available day as active, or Monday if none available
       const dayToActivate = firstAvailableDay || 'monday';
       currentDay = dayToActivate;
       
-      const tabToActivate = document.querySelector(`[data-day="${dayToActivate}"]`);
+      const tabToActivate = document.querySelector('[data-day="' + dayToActivate + '"]');
       if (tabToActivate) {
         tabToActivate.classList.add('active');
-        console.log(`Activated tab: ${dayToActivate}`);
       }
     }
 
     function generateMenus() {
       const container = document.getElementById('menu-container');
       
-      days.forEach(day => {
+      days.forEach(function(day) {
         const dayMenu = document.createElement('div');
         dayMenu.className = 'menu-for-day';
         dayMenu.dataset.day = day;
@@ -1412,8 +1545,7 @@
           dayMenu.classList.add('active');
         }
         
-        // Generate menu categories - REORDERED: entrees, salads, sides, drinks
-        Object.keys(menuData).forEach(category => {
+        Object.keys(menuData).forEach(function(category) {
           const categoryDiv = document.createElement('div');
           categoryDiv.className = 'menu-category';
           
@@ -1422,45 +1554,27 @@
             categoryTitle = 'Drinks';
           }
           
-          categoryDiv.innerHTML = `<h4>${categoryTitle}</h4>`;
+          categoryDiv.innerHTML = '<h4>' + categoryTitle + '</h4>';
           
-          // Special handling for drinks category
           if (category === 'drinks') {
-            // Add discount explanation at top of drinks section
             const discountNotice = document.createElement('div');
             discountNotice.className = 'drink-discount-notice';
-            discountNotice.innerHTML = `
-              <div style="background: #e8f5e8; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #34a853;">
-                <strong>💡 Combo Meal Drink Discount!</strong><br>
-                Order an <strong>Entree or Salad + Side</strong> to get:<br>
-                • Regular Drink = <strong>FREE!</strong><br>
-                • Premium Drink = <strong>$1.50</strong> (save $1.50!)<br>
-                <em>Discount applies to one drink per combo meal</em>
-              </div>
-            `;
+            discountNotice.innerHTML = '<div style="background: #e8f5e8; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #34a853;"><strong>💡 Combo Meal Drink Discount!</strong><br>Order an <strong>Entree or Salad + Side</strong> to get drink discounts applied in your cart!<br>• Regular Drink = <strong>FREE!</strong><br>• Premium Drink = <strong>$1.50</strong> (save $1.50!)<br></div>';
             categoryDiv.appendChild(discountNotice);
           }
           
-          menuData[category].forEach(item => {
+          menuData[category].forEach(function(item) {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'menu-item';
             
-            // Dynamic pricing display for drinks - show current price only
             let priceDisplay;
             if (category === 'drinks') {
-              priceDisplay = `$${item.basePrice.toFixed(2)}`;
+              priceDisplay = '$' + item.basePrice.toFixed(2);
             } else {
-              priceDisplay = `$${item.price.toFixed(2)}`;
+              priceDisplay = '$' + item.price.toFixed(2);
             }
             
-            itemDiv.innerHTML = `
-              <div class="item-header">
-                <div class="item-name">${item.name}</div>
-                <div class="item-price" data-item-id="${item.id}">${priceDisplay}</div>
-              </div>
-              <div class="item-desc">${item.desc}</div>
-              <div class="child-checkboxes" id="${item.id}-${day}-checkboxes"></div>
-            `;
+            itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price" data-item-id="' + item.id + '">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
             
             categoryDiv.appendChild(itemDiv);
           });
@@ -1475,14 +1589,14 @@
     }
 
     function switchDay(day) {
-      document.querySelectorAll('.day-tab').forEach(tab => {
+      document.querySelectorAll('.day-tab').forEach(function(tab) {
         tab.classList.remove('active');
         if (tab.dataset.day === day) {
           tab.classList.add('active');
         }
       });
 
-      document.querySelectorAll('.menu-for-day').forEach(menu => {
+      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
         menu.classList.remove('active');
         if (menu.dataset.day === day) {
           menu.classList.add('active');
@@ -1492,25 +1606,17 @@
       currentDay = day;
     }
 
-    // ============================================
-    // EVENT LISTENERS
-    // ============================================
     function setupEventListeners() {
-      console.log('Setting up event listeners...');
-      
       document.getElementById('add-child-btn').addEventListener('click', addChild);
 
       document.addEventListener('change', function(e) {
         if (e.target.type === 'checkbox' && e.target.dataset.item) {
-          // Update cart and drink pricing when selections change
-          setTimeout(() => {
+          setTimeout(function() {
             updateCart();
-            updateDrinkPricingDisplays();
           }, 50);
         }
       });
 
-      // Promo code event listener
       document.getElementById('promo-code').addEventListener('input', function(e) {
         validatePromoCode(e.target.value);
       });
@@ -1523,19 +1629,15 @@
         validateForm();
       });
 
-      // Checkout button event listener
       const checkoutBtn = document.getElementById('checkout-btn');
       if (checkoutBtn) {
-        console.log('Setting up checkout button listener');
         checkoutBtn.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
-          console.log('🚀 Checkout button clicked!');
           
           if (validateForm() && storeIsOpen) {
             openPaymentModal();
           } else {
-            console.log('Checkout blocked - form invalid or store closed');
             if (!storeIsOpen) {
               showNotification('Store is closed. Orders cannot be placed now.', 'error');
             } else {
@@ -1545,13 +1647,11 @@
         });
       }
 
-      // Payment modal listeners
       const cancelBtn = document.getElementById('cancel-payment-btn');
       if (cancelBtn) {
         cancelBtn.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
-          console.log('Cancel payment clicked');
           closePaymentModal();
         });
       }
@@ -1561,16 +1661,14 @@
         confirmBtn.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
-          console.log('🚀 Confirm payment clicked - submitting order');
           
-          // Add loading state to button
           confirmBtn.disabled = true;
           confirmBtn.textContent = '⏳ Submitting Order...';
           
           try {
             submitOrder();
           } catch (error) {
-            console.error('❌ Error in submitOrder:', error);
+            console.error('Error in submitOrder:', error);
             confirmBtn.disabled = false;
             confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
             showNotification('Error submitting order. Please try again.', 'error');
@@ -1578,7 +1676,6 @@
         });
       }
 
-      // Confirmation modal close button
       const confirmationCloseBtn = document.getElementById('confirmation-close-btn');
       if (confirmationCloseBtn) {
         confirmationCloseBtn.addEventListener('click', function() {
@@ -1586,12 +1683,10 @@
         });
       }
 
-      // Click outside modal to close
       const paymentModal = document.getElementById('payment-modal');
       if (paymentModal) {
         paymentModal.addEventListener('click', function(e) {
           if (e.target === this) {
-            console.log('Modal background clicked - closing');
             closePaymentModal();
           }
         });
@@ -1605,13 +1700,8 @@
           }
         });
       }
-      
-      console.log('✅ All event listeners setup complete');
     }
 
-    // ============================================
-    // MULTI-CHILD FUNCTIONALITY
-    // ============================================
     function addChild() {
       childCount++;
       const container = document.getElementById('children-container');
@@ -1620,40 +1710,8 @@
       childDiv.className = 'child-section';
       childDiv.dataset.child = childCount;
       
-      childDiv.innerHTML = `
-        <div class="child-header">
-          <div class="child-title">
-            <div class="child-icon">${childCount}</div>
-            Child ${childCount}
-          </div>
-          <button type="button" class="remove-child" data-child-id="${childCount}">✕</button>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>First Name <span class="required">*</span></label>
-            <input type="text" class="child-first-name" required>
-          </div>
-          <div class="form-group">
-            <label>Last Name <span class="required">*</span></label>
-            <input type="text" class="child-last-name" required>
-          </div>
-          <div class="form-group">
-            <label>Grade <span class="required">*</span></label>
-            <select class="child-grade" required>
-              <option value="">Select Grade</option>
-              <option value="K-2">K-2</option>
-              <option value="3-4">3-4</option>
-              <option value="5-6">5-6</option>
-              <option value="7-8">7-8</option>
-              <option value="9-12">9-12</option>
-              <option value="Staff">Staff</option>
-              <option value="Parent">Parent</option>
-            </select>
-          </div>
-        </div>
-      `;
+      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
       
-      // Add event listener to the new remove button
       const removeBtn = childDiv.querySelector('.remove-child');
       removeBtn.addEventListener('click', function() {
         const childId = this.dataset.childId;
@@ -1663,18 +1721,23 @@
       container.appendChild(childDiv);
       updateChildCheckboxes();
       validateForm();
+      
+      saveUserDataToCookies(Math.random() < 0.5);
     }
 
     function removeChild(childId) {
-      const childSection = document.querySelector(`[data-child="${childId}"]`);
+      const childSection = document.querySelector('[data-child="' + childId + '"]');
       if (childSection && childCount > 1) {
-        // Remove items for this child from cart
-        orderItems = orderItems.filter(item => item.childId !== childId.toString());
+        orderItems = orderItems.filter(function(item) {
+          return item.childId !== childId.toString();
+        });
         
         childSection.remove();
         renumberChildren();
         updateChildCheckboxes();
         updateCart();
+        
+        saveUserDataQuietly();
       }
     }
 
@@ -1682,18 +1745,16 @@
       const childSections = document.querySelectorAll('.child-section');
       childCount = childSections.length;
       
-      childSections.forEach((section, index) => {
+      childSections.forEach(function(section, index) {
         const newChildId = index + 1;
         section.dataset.child = newChildId;
         section.querySelector('.child-icon').textContent = newChildId;
-        section.querySelector('.child-title').lastChild.textContent = ` Child ${newChildId}`;
+        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
         
         const removeBtn = section.querySelector('.remove-child');
         if (removeBtn) {
-          // Update data attribute and event listener
           removeBtn.dataset.childId = newChildId;
           
-          // Remove old event listener and add new one
           const newRemoveBtn = removeBtn.cloneNode(true);
           newRemoveBtn.addEventListener('click', function() {
             const childId = this.dataset.childId;
@@ -1707,79 +1768,67 @@
     function updateChildCheckboxes() {
       const children = document.querySelectorAll('.child-section');
       
-      document.querySelectorAll('.child-checkboxes').forEach(container => {
+      document.querySelectorAll('.child-checkboxes').forEach(function(container) {
         const parts = container.id.split('-');
         const day = parts[parts.length - 2];
         const itemId = parts.slice(0, -2).join('-');
         
         container.innerHTML = '';
         
-        children.forEach(child => {
+        children.forEach(function(child) {
           const childId = child.dataset.child;
-          const firstName = child.querySelector('.child-first-name').value || `Child ${childId}`;
+          const firstName = child.querySelector('.child-first-name').value || ('Child ' + childId);
           
           const checkboxContainer = document.createElement('div');
           checkboxContainer.className = 'child-checkbox';
           
-          const checkboxId = `${itemId}-${day}-child-${childId}`;
+          const checkboxId = itemId + '-' + day + '-child-' + childId;
           
-          checkboxContainer.innerHTML = `
-            <input type="checkbox" 
-                   id="${checkboxId}"
-                   data-item="${itemId}"
-                   data-day="${day}"
-                   data-child-id="${childId}">
-            <label for="${checkboxId}">${firstName}</label>
-          `;
+          checkboxContainer.innerHTML = '<input type="checkbox" id="' + checkboxId + '" data-item="' + itemId + '" data-day="' + day + '" data-child-id="' + childId + '"><label for="' + checkboxId + '">' + firstName + '</label>';
           
           container.appendChild(checkboxContainer);
         });
       });
     }
 
-    // ============================================
-    // PROMO CODE & STAFF DISCOUNT
-    // ============================================
     function validatePromoCode(code) {
       const promoStatus = document.getElementById('promo-status');
       const trimmedCode = code.trim().toUpperCase();
       
       if (trimmedCode === '') {
-        isStaffDiscount = false;
+        discountType = 'none';
         promoStatus.textContent = '';
         promoStatus.className = 'promo-status';
       } else if (trimmedCode === 'STAFF2025') {
-        isStaffDiscount = true;
+        discountType = 'staff';
         promoStatus.textContent = '✅ Staff Discount Applied (10% off)';
         promoStatus.className = 'promo-status valid';
+      } else if (trimmedCode === 'JOHN') {
+        discountType = 'john';
+        promoStatus.textContent = '✅ JOHN Discount Applied (50% off)';
+        promoStatus.className = 'promo-status valid';
       } else {
-        isStaffDiscount = false;
+        discountType = 'none';
         promoStatus.textContent = '❌ Invalid Code';
         promoStatus.className = 'promo-status invalid';
       }
       
-      updateCart(); // Recalculate totals
+      updateCart();
     }
 
-    // ============================================
-    // CART MANAGEMENT - ONE DRINK DISCOUNT PER CHILD
-    // ============================================
     function updateCart() {
       orderItems = [];
       currentSubtotal = 0;
       
-      // Group selections by child and day to track drink discounts
       const childDayDrinks = {};
       
-      // Get ALL checked checkboxes
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
         const itemId = checkbox.dataset.item;
         const day = checkbox.dataset.day;
         const childId = checkbox.dataset.childId;
         
-        const child = document.querySelector(`[data-child="${childId}"]`);
+        const child = document.querySelector('[data-child="' + childId + '"]');
         if (!child) {
-          console.error('Child not found for childId:', childId);
           return;
         }
         
@@ -1787,11 +1836,10 @@
         const childLastName = child.querySelector('.child-last-name').value;
         const childGrade = child.querySelector('.child-grade').value;
         
-        // Find item in menu data
         let item = null;
         let category = null;
-        Object.keys(menuData).forEach(cat => {
-          const found = menuData[cat].find(i => i.id === itemId);
+        Object.keys(menuData).forEach(function(cat) {
+          const found = menuData[cat].find(function(i) { return i.id === itemId; });
           if (found) {
             item = found;
             category = cat;
@@ -1799,38 +1847,34 @@
         });
         
         if (item) {
-          // Calculate dynamic price for drinks based on child's other selections
           let finalPrice = item.price || item.basePrice;
           let isDiscounted = false;
           
           if (category === 'drinks') {
             const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
-            const childDayKey = `${childId}-${day}`;
+            const childDayKey = childId + '-' + day;
             
-            // Initialize drink counter for this child+day
             if (!childDayDrinks[childDayKey]) {
               childDayDrinks[childDayKey] = { discountedDrinks: 0, hasCombo: hasEntreeOrSaladAndSide };
             }
             
-            // Apply discount only to FIRST drink if they qualify
             if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
               if (item.category === 'regular') {
-                finalPrice = 0; // FREE
+                finalPrice = 0;
                 isDiscounted = true;
               } else if (item.category === 'premium') {
-                finalPrice = 1.50; // Discounted
+                finalPrice = 1.50;
                 isDiscounted = true;
               }
               childDayDrinks[childDayKey].discountedDrinks++;
             } else {
-              // Full price for additional drinks or no combo
               finalPrice = item.basePrice;
             }
           }
           
           const orderItem = {
             childId: childId,
-            childName: `${childFirstName} ${childLastName}`,
+            childName: childFirstName + ' ' + childLastName,
             firstName: childFirstName,
             lastName: childLastName,
             grade: childGrade,
@@ -1844,31 +1888,32 @@
           
           orderItems.push(orderItem);
           currentSubtotal += finalPrice;
-        } else {
-          console.error('Menu item not found:', itemId);
         }
       });
       
-      // Calculate staff discount
-      currentDiscount = isStaffDiscount ? currentSubtotal * 0.10 : 0;
+      if (discountType === 'staff') {
+        currentDiscount = currentSubtotal * 0.10;
+      } else if (discountType === 'john') {
+        currentDiscount = currentSubtotal * 0.50;
+      } else {
+        currentDiscount = 0;
+      }
+      
       currentTotal = currentSubtotal - currentDiscount;
       
       displayCart();
       validateForm();
     }
 
-    // Helper function to check if child has (entree OR salad) AND side for the same day
     function checkChildHasEntreeOrSaladAndSide(childId, day) {
       let hasEntreeOrSalad = false;
       let hasSide = false;
       
-      // Check all checked items for this child and day
-      document.querySelectorAll(`input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]:checked`).forEach(checkbox => {
+      document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked').forEach(function(checkbox) {
         const itemId = checkbox.dataset.item;
         
-        // Find what category this item belongs to
-        Object.keys(menuData).forEach(category => {
-          const found = menuData[category].find(i => i.id === itemId);
+        Object.keys(menuData).forEach(function(category) {
+          const found = menuData[category].find(function(i) { return i.id === itemId; });
           if (found) {
             if (category === 'entrees' || category === 'salads') {
               hasEntreeOrSalad = true;
@@ -1882,94 +1927,6 @@
       return hasEntreeOrSalad && hasSide;
     }
 
-    // Update drink pricing displays - SHOW FIRST DRINK DISCOUNT ONLY
-    function updateDrinkPricingDisplays() {
-      // Update all drink item displays based on current child selections
-      document.querySelectorAll('.menu-item').forEach(menuItem => {
-        const priceDiv = menuItem.querySelector('.item-price');
-        if (!priceDiv) return;
-        
-        const itemId = priceDiv.dataset.itemId;
-        
-        // Find if this is a drink item
-        let drinkItem = null;
-        menuData.drinks?.forEach(drink => {
-          if (drink.id === itemId) {
-            drinkItem = drink;
-          }
-        });
-        
-        if (drinkItem) {
-          // Find the day for this menu item
-          const dayMatch = menuItem.closest('.menu-for-day');
-          if (dayMatch) {
-            const day = dayMatch.dataset.day;
-            
-            // Check each child individually and show their applicable price
-            let priceInfo = [];
-            let hasAnyDiscounts = false;
-            
-            document.querySelectorAll('.child-section').forEach(childDiv => {
-              const childId = childDiv.dataset.child;
-              const firstName = childDiv.querySelector('.child-first-name').value || `Child ${childId}`;
-              
-              const hasCombo = checkChildHasEntreeOrSaladAndSide(childId, day);
-              const alreadyHasDrink = hasSelectedDrinkForChildDay(childId, day);
-              
-              if (hasCombo && !alreadyHasDrink) {
-                hasAnyDiscounts = true;
-                if (drinkItem.category === 'regular') {
-                  priceInfo.push(`${firstName}: FREE (1st drink)`);
-                } else if (drinkItem.category === 'premium') {
-                  priceInfo.push(`${firstName}: $1.50 (1st drink)`);
-                }
-              } else if (hasCombo && alreadyHasDrink) {
-                priceInfo.push(`${firstName}: ${drinkItem.basePrice.toFixed(2)} (additional)`);
-              } else {
-                priceInfo.push(`${firstName}: ${drinkItem.basePrice.toFixed(2)}`);
-              }
-            });
-            
-            // Update the price display
-            if (priceInfo.length === 1) {
-              // Single child - show their price
-              const childPrice = priceInfo[0].split(': ')[1];
-              priceDiv.innerHTML = childPrice;
-              if (childPrice.includes('FREE')) {
-                priceDiv.style.color = '#4caf50';
-              } else if (childPrice.includes('$1.50') && childPrice.includes('1st')) {
-                priceDiv.style.color = '#ff9800';
-              } else {
-                priceDiv.style.color = '#34a853';
-              }
-            } else {
-              // Multiple children - show base price with hover details
-              priceDiv.innerHTML = `${drinkItem.basePrice.toFixed(2)}`;
-              priceDiv.style.color = '#34a853';
-              priceDiv.title = priceInfo.join('\n');
-            }
-          }
-        }
-      });
-    }
-    
-    // Helper function to check if child already has a drink selected for a day
-    function hasSelectedDrinkForChildDay(childId, day) {
-      const drinkCheckboxes = document.querySelectorAll(
-        `input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]:checked`
-      );
-      
-      let drinkCount = 0;
-      drinkCheckboxes.forEach(checkbox => {
-        const itemId = checkbox.dataset.item;
-        if (menuData.drinks?.some(drink => drink.id === itemId)) {
-          drinkCount++;
-        }
-      });
-      
-      return drinkCount > 0;
-    }
-
     function displayCart() {
       const cartItemsDiv = document.getElementById('cart-items');
       const totalSpan = document.getElementById('total-amount');
@@ -1980,9 +1937,8 @@
         return;
       }
       
-      // Group by child
       const itemsByChild = {};
-      orderItems.forEach(item => {
+      orderItems.forEach(function(item) {
         if (!itemsByChild[item.childId]) {
           itemsByChild[item.childId] = {
             name: item.childName,
@@ -1993,51 +1949,48 @@
       });
       
       let html = '';
-      Object.keys(itemsByChild).sort((a, b) => parseInt(a) - parseInt(b)).forEach(childId => {
+      Object.keys(itemsByChild).sort(function(a, b) {
+        return parseInt(a) - parseInt(b);
+      }).forEach(function(childId) {
         const child = itemsByChild[childId];
-        html += `<div class="child-cart-section">`;
-        html += `<div class="child-cart-header">${child.name}</div>`;
+        html += '<div class="child-cart-section">';
+        html += '<div class="child-cart-header">' + child.name + '</div>';
         
-        child.items.forEach(item => {
-          // Add visual indicator for discounted vs full-price drinks
-          let priceDisplay = `${item.price.toFixed(2)}`;
+        child.items.forEach(function(item) {
+          let priceDisplay = '$' + item.price.toFixed(2);
           let extraClass = '';
-          let discountNote = '';
           
           if (item.category === 'drinks' && item.isDiscounted) {
             if (item.price === 0) {
               priceDisplay = 'FREE';
               extraClass = 'free-item';
-              discountNote = ' 🎉 (1st drink)';
             } else {
-              priceDisplay = `${item.price.toFixed(2)}`;
+              priceDisplay = '$' + item.price.toFixed(2);
               extraClass = 'discounted-item';
-              discountNote = ' 💰 (1st drink)';
             }
-          } else if (item.category === 'drinks' && !item.isDiscounted && item.price === item.originalPrice) {
-            discountNote = ' (additional)';
           }
           
-          html += `
-            <div class="cart-item ${extraClass}">
-              <div class="cart-item-name">${item.name} (${item.day})${discountNote}</div>
-              <div class="cart-item-price">${priceDisplay}</div>
-            </div>
-          `;
+          html += '<div class="cart-item ' + extraClass + '"><div class="cart-item-name">' + item.name + ' (' + item.day + ')</div><div class="cart-item-price">' + priceDisplay + '</div></div>';
         });
-        html += `</div>`;
+        html += '</div>';
       });
       
       cartItemsDiv.innerHTML = html;
       totalSpan.textContent = currentTotal.toFixed(2);
       
-      // Update discount display
       const discountLine = document.getElementById('discount-line');
       const discountAmount = document.getElementById('discount-amount');
       
-      if (isStaffDiscount && currentDiscount > 0) {
+      if (currentDiscount > 0) {
         discountLine.style.display = 'block';
         discountAmount.textContent = currentDiscount.toFixed(2);
+        
+        const discountLabel = discountLine.firstChild;
+        if (discountType === 'staff') {
+          discountLabel.textContent = 'Staff Discount (10%): -$';
+        } else if (discountType === 'john') {
+          discountLabel.textContent = 'JOHN Discount (50%): -$';
+        }
       } else {
         discountLine.style.display = 'none';
       }
@@ -2048,18 +2001,15 @@
       const checkoutBtn = document.getElementById('checkout-btn');
       
       if (!checkoutBtn) {
-        console.error('Checkout button not found in validateForm!');
         return false;
       }
       
-      // Check if we have items and required info
       const hasItems = orderItems.length > 0;
       const hasEmail = email.length > 0 && email.includes('@');
       
-      // Check if all children have required info
       const children = document.querySelectorAll('.child-section');
       let allChildrenComplete = true;
-      children.forEach(child => {
+      children.forEach(function(child) {
         const firstName = child.querySelector('.child-first-name').value.trim();
         const lastName = child.querySelector('.child-last-name').value.trim();
         const grade = child.querySelector('.child-grade').value;
@@ -2070,25 +2020,12 @@
       
       const isValid = hasItems && hasEmail && allChildrenComplete && storeIsOpen;
       
-      console.log('🔍 Form validation:', {
-        hasItems,
-        hasEmail, 
-        allChildrenComplete,
-        storeIsOpen,
-        isValid,
-        itemsCount: orderItems.length,
-        email: email,
-        childrenCount: children.length
-      });
-      
-      // Update button state
       checkoutBtn.disabled = !isValid;
       
       if (isValid) {
-        checkoutBtn.textContent = `Review & Pay Order ($${currentTotal.toFixed(2)})`;
+        checkoutBtn.textContent = 'Review & Pay Order ($' + currentTotal.toFixed(2) + ')';
         checkoutBtn.style.opacity = '1';
         checkoutBtn.style.cursor = 'pointer';
-        console.log('✅ Checkout button enabled');
       } else {
         if (!storeIsOpen) {
           checkoutBtn.textContent = 'Store Closed';
@@ -2103,20 +2040,13 @@
         }
         checkoutBtn.style.opacity = '0.6';
         checkoutBtn.style.cursor = 'not-allowed';
-        console.log('❌ Checkout button disabled');
       }
       
       return isValid;
     }
 
-    // ============================================
-    // PAYMENT MODAL
-    // ============================================
     function openPaymentModal() {
-      console.log('🚀 Opening payment modal...');
-      
       if (!validateForm()) {
-        console.log('❌ Form validation failed, cannot open modal');
         return;
       }
       
@@ -2126,53 +2056,42 @@
       const venmoLink = document.getElementById('venmo-payment-link');
       
       if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
-        console.error('❌ Modal elements not found!');
         showNotification('Payment system error. Please refresh the page.', 'error');
         return;
       }
       
-      console.log('💰 Setting modal totals:', currentTotal);
       modalTotal.textContent = currentTotal.toFixed(2);
       venmoTotal.textContent = currentTotal.toFixed(2);
       
-      // Create order summary for Venmo
-      let orderSummary = `Artios Academies Cafe Lunch Order - $${currentTotal.toFixed(2)}`;
-      const children = [...new Set(orderItems.map(item => item.childName))];
+      let orderSummary = 'Artios Academies Cafe Lunch Order - $' + currentTotal.toFixed(2);
+      const children = orderItems.map(function(item) { return item.childName; }).filter(function(value, index, self) { return self.indexOf(value) === index; });
       if (children.length <= 2) {
-        orderSummary += ` for ${children.join(' & ')}`;
+        orderSummary += ' for ' + children.join(' & ');
       } else {
-        orderSummary += ` for ${children.length} children`;
+        orderSummary += ' for ' + children.length + ' children';
       }
       
-      console.log('📋 Order summary:', orderSummary);
+      const venmoUrl = 'venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
+      const venmoWebUrl = 'https://venmo.com/ChanTa-Rivers?txn=pay&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
       
-      // Generate Venmo URLs
-      const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent(orderSummary)}`;
-      const venmoWebUrl = `https://venmo.com/ChanTa-Rivers?txn=pay&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent(orderSummary)}`;
-      
-      // Detect mobile for Venmo app link
       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
       if (isMobile) {
         venmoLink.href = venmoUrl;
-        console.log('📱 Mobile detected, using app link');
       } else {
         venmoLink.href = venmoWebUrl;
         venmoLink.target = '_blank';
-        console.log('💻 Desktop detected, using web link');
         
-        const paymentDetails = `Pay @ChanTa-Rivers $${currentTotal.toFixed(2)} for: ${orderSummary}`;
+        const paymentDetails = 'Pay @ChanTa-Rivers $' + currentTotal.toFixed(2) + ' for: ' + orderSummary;
         
-        // Add click handler for desktop
         venmoLink.onclick = function(e) {
           e.preventDefault();
           window.open(venmoWebUrl, '_blank');
           
-          // Try to copy payment details to clipboard
           if (navigator.clipboard) {
-            navigator.clipboard.writeText(paymentDetails).then(() => {
+            navigator.clipboard.writeText(paymentDetails).then(function() {
               showNotification('Payment details copied to clipboard!', 'success');
-            }).catch(() => {
+            }).catch(function() {
               alert('Please send payment to:\n\n' + paymentDetails);
             });
           } else {
@@ -2181,142 +2100,112 @@
         };
       }
       
-      // Show modal with animation
-      console.log('🎭 Displaying modal...');
       modal.style.display = 'flex';
       modal.classList.add('show');
       
-      // Focus trap for accessibility
       const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
       if (focusableElements.length > 0) {
         focusableElements[0].focus();
       }
-      
-      console.log('✅ Payment modal opened successfully');
     }
 
     function closePaymentModal() {
-      console.log('🚪 Closing payment modal...');
       const modal = document.getElementById('payment-modal');
       const confirmBtn = document.getElementById('confirm-payment-btn');
       
       if (modal) {
         modal.classList.remove('show');
-        // Use setTimeout to allow animation to complete
-        setTimeout(() => {
+        setTimeout(function() {
           modal.style.display = 'none';
         }, 300);
       }
       
-      // Reset confirm button state
       if (confirmBtn) {
         confirmBtn.disabled = false;
         confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
       }
     }
 
-    // ============================================
-    // CONFIRMATION MODAL
-    // ============================================
     function showDetailedOrderConfirmation(order) {
-      console.log('📋 Showing detailed order confirmation');
-      
       const modal = document.getElementById('confirmation-modal');
       
-      // Populate order details
       document.getElementById('conf-order-id').textContent = order.orderId;
       document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
       document.getElementById('conf-email').textContent = order.email;
       document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
       
-      // Populate children list
       const childrenListDiv = document.getElementById('conf-children-list');
       let childrenHtml = '<ul>';
       if (order.children && order.children.length > 0) {
-        order.children.forEach((child, index) => {
-          childrenHtml += `<li><strong>${child.firstName} ${child.lastName}</strong> (${child.grade})</li>`;
+        order.children.forEach(function(child) {
+          childrenHtml += '<li><strong>' + child.firstName + ' ' + child.lastName + '</strong> (' + child.grade + ')</li>';
         });
       }
       childrenHtml += '</ul>';
       childrenListDiv.innerHTML = childrenHtml;
       
-      // Populate items by day
       const itemsListDiv = document.getElementById('conf-items-list');
       const itemsByDay = {};
       const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       
-      order.items.forEach(item => {
+      order.items.forEach(function(item) {
         if (!itemsByDay[item.day]) {
           itemsByDay[item.day] = [];
         }
         itemsByDay[item.day].push(item);
       });
       
-      const sortedDays = Object.keys(itemsByDay).sort((a, b) => 
-        dayOrder.indexOf(a) - dayOrder.indexOf(b)
-      );
+      const sortedDays = Object.keys(itemsByDay).sort(function(a, b) {
+        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+      });
       
       let itemsHtml = '';
-      sortedDays.forEach(day => {
-        itemsHtml += `<div class="confirmation-day">${day}:</div>`;
-        itemsByDay[day].forEach(item => {
-          let priceDisplay = `${item.price.toFixed(2)}`;
+      sortedDays.forEach(function(day) {
+        itemsHtml += '<div class="confirmation-day">' + day + ':</div>';
+        itemsByDay[day].forEach(function(item) {
+          let priceDisplay = '$' + item.price.toFixed(2);
           if (item.category === 'drinks' && item.isDiscounted) {
             if (item.price === 0) {
               priceDisplay = 'FREE 🎉';
             } else {
-              priceDisplay = `${item.price.toFixed(2)} 💰`;
+              priceDisplay = '$' + item.price.toFixed(2) + ' 💰';
             }
           }
           
-          itemsHtml += `
-            <div class="confirmation-item">
-              <span>• ${item.name} - ${item.childName || 'Student'}</span>
-              <span><strong>${priceDisplay}</strong></span>
-            </div>
-          `;
+          itemsHtml += '<div class="confirmation-item"><span>• ' + item.name + ' - ' + (item.childName || 'Student') + '</span><span><strong>' + priceDisplay + '</strong></span></div>';
         });
       });
       itemsListDiv.innerHTML = itemsHtml;
       
-      // Set total with discount information
-      let totalHtml = `Total: $${order.total.toFixed(2)}`;
+      let totalHtml = 'Total: $' + order.total.toFixed(2);
       if (order.discount && order.discount > 0) {
-        totalHtml = `
-          Subtotal: $${order.subtotal.toFixed(2)}<br>
-          Staff Discount (10%): -$${order.discount.toFixed(2)}<br>
-          <strong>Total: $${order.total.toFixed(2)}</strong>
-        `;
+        let discountLabel = 'Discount';
+        if (order.promoCode === 'STAFF2025') {
+          discountLabel = 'Staff Discount (10%)';
+        } else if (order.promoCode === 'JOHN') {
+          discountLabel = 'JOHN Discount (50%)';
+        }
+        
+        totalHtml = 'Subtotal: $' + order.subtotal.toFixed(2) + '<br>' + discountLabel + ': -$' + order.discount.toFixed(2) + '<br><strong>Total: $' + order.total.toFixed(2) + '</strong>';
       }
       document.getElementById('conf-total').innerHTML = totalHtml;
       
-      // Show modal
       modal.style.display = 'flex';
       modal.classList.add('show');
-      
-      console.log('✅ Confirmation modal displayed');
     }
 
     function closeConfirmationModal() {
-      console.log('🚪 Closing confirmation modal...');
       const modal = document.getElementById('confirmation-modal');
       
       if (modal) {
         modal.classList.remove('show');
-        // Use setTimeout to allow animation to complete
-        setTimeout(() => {
+        setTimeout(function() {
           modal.style.display = 'none';
         }, 300);
       }
     }
 
-    // ============================================
-    // ORDER SUBMISSION
-    // ============================================
     function submitOrder() {
-      console.log('📤 Submitting order...');
-      
-      // Generate simplified order ID: LASTNAME-MMDD-HH
       const now = new Date();
       const familyEmail = document.getElementById('family-email').value.trim();
       const firstChild = document.querySelector('.child-section');
@@ -2327,8 +2216,7 @@
       const hour = String(now.getHours()).padStart(2, '0');
       const minute = String(now.getMinutes()).padStart(2, '0');
       
-      const orderId = `${lastName}-${month}${day}-${hour}${minute}`;
-      console.log('Generated Order ID:', orderId);
+      const orderId = lastName + '-' + month + day + '-' + hour + minute;
       
       const orderData = {
         orderId: orderId,
@@ -2339,15 +2227,14 @@
         subtotal: currentSubtotal,
         discount: currentDiscount,
         total: currentTotal,
-        promoCode: isStaffDiscount ? 'STAFF2025' : '',
+        promoCode: discountType === 'staff' ? 'STAFF2025' : (discountType === 'john' ? 'JOHN' : ''),
         paymentMethod: 'Venmo',
         paymentStatus: 'confirmed',
         sendConfirmation: true,
-        weekStart: new Date().toISOString().split('T')[0] // Add week start for Google Apps Script
+        weekStart: new Date().toISOString().split('T')[0]
       };
 
-      // Add children data
-      document.querySelectorAll('.child-section').forEach(child => {
+      document.querySelectorAll('.child-section').forEach(function(child) {
         orderData.children.push({
           id: child.dataset.child,
           firstName: child.querySelector('.child-first-name').value.trim(),
@@ -2356,13 +2243,9 @@
         });
       });
       
-      console.log('📊 Order data prepared:', orderData);
       showNotification('Submitting order to cloud...', 'info');
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        console.log('☁️ Attempting to submit to Google Sheets...');
-        
-        // First try with CORS to get actual error messages
         fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
           method: 'POST',
           headers: {
@@ -2370,47 +2253,38 @@
           },
           body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
         })
-        .then(response => {
-          console.log('📡 Response received:', response.status, response.statusText);
+        .then(function(response) {
           if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
           }
           return response.json();
         })
-        .then(result => {
-          console.log('✅ Google Sheets response:', result);
+        .then(function(result) {
           if (result.success) {
-            console.log('🎉 Order successfully saved to Google Sheets!');
             if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-              console.log('💾 Also saving to localStorage as backup...');
               saveToLocalStorage(orderData);
             }
             closePaymentModal();
             showDetailedOrderConfirmation(orderData);
-            showNotification(`Order ${orderId} submitted to cloud successfully!`, 'success');
+            showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
             resetForm();
           } else {
             throw new Error(result.error || 'Unknown error from Google Sheets');
           }
         })
-        .catch(error => {
-          console.error('❌ Primary submission failed:', error);
+        .catch(function(error) {
           handleSubmissionFailure(orderData, orderId, error.message);
         });
       } else {
-        console.log('💾 Google Sheets not configured, saving locally only...');
         saveToLocalStorage(orderData);
         closePaymentModal();
         showDetailedOrderConfirmation(orderData);
-        showNotification(`Order ${orderId} saved locally!`, 'success');
+        showNotification('Order ' + orderId + ' saved locally!', 'success');
         resetForm();
       }
     }
 
     function handleSubmissionFailure(orderData, orderId, errorMessage) {
-      console.error('💥 Complete submission failure:', errorMessage);
-      
-      // Reset confirm button
       const confirmBtn = document.getElementById('confirm-payment-btn');
       if (confirmBtn) {
         confirmBtn.disabled = false;
@@ -2418,7 +2292,6 @@
       }
       
       if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-        console.log('🔄 Falling back to localStorage...');
         saveToLocalStorage(orderData);
         closePaymentModal();
         showDetailedOrderConfirmation(orderData);
@@ -2434,25 +2307,23 @@
         const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
         orders.push(orderData);
         localStorage.setItem('cafeOrders', JSON.stringify(orders));
-        console.log('💾 Order saved to localStorage:', orderData.orderId);
       } catch (e) {
-        console.error('❌ Error saving to localStorage:', e);
+        console.error('Error saving to localStorage:', e);
       }
     }
 
     function resetForm() {
       document.getElementById('family-email').value = '';
-      document.querySelectorAll('.child-first-name').forEach(input => input.value = '');
-      document.querySelectorAll('.child-last-name').forEach(input => input.value = '');
-      document.querySelectorAll('.child-grade').forEach(select => select.value = '');
+      document.querySelectorAll('.child-first-name').forEach(function(input) { input.value = ''; });
+      document.querySelectorAll('.child-last-name').forEach(function(input) { input.value = ''; });
+      document.querySelectorAll('.child-grade').forEach(function(select) { select.value = ''; });
       document.getElementById('promo-code').value = '';
       
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(cb) {
         cb.checked = false;
       });
       
-      // Reset discount state
-      isStaffDiscount = false;
+      discountType = 'none';
       document.getElementById('promo-status').textContent = '';
       document.getElementById('promo-status').className = 'promo-status';
       
@@ -2464,8 +2335,7 @@
       validateForm();
     }
 
-    function showNotification(message, type = 'info') {
-      // Remove existing notification
+    function showNotification(message, type) {
       const existingNotif = document.querySelector('.notification');
       if (existingNotif) {
         existingNotif.remove();
@@ -2500,23 +2370,18 @@
       
       const notif = document.createElement('div');
       notif.className = 'notification';
-      notif.style.cssText = `
-        background: ${bgColor};
-        color: ${textColor};
-        border: 2px solid ${borderColor};
-      `;
+      notif.style.cssText = 'background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + ';';
       notif.textContent = icon + message;
       
       document.body.appendChild(notif);
       
-      setTimeout(() => {
+      setTimeout(function() {
         if (notif.parentNode) {
           notif.remove();
         }
       }, 5000);
     }
 
-    // Make removeChild available globally
     window.removeChild = removeChild;
   </script>
 </body>
