@@ -1,2450 +1,914 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Artios Academies of Sugar Hill - Cafe Lunch Order System</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      background: #f8f9fa;
-      color: #202124;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      min-height: 100vh;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-
-    .header-brand {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .artios-logo {
-      width: 60px;
-      height: 60px;
-      flex-shrink: 0;
-      object-fit: contain;
-    }
-
-    .header-text {
-      text-align: left;
-    }
-
-    .header h1 {
-      font-size: 2.2em;
-      font-weight: 600;
-      margin: 0;
-      line-height: 1.2;
-    }
-
-    .header .subtitle {
-      font-size: 1.1em;
-      font-weight: 300;
-      margin: 5px 0 0 0;
-      opacity: 0.9;
-    }
-
-    .header .notice {
-      background: rgba(255,255,255,0.15);
-      padding: 20px;
-      border-radius: 12px;
-      font-size: 0.95em;
-      margin-top: 25px;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .sync-status {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      background: rgba(255,255,255,0.2);
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.8em;
-    }
-
-    .store-status {
-      position: absolute;
-      top: 10px;
-      left: 20px;
-      background: rgba(255,255,255,0.2);
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.8em;
-    }
-
-    .main-content {
-      display: flex;
-      min-height: calc(100vh - 140px);
-    }
-
-    .form-section {
-      flex: 2;
-      padding: 30px;
-      background: white;
-    }
-
-    /* Shared Email Section */
-    .shared-email {
-      background: #e8f5e8;
-      border: 2px solid #4caf50;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .shared-email h3 {
-      color: #2e7d32;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Child Section Styles */
-    .child-section {
-      background: #f8f9fa;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .child-section:hover {
-      border-color: #4285f4;
-    }
-
-    .child-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e0e0e0;
-    }
-
-    .child-title {
-      font-size: 1.1em;
-      font-weight: 600;
-      color: #4285f4;
-      display: flex;
-      align-items: center;
-    }
-
-    .child-icon {
-      background: #4285f4;
-      color: white;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-      font-weight: bold;
-      font-size: 0.9em;
-    }
-
-    .remove-child {
-      background: #ff5722;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-
-    .remove-child:hover {
-      background: #d32f2f;
-      transform: scale(1.1);
-    }
-
-    /* Form Elements */
-    .form-row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      flex: 1;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      color: #444;
-    }
-
-    .required {
-      color: #d32f2f;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      background: white;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: #4285f4;
-      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
-    }
-
-    .add-child-btn {
-      background: #34a853;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 30px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: center;
-      width: 100%;
-      max-width: 300px;
-    }
-
-    .add-child-btn:hover {
-      background: #2e7d32;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
-    }
-
-    /* Menu Section */
-    .menu-section {
-      margin-top: 30px;
-    }
-
-    .menu-section h3 {
-      color: #4285f4;
-      margin-bottom: 20px;
-      font-size: 1.3em;
-    }
-
-    .day-tabs {
-      display: flex;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #e0e0e0;
-      overflow-x: auto;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .copy-days-btn {
-      background: #ff9800;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      margin-left: 15px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .copy-days-btn:hover {
-      background: #f57c00;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
-    }
-
-    .day-tab {
-      padding: 15px 25px;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      font-weight: 500;
-      color: #666;
-    }
-
-    .day-tab:hover {
-      background: rgba(66, 133, 244, 0.1);
-      color: #4285f4;
-    }
-
-    .day-tab.active {
-      color: #4285f4;
-      border-bottom-color: #4285f4;
-      background: rgba(66, 133, 244, 0.1);
-    }
-
-    .day-tab.disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      color: #999;
-    }
-
-    .day-tab.disabled:hover {
-      background: none;
-      color: #999;
-    }
-
-    .menu-for-day {
-      display: none;
-    }
-
-    .menu-for-day.active {
-      display: block;
-    }
-
-    .menu-category {
-      margin-bottom: 30px;
-    }
-
-    .menu-category h4 {
-      color: #34a853;
-      margin-bottom: 15px;
-      font-size: 1.1em;
-      padding: 10px;
-      background: rgba(52, 168, 83, 0.1);
-      border-radius: 6px;
-    }
-
-    .drink-discount-notice {
-      margin-bottom: 15px;
-    }
-
-    .menu-item {
-      background: white;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .menu-item:hover {
-      border-color: #4285f4;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .item-name {
-      font-weight: 600;
-      color: #333;
-    }
-
-    .item-price {
-      font-weight: 700;
-      color: #34a853;
-      font-size: 1.1em;
-    }
-
-    .item-desc {
-      color: #666;
-      font-size: 0.9em;
-      margin-bottom: 15px;
-    }
-
-    .child-checkboxes {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .child-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f8f9fa;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-    }
-
-    .child-checkbox:has(input:checked) {
-      background: rgba(66, 133, 244, 0.1);
-      border-color: #4285f4;
-    }
-
-    .child-checkbox input {
-      width: auto;
-      margin: 0;
-    }
-
-    .child-checkbox label {
-      margin: 0;
-      cursor: pointer;
-      font-weight: 500;
-      color: #4285f4;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      flex: 1;
-      background: #f8f9fa;
-      border-left: 1px solid #e0e0e0;
-      padding: 30px;
-    }
-
-    .cart-summary {
-      position: sticky;
-      top: 30px;
-    }
-
-    .cart-title {
-      font-size: 1.4em;
-      font-weight: 600;
-      color: #4285f4;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .history-btn {
-      width: 100%;
-      background: white;
-      color: #4285f4;
-      border: 2px solid #4285f4;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .history-btn:hover {
-      background: #4285f4;
-      color: white;
-    }
-
-    .cart-items {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 20px;
-      padding-right: 10px;
-    }
-
-    .empty-cart {
-      text-align: center;
-      color: #999;
-      padding: 40px 20px;
-      font-style: italic;
-    }
-
-    .child-cart-section {
-      margin-bottom: 20px;
-    }
-
-    .child-cart-header {
-      background: #4285f4;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 6px 6px 0 0;
-      font-weight: 600;
-      font-size: 0.9em;
-    }
-
-    .cart-item {
-      background: white;
-      border: 1px solid #e0e0e0;
-      padding: 12px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .cart-item:last-child {
-      border-radius: 0 0 6px 6px;
-    }
-
-    .cart-item-name {
-      font-weight: 500;
-      color: #333;
-      flex: 1;
-    }
-
-    .cart-item-price {
-      font-weight: 700;
-      color: #34a853;
-    }
-
-    .cart-item.free-item {
-      background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%);
-      border-left: 4px solid #4caf50;
-    }
-
-    .cart-item.free-item .cart-item-price {
-      color: #4caf50;
-      font-weight: 800;
-    }
-
-    .cart-item.discounted-item {
-      background: linear-gradient(90deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
-      border-left: 4px solid #ff9800;
-    }
-
-    .cart-item.discounted-item .cart-item-price {
-      color: #ff9800;
-      font-weight: 800;
-    }
-
-    .cart-total {
-      background: white;
-      border: 2px solid #4285f4;
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    .total-label {
-      font-size: 1.1em;
-      font-weight: 600;
-      color: #4285f4;
-      margin-bottom: 10px;
-    }
-
-    .total-amount {
-      font-size: 2em;
-      font-weight: 700;
-      color: #34a853;
-      margin-bottom: 20px;
-    }
-
-    .checkout-btn {
-      width: 100%;
-      background: #34a853;
-      color: white;
-      border: none;
-      padding: 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .checkout-btn:hover:not(:disabled) {
-      background: #2e7d32;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
-    }
-
-    .checkout-btn:disabled {
-      background: #bbb;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    /* Payment Modal */
-    .payment-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 10000;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .payment-modal.show {
-      display: flex !important;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .payment-content {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-      text-align: center;
-      animation: slideUp 0.3s ease;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    /* Confirmation Modal */
-    .confirmation-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 10001;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .confirmation-modal.show {
-      display: flex !important;
-    }
-
-    .confirmation-content {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      text-align: left;
-      animation: slideUp 0.3s ease;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    .confirmation-header {
-      text-align: center;
-      color: #34a853;
-      font-size: 1.8em;
-      font-weight: 600;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #e0e0e0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .confirmation-section {
-      margin-bottom: 20px;
-    }
-
-    .confirmation-section h4 {
-      color: #4285f4;
-      margin-bottom: 10px;
-      font-size: 1.1em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .confirmation-section p, .confirmation-section ul {
-      margin-bottom: 8px;
-      line-height: 1.5;
-    }
-
-    .confirmation-section ul {
-      padding-left: 20px;
-    }
-
-    .confirmation-items {
-      background: #f8f9fa;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 10px 0;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .confirmation-day {
-      font-weight: 600;
-      color: #34a853;
-      margin-bottom: 8px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .confirmation-item {
-      margin-left: 10px;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .confirmation-total {
-      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 1.2em;
-      font-weight: 600;
-      margin: 20px 0;
-    }
-
-    .confirmation-close-btn {
-      background: #4285f4;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      width: 100%;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .confirmation-close-btn:hover {
-      background: #3367d6;
-      transform: translateY(-2px);
-    }
-
-    @keyframes slideUp {
-      from { 
-        transform: translateY(50px);
-        opacity: 0;
+// ============================================
+// ENHANCED CONFIGURATION WITH STAFF DISCOUNT SUPPORT
+// ============================================
+const SHEET_ID = '1vBlYUsY7lt0k4x7I_OxvjYbHvQn0hbR6HwHh_aCsHxA'; // Your actual Google Sheet ID
+const ORDERS_SHEET = 'Orders';
+const NOTIFICATION_EMAIL = 'jedaws@gmail.com'; // Report notification email
+
+// ============================================
+// MAIN FUNCTIONS - ENHANCED FOR STAFF DISCOUNT
+// ============================================
+/**
+ * Handle POST requests (new orders) - UPDATED FOR STAFF DISCOUNT
+ */
+function doPost(e) {
+  try {
+    console.log('doPost called, raw event:', JSON.stringify(e));
+    
+    let data;
+    
+    // Handle different data formats
+    if (e && e.postData && e.postData.contents) {
+      console.log('Found postData.contents:', e.postData.contents);
+      try {
+        // Try direct JSON first
+        data = JSON.parse(e.postData.contents);
+        console.log('Successfully parsed as direct JSON');
+      } catch (jsonError) {
+        console.log('Direct JSON failed, trying form-encoded data');
+        // Try form-encoded data
+        const contents = e.postData.contents;
+        if (contents.includes('data=')) {
+          const encodedData = contents.split('data=')[1];
+          data = JSON.parse(decodeURIComponent(encodedData));
+          console.log('Successfully parsed as form-encoded data');
+        } else {
+          throw new Error('Could not parse postData contents');
+        }
       }
-      to { 
-        transform: translateY(0);
-        opacity: 1;
+    } else if (e && e.parameter && e.parameter.data) {
+      console.log('Found parameter.data:', e.parameter.data);
+      data = JSON.parse(e.parameter.data);
+      console.log('Successfully parsed as parameter data');
+    } else {
+      console.error('No valid data found in request');
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: false,
+          error: 'No data received in request',
+          receivedData: {
+            hasEvent: !!e,
+            hasPostData: !!(e && e.postData),
+            hasContents: !!(e && e.postData && e.postData.contents),
+            hasParameter: !!(e && e.parameter),
+            eventKeys: e ? Object.keys(e) : null
+          }
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    console.log('Successfully parsed order data:', JSON.stringify(data));
+    
+    // Validate required fields
+    if (!data.orderId || !data.email || !data.items || !data.children) {
+      throw new Error('Missing required fields: orderId, email, items, or children');
+    }
+    
+    // Save order to sheet (handles multi-child structure with staff discount)
+    const result = saveMultiChildOrderToSheet(data);
+    console.log('Order saved to sheet successfully');
+    
+    // Send confirmation email if requested
+    if (data.sendConfirmation) {
+      try {
+        sendMultiChildConfirmationEmail(data);
+        console.log('Confirmation email sent successfully');
+      } catch (emailError) {
+        console.error('Email failed but continuing:', emailError);
       }
     }
-
-    .payment-header {
-      font-size: 1.5em;
-      font-weight: 600;
-      color: #4285f4;
-      margin-bottom: 15px;
-    }
-
-    .payment-amount {
-      font-size: 2em;
-      font-weight: 700;
-      color: #34a853;
-      margin-bottom: 25px;
-      background: #f0f9ff;
-      padding: 15px;
-      border-radius: 8px;
-    }
-
-    .payment-steps {
-      text-align: left;
-      margin-bottom: 25px;
-    }
-
-    .payment-step {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 15px;
-      gap: 15px;
-    }
-
-    .step-number {
-      background: #4285f4;
-      color: white;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 0.9em;
-      flex-shrink: 0;
-    }
-
-    .venmo-btn {
-      display: inline-block;
-      background: #3d95ce;
-      color: white;
-      text-decoration: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      margin: 10px 0;
-      border: none;
-      cursor: pointer;
-    }
-
-    .venmo-btn:hover {
-      background: #357ca5;
-      transform: translateY(-2px);
-      text-decoration: none;
-      color: white;
-    }
-
-    .confirmation-btn {
-      background: #34a853;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .confirmation-btn:hover {
-      background: #2e7d32;
-      transform: translateY(-2px);
-    }
-
-    .cancel-btn {
-      background: #666;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .cancel-btn:hover {
-      background: #555;
-      transform: translateY(-2px);
-    }
-
-    /* Notifications */
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      z-index: 10002;
-      animation: slideIn 0.3s ease;
-      max-width: 300px;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .main-content {
-        flex-direction: column;
-      }
-
-      .form-section, .sidebar {
-        flex: none;
-      }
-
-      .sidebar {
-        border-left: none;
-        border-top: 1px solid #e0e0e0;
-      }
-
-      .form-row {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .day-tabs {
-        overflow-x: scroll;
-      }
-
-      .child-checkboxes {
-        flex-direction: column;
-      }
-
-      .payment-content, .confirmation-content {
-        margin: 20px;
-        width: calc(100% - 40px);
-        padding: 20px;
-      }
-
-      .header-brand {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-      }
-
-      .header-text {
-        text-align: center;
-      }
-
-      .header h1 {
-        font-size: 1.8em;
-      }
-
-      .header .subtitle {
-        font-size: 1em;
-      }
-
-      .artios-logo {
-        width: 50px;
-        height: 50px;
-        object-fit: contain;
-      }
-
-      .sync-status, .store-status {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        display: inline-block;
-        margin: 5px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="store-status" id="store-status">
-        Checking store hours...
-      </div>
-      <div class="sync-status">
-        ☁️ Cloud Sync Active
-      </div>
-      
-      <div class="header-brand">
-        <img class="artios-logo" src="artios-logo.png" alt="Artios Academies Logo">
-        <div class="header-text">
-          <h1>Artios Academies of Sugar Hill</h1>
-          <div class="subtitle">Cafe Lunch Order System 2025-2026</div>
-        </div>
-      </div>
-      
-      <div class="notice">
-        <strong>Order & Payment Cutoff: Daily at 8:00 AM</strong><br>
-        ONE FORM PER FAMILY • Order for multiple children with one email<br>
-        Form closed daily from 8:00 AM - 1:00 PM<br>
-        Contact: CRivers@artiosacademies.com | Artios Academies of Sugar Hill
-      </div>
-    </div>
-
-    <div class="main-content">
-      <div class="form-section">
-        <!-- Shared Email Section -->
-        <div class="shared-email">
-          <h3>📧 Family Email</h3>
-          <div class="form-group">
-            <label for="family-email">Email Address <span class="required">*</span></label>
-            <input type="email" id="family-email" required placeholder="parent@example.com">
-          </div>
-        </div>
-
-        <!-- Children Sections -->
-        <div id="children-container">
-          <div class="child-section" data-child="1">
-            <div class="child-header">
-              <div class="child-title">
-                <div class="child-icon">1</div>
-                Child 1
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>First Name <span class="required">*</span></label>
-                <input type="text" class="child-first-name" required>
-              </div>
-              <div class="form-group">
-                <label>Last Name <span class="required">*</span></label>
-                <input type="text" class="child-last-name" required>
-              </div>
-              <div class="form-group">
-                <label>Grade <span class="required">*</span></label>
-                <select class="child-grade" required>
-                  <option value="">Select Grade</option>
-                  <option value="K-2">K-2</option>
-                  <option value="3-4">3-4</option>
-                  <option value="5-6">5-6</option>
-                  <option value="7-8">7-8</option>
-                  <option value="9-12">9-12</option>
-                  <option value="Staff">Staff</option>
-                  <option value="Parent">Parent</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button type="button" class="add-child-btn" id="add-child-btn">
-          <span>➕ </span> Add Another Child
-        </button>
-
-        <div class="menu-section">
-          <h3>Select Days & Menu Items</h3>
-
-          <div class="day-tabs" id="day-tabs">
-            <!-- Tabs will be generated by JavaScript -->
-          </div>
-
-          <div id="menu-container">
-            <!-- Menu for each day will be generated by JavaScript -->
-          </div>
-        </div>
-      </div>
-
-      <div class="sidebar">
-        <div class="cart-summary">
-          <div class="cart-title">🛒 Your Order</div>
-
-          <div class="cart-items" id="cart-items">
-            <div class="empty-cart">No items selected</div>
-          </div>
-          <div class="cart-total">
-            <div class="total-label">Order Total</div>
-            <div class="total-amount">$<span id="total-amount">0.00</span></div>
-            <button type="button" class="checkout-btn" id="checkout-btn" disabled>
-              Review & Pay Order
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Payment Modal -->
-  <div class="payment-modal" id="payment-modal">
-    <div class="payment-content">
-      <div class="payment-header">Complete Your Order</div>
-      <div class="payment-amount">
-        Total: $<span id="modal-total">0.00</span>
-      </div>
-
-      <div class="payment-steps">
-        <div class="payment-step">
-          <div class="step-number">1</div>
-          <div>Click "Pay with Venmo" to open Venmo with order details</div>
-        </div>
-        <div class="payment-step">
-          <div class="step-number">2</div>
-          <div>Complete payment to <strong>@ChanTa-Rivers</strong></div>
-        </div>
-        <div class="payment-step">
-          <div class="step-number">3</div>
-          <div>Return here and click "I've Paid" to submit your order</div>
-        </div>
-      </div>
-
-      <div style="margin: 20px 0;">
-        <a href="#" id="venmo-payment-link" class="venmo-btn">
-          💳 Pay with Venmo ($<span id="venmo-total">0.00</span>)
-        </a>
-      </div>
-
-      <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
-        <button type="button" class="confirmation-btn" id="confirm-payment-btn">
-          ✅ I've Paid - Submit Order
-        </button>
-        <button type="button" class="cancel-btn" id="cancel-payment-btn">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Confirmation Modal -->
-  <div class="confirmation-modal" id="confirmation-modal">
-    <div class="confirmation-content">
-      <div class="confirmation-header">
-        ✅ Order Confirmed!
-      </div>
-      
-      <div class="confirmation-section">
-        <h4>📋 Order Details</h4>
-        <ul>
-          <li><strong>Order ID:</strong> <span id="conf-order-id"></span></li>
-          <li><strong>Date:</strong> <span id="conf-date"></span></li>
-          <li><strong>Family Email:</strong> <span id="conf-email"></span></li>
-          <li><strong>Children:</strong> <span id="conf-children-count"></span></li>
-        </ul>
-      </div>
-
-      <div class="confirmation-section">
-        <h4>👥 Family Information</h4>
-        <div id="conf-children-list"></div>
-      </div>
-
-      <div class="confirmation-section">
-        <h4>🍽️ Items Ordered</h4>
-        <div class="confirmation-items" id="conf-items-list"></div>
-      </div>
-
-      <div class="confirmation-total" id="conf-total">
-        Total: $0.00
-      </div>
-
-      <div class="confirmation-section">
-        <h4>💳 Payment Summary</h4>
-        <ul>
-          <li><strong>Payment Method:</strong> Venmo (@ChanTa-Rivers)</li>
-          <li><strong>Status:</strong> Confirmed</li>
-        </ul>
-      </div>
-
-      <div class="confirmation-section">
-        <h4>📧 Next Steps</h4>
-        <p>A confirmation email will be sent to your family email address.</p>
-        <p>Questions? Contact: <strong>CRivers@artiosacademies.com</strong></p>
-      </div>
-
-      <button class="confirmation-close-btn" id="confirmation-close-btn">
-        Got It! Close
-      </button>
-    </div>
-  </div>
-
-  <script>
-    // ============================================
-    // CONFIGURATION - UPDATE THIS SECTION
-    // ============================================
-    const GOOGLE_SHEETS_CONFIG = {
-      webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
-      useGoogleSheets: true,
-      fallbackToLocalStorage: true
+    
+    const response = {
+      success: true,
+      orderId: data.orderId,
+      message: 'Multi-child order saved successfully',
+      childrenCount: data.children ? data.children.length : 0,
+      itemsCount: data.items ? data.items.length : 0,
+      staffDiscount: data.promoCode === 'STAFF2025' ? '10%' : 'None'
     };
+    
+    console.log('Returning success response:', JSON.stringify(response));
+    
+    return ContentService
+      .createTextOutput(JSON.stringify(response))
+      .setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    console.error('Error in doPost:', error.toString());
+    console.error('Error stack:', error.stack);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString(),
+        timestamp: new Date().toISOString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
-    // ============================================
-    // STATE MANAGEMENT
-    // ============================================
-    let currentTotal = 0;
-    let orderItems = [];
-    let currentDay = 'monday';
-    let storeIsOpen = true;
-    let cloudSyncActive = false;
-    let childCount = 1;
-
-    // Day names and arrays
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-    // Menu data structure - UPDATED: Salads before Sides, Dynamic drinks pricing
-    const menuData = {
-      entrees: [
-        { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken' },
-        { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning' },
-        { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces' },
-        { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces' },
-        { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich' },
-        { id: 'grilled-gf', name: 'Grilled Sandwich (GF Bun)', price: 9.50, desc: 'Grilled chicken with gluten-free bun' },
-        { id: 'chicken-wrap', name: 'Chicken Wrap', price: 9.75, desc: 'Grilled chicken in tortilla wrap' },
-        { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Vegetarian wrap with southwest flavors' },
-        { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips' }
-      ],
-      salads: [
-        { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more' },
-        { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers' },
-        { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Mixed greens with chicken and seasonal toppings' }
-      ],
-      sides: [
-        { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries' },
-        { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit' },
-        { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese' },
-        { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings' },
-        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream' }
-      ],
-      drinks: [
-        { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
-        { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
-      ]
-    };
-
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, starting initialization...');
+/**
+ * Handle GET requests - EMAIL-ONLY REPORTS
+ */
+function doGet(e) {
+  try {
+    const action = e.parameter.action;
+    console.log('doGet called with action:', action);
+    
+    // Handle test requests
+    if (action === 'test' || e.parameter.test === 'true') {
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          message: 'Google Apps Script is working correctly!',
+          timestamp: new Date().toISOString(),
+          sheetId: SHEET_ID,
+          features: ['orders', 'email_reports', 'staff_discount']
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Generate EMAIL-ONLY report (no sheets created)
+    if (action === 'generate_report') {
+      const secret = e.parameter.secret;
+      if (secret !== 'cafe2025') {
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: false,
+            error: 'Invalid secret key'
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
       
-      checkStoreHours();
-      generateDayTabs();
-      generateMenus();
-      setupEventListeners();
-      updateCart();
-      validateForm();
+      try {
+        const dateParam = e.parameter.date;
+        let reportDate;
+        
+        if (dateParam) {
+          reportDate = new Date(dateParam + 'T12:00:00');
+          if (isNaN(reportDate.getTime())) {
+            throw new Error('Invalid date format. Use YYYY-MM-DD');
+          }
+        } else {
+          reportDate = new Date();
+        }
+        
+        const result = generateEmailOnlyReport(reportDate);
+        
+        // Get recipients from URL parameters - split between admin and worker
+        const adminRecipientsParam = e.parameter.admin_recipients || NOTIFICATION_EMAIL;
+        const workerRecipientsParam = e.parameter.worker_recipients || '';
+        
+        const adminRecipients = adminRecipientsParam.split(',').map(email => email.trim()).filter(email => email);
+        const workerRecipients = workerRecipientsParam.split(',').map(email => email.trim()).filter(email => email);
+        
+        console.log('Sending detailed report to admin recipients:', adminRecipients);
+        console.log('Sending simple report to worker recipients:', workerRecipients);
+        
+        // Send detailed reports to admin recipients
+        adminRecipients.forEach(email => {
+          sendEnhancedReportNotificationEmail(result, reportDate, true, email);
+        });
+        
+        // Send simple cafe worker reports
+        workerRecipients.forEach(email => {
+          sendSimpleCafeWorkerEmail(result, reportDate, email);
+        });
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'Email report sent successfully',
+            ordersProcessed: result.orderCount,
+            reportDate: reportDate.toISOString().split('T')[0],
+            emailSent: true,
+            adminEmailsSent: adminRecipients.length,
+            workerEmailsSent: workerRecipients.length,
+            // NO SHEET URL - Email only
+            note: 'Report sent via email only'
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+        
+      } catch (reportError) {
+        console.error('Report generation error:', reportError);
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: false,
+            error: `Report generation failed: ${reportError.toString()}`
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: 'Unknown action: ' + action
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    console.error('Error in doGet:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ============================================
+// MULTI-CHILD ORDER MANAGEMENT - UPDATED FOR STAFF DISCOUNT
+// ============================================
+/**
+ * Save multi-child order data to Google Sheet - UPDATED FOR STAFF DISCOUNT
+ */
+function saveMultiChildOrderToSheet(orderData) {
+  try {
+    console.log('Saving multi-child order to sheet:', orderData.orderId);
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(ORDERS_SHEET);
+    
+    orderData.items.forEach((item, index) => {
+      console.log(`Processing item ${index + 1}:`, item.name, 'for child', item.childId);
       
-      console.log('Initialization complete');
+      const child = orderData.children.find(c => c.id === item.childId) || orderData.children[0];
+      
+      if (!child) {
+        console.error('Could not find child for item:', item);
+        return;
+      }
+      
+      const itemDate = getDateFromDayName(item.day, orderData.weekStart || orderData.timestamp);
+      console.log('Item date calculated:', itemDate.toISOString().split('T')[0]);
+      
+      const rowData = [
+        new Date(orderData.timestamp),        // A: Timestamp
+        orderData.email,                      // B: Family email
+        child.firstName,                      // C: Child first name
+        child.lastName,                       // D: Child last name  
+        "'" + child.grade,                    // E: Child grade (force as text)
+        JSON.stringify([{                     // F: Item as single-element array
+          name: item.name,
+          day: item.day,
+          price: item.price,
+          childName: child.firstName + ' ' + child.lastName,
+          grade: child.grade
+        }]),
+        item.price,                           // G: Item price (after drink discounts)
+        orderData.orderId,                    // H: Order ID
+        orderData.paymentMethod || 'Venmo',   // I: Payment method
+        orderData.paymentStatus || 'confirmed', // J: Payment status
+        item.childId || child.id,             // K: Child ID
+        itemDate.toISOString().split('T')[0], // L: Actual DATE
+        orderData.children ? orderData.children.length : 1, // M: Total children
+        orderData.subtotal || orderData.total, // N: Subtotal (before staff discount)
+        orderData.discount || 0,              // O: Staff discount amount
+        orderData.total,                      // P: Final total (after staff discount)
+        orderData.promoCode || ''             // Q: Promo code used
+      ];
+      
+      console.log('Adding row to sheet:', rowData);
+      sheet.appendRow(rowData);
     });
+    
+    console.log(`Multi-child order saved: ${orderData.orderId} with ${orderData.items.length} items, Staff Discount: ${orderData.promoCode === 'STAFF2025' ? 'Yes' : 'No'}`);
+    return true;
+    
+  } catch (error) {
+    console.error('Error saving multi-child order:', error);
+    throw error;
+  }
+}
 
-    function checkStoreHours() {
-      const now = new Date();
-      const hours = now.getHours();
-      const storeStatus = document.getElementById('store-status');
-      
-      // Store is CLOSED from 8:00 AM to 1:00 PM (8-13)
-      const isTestingMode = window.location.hostname === 'artioscomputerlab.github.io' || 
-                           window.location.search.includes('debug=true') ||
-                           window.location.hostname === 'localhost';
-      
-      if (false && hours >= 8 && hours < 13 && !isTestingMode) { // Temporarily disabled for testing
-        storeIsOpen = false;
-        storeStatus.textContent = '🔒 Store Closed (8 AM - 1 PM)';
-        storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
+// ============================================
+// EMAIL-ONLY REPORT GENERATION - NEW APPROACH
+// ============================================
+/**
+ * Generate email-only report (no Google Sheets created)
+ */
+function generateEmailOnlyReport(reportDate) {
+  try {
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const reportDayName = dayNames[reportDate.getDay()];
+    
+    console.log(`Generating email-only report for ${reportDate.toDateString()}`);
+    
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(ORDERS_SHEET);
+    const data = sheet.getDataRange().getValues();
+    
+    console.log(`Found ${data.length - 1} total rows in sheet`);
+    
+    const allOrders = [];
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      try {
+        const item = JSON.parse(row[5])[0];
         
-        // Disable the form
-        document.body.style.pointerEvents = 'none';
-        document.body.style.opacity = '0.7';
-        
-        const notice = document.querySelector('.notice');
-        notice.innerHTML = `
-          <strong style="color: #ff5722;">⚠️ ORDERING CLOSED</strong><br>
-          Form reopens daily at 1:00 PM<br>
-          Current time: ${now.toLocaleTimeString()}<br>
-          Contact: CRivers@artiosacademies.com
-        `;
-      } else {
-        storeIsOpen = true;
-        storeStatus.textContent = isTestingMode ? '🧪 Testing Mode - Store Open' : '✅ Store Open - Orders Accepted';
-        storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
-      }
-    }
-
-    // ============================================
-    // DAY TAB GENERATION
-    // ============================================
-    function initializeDates() {
-      const today = new Date();
-      const currentDay = today.getDay();
-      const monday = new Date(today);
-      // Get Monday of current week
-      const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
-      monday.setDate(diff);
-      monday.setHours(0, 0, 0, 0);
-      return monday;
-    }
-
-    function generateDayTabs() {
-      const tabsContainer = document.getElementById('day-tabs');
-      const monday = initializeDates();
-      const now = new Date();
-      const currentHour = now.getHours();
-      let firstAvailableDay = null;
-
-      console.log(`Current time: ${now.toLocaleString()}, Hour: ${currentHour}`);
-
-      days.forEach((day, index) => {
-        const date = new Date(monday);
-        date.setDate(monday.getDate() + index);
-
-        // Create date objects for comparison (without time)
-        const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        const isToday = dateOnly.getTime() === todayOnly.getTime();
-        const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
-
-        // A day is disabled if:
-        // 1. It's before today, OR 
-        // 2. It's today AND past 8:00 AM
-        const isPast = isBeforeToday || (isToday && currentHour >= 8);
-
-        const tab = document.createElement('div');
-        tab.className = 'day-tab';
-        tab.dataset.day = day;
-
-        console.log(`${dayNames[index]} (${date.toDateString()}): isToday=${isToday}, isBeforeToday=${isBeforeToday}, isPast=${isPast}, currentHour=${currentHour}`);
-
-        tab.innerHTML = `
-          <div>${dayNames[index]}</div>
-          <div style="font-size: 0.8em; opacity: 0.8;">${date.getMonth() + 1}/${date.getDate()}</div>
-        `;
-
-        if (isPast) {
-          tab.classList.add('disabled');
-          tab.title = `Orders for ${dayNames[index]} are closed (8:00 AM cutoff passed)`;
-          console.log(`${dayNames[index]} is disabled`);
+        let itemDateStr = '';
+        if (row[11] instanceof Date) {
+          itemDateStr = row[11].toISOString().split('T')[0];
+        } else if (typeof row[11] === 'string') {
+          itemDateStr = row[11].split('T')[0];
         } else {
-          tab.addEventListener('click', () => switchDay(day));
-          if (!firstAvailableDay) {
-            firstAvailableDay = day;
-            console.log(`First available day set to: ${day}`);
-          }
+          console.log(`Row ${i}: Unexpected itemDate format:`, row[11], typeof row[11]);
+          continue;
         }
-
-        tabsContainer.appendChild(tab);
-      });
-
-      // Add copy button container after tabs
-      const copyButtonContainer = document.createElement('div');
-      copyButtonContainer.id = 'copy-button-container';
-      copyButtonContainer.style.cssText = `
-        margin-left: 20px;
-        display: flex;
-        align-items: center;
-      `;
-      tabsContainer.appendChild(copyButtonContainer);
-
-      // Set first available day as active, or Monday if none available
-      const dayToActivate = firstAvailableDay || 'monday';
-      currentDay = dayToActivate;
-      
-      const tabToActivate = document.querySelector(`[data-day="${dayToActivate}"]`);
-      if (tabToActivate) {
-        tabToActivate.classList.add('active');
-        console.log(`Activated tab: ${dayToActivate}`);
+        
+        const order = {
+          timestamp: row[0],
+          email: row[1],
+          firstName: row[2],
+          lastName: row[3],
+          grade: row[4],
+          item: item,
+          itemPrice: parseFloat(row[6]) || 0,
+          orderId: row[7],
+          childId: row[10] || '1',
+          itemDate: itemDateStr,
+          subtotal: parseFloat(row[13]) || parseFloat(row[6]) || 0,
+          discount: parseFloat(row[14]) || 0,
+          total: parseFloat(row[15]) || parseFloat(row[6]) || 0,
+          promoCode: row[16] || ''
+        };
+        allOrders.push(order);
+        
+      } catch (parseError) {
+        console.error(`Error parsing row ${i}:`, parseError);
       }
-
-      // Update copy button initially
-      updateCopyButton();
     }
-
-    function generateMenus() {
-      const container = document.getElementById('menu-container');
-      
-      days.forEach(day => {
-        const dayMenu = document.createElement('div');
-        dayMenu.className = 'menu-for-day';
-        dayMenu.dataset.day = day;
-        
-        if (day === currentDay) {
-          dayMenu.classList.add('active');
-        }
-        
-        // Generate menu categories - REORDERED: entrees, salads, sides, drinks
-        Object.keys(menuData).forEach(category => {
-          const categoryDiv = document.createElement('div');
-          categoryDiv.className = 'menu-category';
-          
-          let categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
-          if (category === 'drinks') {
-            categoryTitle = 'Drinks';
-          }
-          
-          categoryDiv.innerHTML = `<h4>${categoryTitle}</h4>`;
-          
-          // Special handling for drinks category
-          if (category === 'drinks') {
-            // Add discount explanation at top of drinks section
-            const discountNotice = document.createElement('div');
-            discountNotice.className = 'drink-discount-notice';
-            discountNotice.innerHTML = `
-              <div style="background: #e8f5e8; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #34a853;">
-                <strong>💡 Drink Discounts Available!</strong><br>
-                Order an <strong>Entree or Salad + Side</strong> to get:<br>
-                • Regular Drink = <strong>FREE!</strong><br>
-                • Premium Drink = <strong>$1.50</strong> (save $1.50!)
-              </div>
-            `;
-            categoryDiv.appendChild(discountNotice);
-          }
-          
-          menuData[category].forEach(item => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'menu-item';
-            
-            // Dynamic pricing display for drinks - show current price only
-            let priceDisplay;
-            if (category === 'drinks') {
-              priceDisplay = `$${item.basePrice.toFixed(2)}`;
-            } else {
-              priceDisplay = `$${item.price.toFixed(2)}`;
-            }
-            
-            itemDiv.innerHTML = `
-              <div class="item-header">
-                <div class="item-name">${item.name}</div>
-                <div class="item-price" data-item-id="${item.id}">${priceDisplay}</div>
-              </div>
-              <div class="item-desc">${item.desc}</div>
-              <div class="child-checkboxes" id="${item.id}-${day}-checkboxes"></div>
-            `;
-            
-            categoryDiv.appendChild(itemDiv);
-          });
-          
-          dayMenu.appendChild(categoryDiv);
+    
+    console.log(`Successfully parsed ${allOrders.length} orders from sheet`);
+    
+    // Filter orders for this specific date
+    const itemsForThisDate = [];
+    const reportDateStr = reportDate.toISOString().split('T')[0];
+    
+    console.log(`Looking for items with date: ${reportDateStr}`);
+    
+    allOrders.forEach(order => {
+      if (order.itemDate === reportDateStr) {
+        itemsForThisDate.push({
+          orderId: order.orderId,
+          studentName: `${order.firstName} ${order.lastName}`,
+          grade: order.grade,
+          email: order.email,
+          item: order.item,
+          itemPrice: order.itemPrice,
+          orderTime: order.timestamp,
+          intendedDate: order.itemDate,
+          childId: order.childId,
+          subtotal: order.subtotal,
+          discount: order.discount,
+          total: order.total,
+          promoCode: order.promoCode
         });
-        
-        container.appendChild(dayMenu);
-      });
-      
-      updateChildCheckboxes();
-    }
-
-    function switchDay(day) {
-      document.querySelectorAll('.day-tab').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.dataset.day === day) {
-          tab.classList.add('active');
+        console.log(`✅ MATCH FOUND: ${order.orderId} - ${order.item.name} (Staff Discount: ${order.promoCode === 'STAFF2025' ? 'Yes' : 'No'})`);
+      }
+    });
+    
+    console.log(`Found ${itemsForThisDate.length} items for ${reportDayName} ${reportDate.toDateString()}`);
+    
+    if (itemsForThisDate.length === 0) {
+      return {
+        orderCount: 0,
+        foodItemCount: 0,
+        drinkItemCount: 0,
+        reportData: {
+          itemsForThisDate: [],
+          itemCounts: {},
+          totalRevenue: 0,
+          totalDiscounts: 0,
+          familiesServed: 0,
+          customerData: [],
+          orderingData: []
         }
-      });
-
-      document.querySelectorAll('.menu-for-day').forEach(menu => {
-        menu.classList.remove('active');
-        if (menu.dataset.day === day) {
-          menu.classList.add('active');
-        }
-      });
-
-      currentDay = day;
-      updateCopyButton(); // Update copy button when switching days
+      };
     }
-
-    // ============================================
-    // EVENT LISTENERS
-    // ============================================
-    function setupEventListeners() {
-      console.log('Setting up event listeners...');
+    
+    // Process the data for email reports
+    const itemCounts = {};
+    let totalRevenue = 0;
+    let totalDiscounts = 0;
+    
+    itemsForThisDate.forEach(orderItem => {
+      const itemName = orderItem.item.name;
+      const price = orderItem.itemPrice;
       
-      document.getElementById('add-child-btn').addEventListener('click', addChild);
-
-      document.addEventListener('change', function(e) {
-        if (e.target.type === 'checkbox' && e.target.dataset.item) {
-          // Delay the update to allow for proper state changes
-          setTimeout(() => {
-            updateCart();
-            // Update drink pricing displays dynamically
-            updateDrinkPricingDisplays();
-          }, 50);
-        }
-      });
-
-      document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('child-first-name') || 
-            e.target.classList.contains('child-last-name')) {
-          updateChildCheckboxes();
-        }
-        validateForm();
-      });
-
-      // Checkout button event listener
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        console.log('Setting up checkout button listener');
-        checkoutBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('🚀 Checkout button clicked!');
-          
-          if (validateForm() && storeIsOpen) {
-            openPaymentModal();
-          } else {
-            console.log('Checkout blocked - form invalid or store closed');
-            if (!storeIsOpen) {
-              showNotification('Store is closed. Orders cannot be placed now.', 'error');
-            } else {
-              showNotification('Please complete all required fields and add items to your order.', 'warning');
-            }
-          }
-        });
+      if (!itemCounts[itemName]) {
+        itemCounts[itemName] = { count: 0, price: price, total: 0 };
       }
-
-      // Payment modal listeners
-      const cancelBtn = document.getElementById('cancel-payment-btn');
-      if (cancelBtn) {
-        cancelBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('Cancel payment clicked');
-          closePaymentModal();
-        });
+      itemCounts[itemName].count++;
+      itemCounts[itemName].total += price;
+      totalRevenue += orderItem.total; // Final total after staff discount
+      totalDiscounts += orderItem.discount; // Staff discount amount
+    });
+    
+    const customerData = itemsForThisDate.map(item => [
+      item.orderId,
+      item.studentName,
+      item.grade,
+      item.email,
+      item.item.name,
+      `$${item.itemPrice.toFixed(2)}`,
+      new Date(item.orderTime).toLocaleString(),
+      item.childId,
+      item.promoCode ? 'STAFF2025' : 'None'
+    ]);
+    
+    const orderingData = Object.keys(itemCounts).map(itemName => [
+      itemName,
+      itemCounts[itemName].count,
+      `$${itemCounts[itemName].price.toFixed(2)}`,
+      `$${itemCounts[itemName].total.toFixed(2)}`
+    ]);
+    
+    return {
+      orderCount: itemsForThisDate.length,
+      foodItemCount: Object.values(itemCounts).reduce((sum, item) => sum + item.count, 0),
+      reportData: {
+        itemsForThisDate: itemsForThisDate,
+        itemCounts: itemCounts,
+        totalRevenue: totalRevenue,
+        totalDiscounts: totalDiscounts,
+        familiesServed: new Set(itemsForThisDate.map(item => item.email)).size,
+        customerData: customerData,
+        orderingData: orderingData
       }
+    };
+    
+  } catch (error) {
+    console.error('Error generating email-only report:', error);
+    console.error('Error stack:', error.stack);
+    throw error;
+  }
+}
 
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('🚀 Confirm payment clicked - submitting order');
-          
-          // Add loading state to button
-          confirmBtn.disabled = true;
-          confirmBtn.textContent = '⏳ Submitting Order...';
-          
-          try {
-            submitOrder();
-          } catch (error) {
-            console.error('❌ Error in submitOrder:', error);
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-            showNotification('Error submitting order. Please try again.', 'error');
-          }
-        });
-      }
-
-      // Confirmation modal close button
-      const confirmationCloseBtn = document.getElementById('confirmation-close-btn');
-      if (confirmationCloseBtn) {
-        confirmationCloseBtn.addEventListener('click', function() {
-          closeConfirmationModal();
-        });
-      }
-
-      // Click outside modal to close
-      const paymentModal = document.getElementById('payment-modal');
-      if (paymentModal) {
-        paymentModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            console.log('Modal background clicked - closing');
-            closePaymentModal();
-          }
-        });
-      }
-
-      const confirmationModal = document.getElementById('confirmation-modal');
-      if (confirmationModal) {
-        confirmationModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            closeConfirmationModal();
-          }
-        });
-      }
+// ============================================
+// EMAIL FUNCTIONS - UPDATED FOR STAFF DISCOUNT
+// ============================================
+/**
+ * Send confirmation email for multi-child orders - UPDATED FOR STAFF DISCOUNT
+ */
+function sendMultiChildConfirmationEmail(orderData) {
+  try {
+    const subject = `Artios Academies Cafe Order Confirmed - Order #${orderData.orderId}`;
+    
+    const itemsByChild = {};
+    orderData.items.forEach(item => {
+      const child = orderData.children.find(c => c.id === item.childId);
+      const childKey = child ? `${child.firstName} ${child.lastName}` : 'Unknown Child';
       
-      console.log('✅ All event listeners setup complete');
-    }
-
-    // ============================================
-    // MULTI-CHILD FUNCTIONALITY
-    // ============================================
-    function addChild() {
-      childCount++;
-      const container = document.getElementById('children-container');
-      
-      const childDiv = document.createElement('div');
-      childDiv.className = 'child-section';
-      childDiv.dataset.child = childCount;
-      
-      childDiv.innerHTML = `
-        <div class="child-header">
-          <div class="child-title">
-            <div class="child-icon">${childCount}</div>
-            Child ${childCount}
-          </div>
-          <button type="button" class="remove-child" data-child-id="${childCount}">✕</button>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>First Name <span class="required">*</span></label>
-            <input type="text" class="child-first-name" required>
-          </div>
-          <div class="form-group">
-            <label>Last Name <span class="required">*</span></label>
-            <input type="text" class="child-last-name" required>
-          </div>
-          <div class="form-group">
-            <label>Grade <span class="required">*</span></label>
-            <select class="child-grade" required>
-              <option value="">Select Grade</option>
-              <option value="K-2">K-2</option>
-              <option value="3-4">3-4</option>
-              <option value="5-6">5-6</option>
-              <option value="7-8">7-8</option>
-              <option value="9-12">9-12</option>
-              <option value="Staff">Staff</option>
-              <option value="Parent">Parent</option>
-            </select>
-          </div>
-        </div>
-      `;
-      
-      // Add event listener to the new remove button
-      const removeBtn = childDiv.querySelector('.remove-child');
-      removeBtn.addEventListener('click', function() {
-        const childId = this.dataset.childId;
-        removeChild(parseInt(childId));
-      });
-      
-      container.appendChild(childDiv);
-      updateChildCheckboxes();
-      validateForm();
-    }
-
-    function removeChild(childId) {
-      const childSection = document.querySelector(`[data-child="${childId}"]`);
-      if (childSection && childCount > 1) {
-        // Remove items for this child from cart
-        orderItems = orderItems.filter(item => item.childId !== childId.toString());
-        
-        childSection.remove();
-        renumberChildren();
-        updateChildCheckboxes();
-        updateCart();
-      }
-    }
-
-    function renumberChildren() {
-      const childSections = document.querySelectorAll('.child-section');
-      childCount = childSections.length;
-      
-      childSections.forEach((section, index) => {
-        const newChildId = index + 1;
-        section.dataset.child = newChildId;
-        section.querySelector('.child-icon').textContent = newChildId;
-        section.querySelector('.child-title').lastChild.textContent = ` Child ${newChildId}`;
-        
-        const removeBtn = section.querySelector('.remove-child');
-        if (removeBtn) {
-          // Update data attribute and event listener
-          removeBtn.dataset.childId = newChildId;
-          
-          // Remove old event listener and add new one
-          const newRemoveBtn = removeBtn.cloneNode(true);
-          newRemoveBtn.addEventListener('click', function() {
-            const childId = this.dataset.childId;
-            removeChild(parseInt(childId));
-          });
-          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
-        }
-      });
-    }
-
-    function updateChildCheckboxes() {
-      const children = document.querySelectorAll('.child-section');
-      
-      document.querySelectorAll('.child-checkboxes').forEach(container => {
-        const parts = container.id.split('-');
-        const day = parts[parts.length - 2];
-        const itemId = parts.slice(0, -2).join('-');
-        
-        container.innerHTML = '';
-        
-        children.forEach(child => {
-          const childId = child.dataset.child;
-          const firstName = child.querySelector('.child-first-name').value || `Child ${childId}`;
-          
-          const checkboxContainer = document.createElement('div');
-          checkboxContainer.className = 'child-checkbox';
-          
-          const checkboxId = `${itemId}-${day}-child-${childId}`;
-          
-          checkboxContainer.innerHTML = `
-            <input type="checkbox" 
-                   id="${checkboxId}"
-                   data-item="${itemId}"
-                   data-day="${day}"
-                   data-child-id="${childId}">
-            <label for="${checkboxId}">${firstName}</label>
-          `;
-          
-          container.appendChild(checkboxContainer);
-        });
-      });
-    }
-
-    // ============================================
-    // CART MANAGEMENT - UPDATED FOR DYNAMIC DRINK PRICING
-    // ============================================
-    function updateCart() {
-      orderItems = [];
-      currentTotal = 0;
-      
-      // Get ALL checked checkboxes
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-        const itemId = checkbox.dataset.item;
-        const day = checkbox.dataset.day;
-        const childId = checkbox.dataset.childId;
-        
-        const child = document.querySelector(`[data-child="${childId}"]`);
-        if (!child) {
-          console.error('Child not found for childId:', childId);
-          return;
-        }
-        
-        const childFirstName = child.querySelector('.child-first-name').value;
-        const childLastName = child.querySelector('.child-last-name').value;
-        const childGrade = child.querySelector('.child-grade').value;
-        
-        // Find item in menu data
-        let item = null;
-        let category = null;
-        Object.keys(menuData).forEach(cat => {
-          const found = menuData[cat].find(i => i.id === itemId);
-          if (found) {
-            item = found;
-            category = cat;
-          }
-        });
-        
-        if (item) {
-          // Calculate dynamic price for drinks based on child's other selections
-          let finalPrice = item.price || item.basePrice;
-          
-          if (category === 'drinks') {
-            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
-            
-            if (hasEntreeOrSaladAndSide) {
-              // Apply discount
-              if (item.category === 'regular') {
-                finalPrice = 0; // FREE
-              } else if (item.category === 'premium') {
-                finalPrice = 1.50; // Discounted
-              }
-            } else {
-              // Full price
-              finalPrice = item.basePrice;
-            }
-          }
-          
-          const orderItem = {
-            childId: childId,
-            childName: `${childFirstName} ${childLastName}`,
-            firstName: childFirstName,
-            lastName: childLastName,
-            grade: childGrade,
-            name: item.name,
-            price: finalPrice,
-            originalPrice: item.price || item.basePrice,
-            day: day.charAt(0).toUpperCase() + day.slice(1),
-            category: category,
-            isDiscounted: category === 'drinks' && finalPrice < (item.basePrice)
-          };
-          
-          orderItems.push(orderItem);
-          currentTotal += finalPrice;
-        } else {
-          console.error('Menu item not found:', itemId);
-        }
-      });
-      
-      displayCart();
-      validateForm();
-      updateCopyButton();
-    }
-
-    // UPDATED: Helper function to check if child has (entree OR salad) AND side for the same day
-    function checkChildHasEntreeOrSaladAndSide(childId, day) {
-      let hasEntreeOrSalad = false;
-      let hasSide = false;
-      
-      // Check all checked items for this child and day
-      document.querySelectorAll(`input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]:checked`).forEach(checkbox => {
-        const itemId = checkbox.dataset.item;
-        
-        // Find what category this item belongs to
-        Object.keys(menuData).forEach(category => {
-          const found = menuData[category].find(i => i.id === itemId);
-          if (found) {
-            if (category === 'entrees' || category === 'salads') {
-              hasEntreeOrSalad = true;
-            } else if (category === 'sides') {
-              hasSide = true;
-            }
-          }
-        });
-      });
-      
-      return hasEntreeOrSalad && hasSide;
-    }
-
-    // Update drink pricing displays dynamically
-    function updateDrinkPricingDisplays() {
-      // Update all drink item displays based on current child selections
-      document.querySelectorAll('.menu-item').forEach(menuItem => {
-        const priceDiv = menuItem.querySelector('.item-price');
-        if (!priceDiv) return;
-        
-        const itemId = priceDiv.dataset.itemId;
-        
-        // Find if this is a drink item
-        let drinkItem = null;
-        menuData.drinks?.forEach(drink => {
-          if (drink.id === itemId) {
-            drinkItem = drink;
-          }
-        });
-        
-        if (drinkItem) {
-          // Find the day and update pricing dynamically
-          const dayMatch = menuItem.closest('.menu-for-day');
-          if (dayMatch) {
-            const day = dayMatch.dataset.day;
-            
-            // Check if any child has (entree or salad) + side for this day
-            let discountedPrice = drinkItem.basePrice;
-            let hasDiscount = false;
-            
-            document.querySelectorAll('.child-section').forEach(childDiv => {
-              const childId = childDiv.dataset.child;
-              if (checkChildHasEntreeOrSaladAndSide(childId, day)) {
-                hasDiscount = true;
-                if (drinkItem.category === 'regular') {
-                  discountedPrice = 0;
-                } else if (drinkItem.category === 'premium') {
-                  discountedPrice = 1.50;
-                }
-              }
-            });
-            
-            // Update the price display to show current applicable price
-            if (hasDiscount && discountedPrice < drinkItem.basePrice) {
-              if (discountedPrice === 0) {
-                priceDiv.innerHTML = 'FREE';
-                priceDiv.style.color = '#4caf50';
-              } else {
-                priceDiv.innerHTML = `$${discountedPrice.toFixed(2)}`;
-                priceDiv.style.color = '#ff9800';
-              }
-            } else {
-              priceDiv.innerHTML = `$${drinkItem.basePrice.toFixed(2)}`;
-              priceDiv.style.color = '#34a853';
-            }
-          }
-        }
-      });
-    }
-
-    function displayCart() {
-      const cartItemsDiv = document.getElementById('cart-items');
-      const totalSpan = document.getElementById('total-amount');
-      
-      if (orderItems.length === 0) {
-        cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
-        totalSpan.textContent = '0.00';
-        return;
-      }
-      
-      // Group by child
-      const itemsByChild = {};
-      orderItems.forEach(item => {
-        if (!itemsByChild[item.childId]) {
-          itemsByChild[item.childId] = {
-            name: item.childName,
-            items: []
-          };
-        }
-        itemsByChild[item.childId].items.push(item);
-      });
-      
-      let html = '';
-      Object.keys(itemsByChild).sort((a, b) => parseInt(a) - parseInt(b)).forEach(childId => {
-        const child = itemsByChild[childId];
-        html += `<div class="child-cart-section">`;
-        html += `<div class="child-cart-header">${child.name}</div>`;
-        
-        child.items.forEach(item => {
-          // Add visual indicator for discounted drinks
-          let priceDisplay = `$${item.price.toFixed(2)}`;
-          let extraClass = '';
-          let discountNote = '';
-          
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE';
-              extraClass = 'free-item';
-              discountNote = ' 🎉';
-            } else {
-              priceDisplay = `$${item.price.toFixed(2)}`;
-              extraClass = 'discounted-item';
-              discountNote = ' 💰';
-            }
-          }
-          
-          html += `
-            <div class="cart-item ${extraClass}">
-              <div class="cart-item-name">${item.name} (${item.day})${discountNote}</div>
-              <div class="cart-item-price">${priceDisplay}</div>
-            </div>
-          `;
-        });
-        html += `</div>`;
-      });
-      
-      cartItemsDiv.innerHTML = html;
-      totalSpan.textContent = currentTotal.toFixed(2);
-    }
-
-    function validateForm() {
-      const email = document.getElementById('family-email').value.trim();
-      const checkoutBtn = document.getElementById('checkout-btn');
-      
-      if (!checkoutBtn) {
-        console.error('Checkout button not found in validateForm!');
-        return false;
-      }
-      
-      // Check if we have items and required info
-      const hasItems = orderItems.length > 0;
-      const hasEmail = email.length > 0 && email.includes('@');
-      
-      // Check if all children have required info
-      const children = document.querySelectorAll('.child-section');
-      let allChildrenComplete = true;
-      children.forEach(child => {
-        const firstName = child.querySelector('.child-first-name').value.trim();
-        const lastName = child.querySelector('.child-last-name').value.trim();
-        const grade = child.querySelector('.child-grade').value;
-        if (!firstName || !lastName || !grade) {
-          allChildrenComplete = false;
-        }
-      });
-      
-      const isValid = hasItems && hasEmail && allChildrenComplete && storeIsOpen;
-      
-      console.log('🔍 Form validation:', {
-        hasItems,
-        hasEmail, 
-        allChildrenComplete,
-        storeIsOpen,
-        isValid,
-        itemsCount: orderItems.length,
-        email: email,
-        childrenCount: children.length
-      });
-      
-      // Update button state
-      checkoutBtn.disabled = !isValid;
-      
-      if (isValid) {
-        checkoutBtn.textContent = `Review & Pay Order ($${currentTotal.toFixed(2)})`;
-        checkoutBtn.style.opacity = '1';
-        checkoutBtn.style.cursor = 'pointer';
-        console.log('✅ Checkout button enabled');
-      } else {
-        if (!storeIsOpen) {
-          checkoutBtn.textContent = 'Store Closed';
-        } else if (!hasItems) {
-          checkoutBtn.textContent = 'Select Items to Continue';
-        } else if (!hasEmail) {
-          checkoutBtn.textContent = 'Enter Email to Continue';
-        } else if (!allChildrenComplete) {
-          checkoutBtn.textContent = 'Complete Child Info';
-        } else {
-          checkoutBtn.textContent = 'Review & Pay Order';
-        }
-        checkoutBtn.style.opacity = '0.6';
-        checkoutBtn.style.cursor = 'not-allowed';
-        console.log('❌ Checkout button disabled');
-      }
-      
-      return isValid;
-    }
-
-    // ============================================
-    // PAYMENT MODAL
-    // ============================================
-    function openPaymentModal() {
-      console.log('🚀 Opening payment modal...');
-      
-      if (!validateForm()) {
-        console.log('❌ Form validation failed, cannot open modal');
-        return;
-      }
-      
-      const modal = document.getElementById('payment-modal');
-      const modalTotal = document.getElementById('modal-total');
-      const venmoTotal = document.getElementById('venmo-total');
-      const venmoLink = document.getElementById('venmo-payment-link');
-      
-      if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
-        console.error('❌ Modal elements not found!');
-        showNotification('Payment system error. Please refresh the page.', 'error');
-        return;
-      }
-      
-      console.log('💰 Setting modal totals:', currentTotal);
-      modalTotal.textContent = currentTotal.toFixed(2);
-      venmoTotal.textContent = currentTotal.toFixed(2);
-      
-      // Create order summary for Venmo
-      let orderSummary = `Artios Academies Cafe Lunch Order - $${currentTotal.toFixed(2)}`;
-      const children = [...new Set(orderItems.map(item => item.childName))];
-      if (children.length <= 2) {
-        orderSummary += ` for ${children.join(' & ')}`;
-      } else {
-        orderSummary += ` for ${children.length} children`;
-      }
-      
-      console.log('📋 Order summary:', orderSummary);
-      
-      // Generate Venmo URLs
-      const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent(orderSummary)}`;
-      const venmoWebUrl = `https://venmo.com/ChanTa-Rivers?txn=pay&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent(orderSummary)}`;
-      
-      // Detect mobile for Venmo app link
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        venmoLink.href = venmoUrl;
-        console.log('📱 Mobile detected, using app link');
-      } else {
-        venmoLink.href = venmoWebUrl;
-        venmoLink.target = '_blank';
-        console.log('💻 Desktop detected, using web link');
-        
-        const paymentDetails = `Pay @ChanTa-Rivers $${currentTotal.toFixed(2)} for: ${orderSummary}`;
-        
-        // Add click handler for desktop
-        venmoLink.onclick = function(e) {
-          e.preventDefault();
-          window.open(venmoWebUrl, '_blank');
-          
-          // Try to copy payment details to clipboard
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(paymentDetails).then(() => {
-              showNotification('Payment details copied to clipboard!', 'success');
-            }).catch(() => {
-              alert('Please send payment to:\n\n' + paymentDetails);
-            });
-          } else {
-            alert('Please send payment to:\n\n' + paymentDetails);
-          }
+      if (!itemsByChild[childKey]) {
+        itemsByChild[childKey] = {
+          grade: child ? child.grade : 'Unknown',
+          items: []
         };
       }
       
-      // Show modal with animation
-      console.log('🎭 Displaying modal...');
-      modal.style.display = 'flex';
-      modal.classList.add('show');
+      itemsByChild[childKey].items.push(item);
+    });
+    
+    let emailBody = `
+      <h2>Artios Academies Family Cafe Order Confirmed!</h2>
       
-      // Focus trap for accessibility
-      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (focusableElements.length > 0) {
-        focusableElements[0].focus();
-      }
+      <p><strong>Order Details:</strong></p>
+      <ul>
+        <li><strong>Order ID:</strong> ${orderData.orderId}</li>
+        <li><strong>Date:</strong> ${new Date(orderData.timestamp).toLocaleString()}</li>
+        <li><strong>Family Email:</strong> ${orderData.email}</li>
+        <li><strong>Children:</strong> ${orderData.children ? orderData.children.length : 1}</li>
+      </ul>
       
-      console.log('✅ Payment modal opened successfully');
-    }
-
-    function closePaymentModal() {
-      console.log('🚪 Closing payment modal...');
-      const modal = document.getElementById('payment-modal');
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        // Use setTimeout to allow animation to complete
-        setTimeout(() => {
-          modal.style.display = 'none';
-        }, 300);
-      }
-      
-      // Reset confirm button state
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-    }
-
-    // ============================================
-    // CONFIRMATION MODAL
-    // ============================================
-    function showDetailedOrderConfirmation(order) {
-      console.log('📋 Showing detailed order confirmation');
-      
-      const modal = document.getElementById('confirmation-modal');
-      
-      // Populate order details
-      document.getElementById('conf-order-id').textContent = order.orderId;
-      document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
-      document.getElementById('conf-email').textContent = order.email;
-      document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
-      
-      // Populate children list
-      const childrenListDiv = document.getElementById('conf-children-list');
-      let childrenHtml = '<ul>';
-      if (order.children && order.children.length > 0) {
-        order.children.forEach((child, index) => {
-          childrenHtml += `<li><strong>${child.firstName} ${child.lastName}</strong> (${child.grade})</li>`;
-        });
-      }
-      childrenHtml += '</ul>';
-      childrenListDiv.innerHTML = childrenHtml;
-      
-      // Populate items by day
-      const itemsListDiv = document.getElementById('conf-items-list');
-      const itemsByDay = {};
-      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-      
-      order.items.forEach(item => {
-        if (!itemsByDay[item.day]) {
-          itemsByDay[item.day] = [];
-        }
-        itemsByDay[item.day].push(item);
-      });
-      
-      const sortedDays = Object.keys(itemsByDay).sort((a, b) => 
-        dayOrder.indexOf(a) - dayOrder.indexOf(b)
-      );
-      
-      let itemsHtml = '';
-      sortedDays.forEach(day => {
-        itemsHtml += `<div class="confirmation-day">${day}:</div>`;
-        itemsByDay[day].forEach(item => {
-          let priceDisplay = `$${item.price.toFixed(2)}`;
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE 🎉';
-            } else {
-              priceDisplay = `$${item.price.toFixed(2)} 💰`;
-            }
-          }
-          
-          itemsHtml += `
-            <div class="confirmation-item">
-              <span>• ${item.name} - ${item.childName || 'Student'}</span>
-              <span><strong>${priceDisplay}</strong></span>
-            </div>
-          `;
-        });
-      });
-      itemsListDiv.innerHTML = itemsHtml;
-      
-      // Set total
-      document.getElementById('conf-total').textContent = `Total: $${order.total.toFixed(2)}`;
-      
-      // Show modal
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-      
-      console.log('✅ Confirmation modal displayed');
-    }
-
-    function closeConfirmationModal() {
-      console.log('🚪 Closing confirmation modal...');
-      const modal = document.getElementById('confirmation-modal');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        // Use setTimeout to allow animation to complete
-        setTimeout(() => {
-          modal.style.display = 'none';
-        }, 300);
-      }
-    }
-
-    // ============================================
-    // ORDER SUBMISSION
-    // ============================================
-    function submitOrder() {
-      console.log('📤 Submitting order...');
-      
-      // Generate simplified order ID: LASTNAME-MMDD-HH
-      const now = new Date();
-      const familyEmail = document.getElementById('family-email').value.trim();
-      const firstChild = document.querySelector('.child-section');
-      const lastName = firstChild ? firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 'FAMILY';
-      
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hour = String(now.getHours()).padStart(2, '0');
-      const minute = String(now.getMinutes()).padStart(2, '0');
-      
-      const orderId = `${lastName}-${month}${day}-${hour}${minute}`;
-      console.log('Generated Order ID:', orderId);
-      
-      const orderData = {
-        orderId: orderId,
-        timestamp: new Date().toISOString(),
-        email: familyEmail,
-        children: [],
-        items: orderItems,
-        total: currentTotal,
-        paymentMethod: 'Venmo',
-        paymentStatus: 'confirmed',
-        sendConfirmation: true,
-        weekStart: new Date().toISOString().split('T')[0] // Add week start for Google Apps Script
-      };
-
-      // Add children data
-      document.querySelectorAll('.child-section').forEach(child => {
-        orderData.children.push({
-          id: child.dataset.child,
-          firstName: child.querySelector('.child-first-name').value.trim(),
-          lastName: child.querySelector('.child-last-name').value.trim(),
-          grade: child.querySelector('.child-grade').value
-        });
-      });
-      
-      console.log('📊 Order data prepared:', orderData);
-      showNotification('Submitting order to cloud...', 'info');
-      
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        console.log('☁️ Attempting to submit to Google Sheets...');
-        
-        // First try with CORS to get actual error messages
-        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
-        })
-        .then(response => {
-          console.log('📡 Response received:', response.status, response.statusText);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-          return response.json();
-        })
-        .then(result => {
-          console.log('✅ Google Sheets response:', result);
-          if (result.success) {
-            console.log('🎉 Order successfully saved to Google Sheets!');
-            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-              console.log('💾 Also saving to localStorage as backup...');
-              saveToLocalStorage(orderData);
-            }
-            closePaymentModal();
-            showDetailedOrderConfirmation(orderData);
-            showNotification(`Order ${orderId} submitted to cloud successfully!`, 'success');
-            resetForm();
-          } else {
-            throw new Error(result.error || 'Unknown error from Google Sheets');
-          }
-        })
-        .catch(error => {
-          console.error('❌ Primary submission failed:', error);
-          handleSubmissionFailure(orderData, orderId, error.message);
-        });
-      } else {
-        console.log('💾 Google Sheets not configured, saving locally only...');
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification(`Order ${orderId} saved locally!`, 'success');
-        resetForm();
-      }
-    }
-
-    function handleSubmissionFailure(orderData, orderId, errorMessage) {
-      console.error('💥 Complete submission failure:', errorMessage);
-      
-      // Reset confirm button
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-      
-      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-        console.log('🔄 Falling back to localStorage...');
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order saved locally (cloud sync failed)', 'warning');
-        resetForm();
-      } else {
-        showNotification('Error submitting order. Please try again.', 'error');
-      }
-    }
-
-    function saveToLocalStorage(orderData) {
-      try {
-        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
-        orders.push(orderData);
-        localStorage.setItem('cafeOrders', JSON.stringify(orders));
-        console.log('💾 Order saved to localStorage:', orderData.orderId);
-      } catch (e) {
-        console.error('❌ Error saving to localStorage:', e);
-      }
-    }
-
-    function resetForm() {
-      document.getElementById('family-email').value = '';
-      document.querySelectorAll('.child-first-name').forEach(input => input.value = '');
-      document.querySelectorAll('.child-last-name').forEach(input => input.value = '');
-      document.querySelectorAll('.child-grade').forEach(select => select.value = '');
-      
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-        cb.checked = false;
-      });
-      
-      orderItems = [];
-      currentTotal = 0;
-      updateCart();
-      validateForm();
-    }
-
-    // ============================================
-    // COPY TO REMAINING DAYS FUNCTIONALITY
-    // ============================================
-    function updateCopyButton() {
-      const container = document.getElementById('copy-button-container');
-      if (!container) return;
-
-      // Get available days (not disabled)
-      const availableDays = days.filter(day => {
-        const tab = document.querySelector(`[data-day="${day}"]`);
-        return tab && !tab.classList.contains('disabled');
-      });
-
-      // Get remaining days (available days after current day)
-      const currentDayIndex = availableDays.indexOf(currentDay);
-      const remainingDays = availableDays.slice(currentDayIndex + 1);
-
-      // Check if current day has any selections
-      const currentDayHasSelections = hasSelectionsForDay(currentDay);
-
-      // Clear existing button
-      container.innerHTML = '';
-
-      // Show button only if current day has selections AND there are remaining days
-      if (currentDayHasSelections && remainingDays.length > 0) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'copy-days-btn';
-        
-        // Smart button text based on remaining days
-        if (remainingDays.length === 1) {
-          const targetDay = remainingDays[0].charAt(0).toUpperCase() + remainingDays[0].slice(1);
-          button.textContent = `Copy to ${targetDay} ➡️`;
-        } else if (remainingDays.length === days.length - 1) {
-          button.textContent = 'Copy to All Days ➡️';
-        } else {
-          button.textContent = 'Copy to Remaining Days ➡️';
-        }
-
-        button.addEventListener('click', () => copyToRemainingDays(remainingDays));
-        container.appendChild(button);
-      }
-    }
-
-    function hasSelectionsForDay(day) {
-      const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-day="${day}"]:checked`);
-      return checkboxes.length > 0;
-    }
-
-    function copyToRemainingDays(targetDays) {
-      console.log('Copying from', currentDay, 'to', targetDays);
-
-      // Get all selections from current day
-      const currentDaySelections = document.querySelectorAll(`input[type="checkbox"][data-day="${currentDay}"]:checked`);
-      
-      if (currentDaySelections.length === 0) {
-        return;
-      }
-
-      // For each target day, clear existing selections and copy current day
-      targetDays.forEach(targetDay => {
-        // First, uncheck all existing selections for this target day
-        const existingSelections = document.querySelectorAll(`input[type="checkbox"][data-day="${targetDay}"]`);
-        existingSelections.forEach(checkbox => {
-          checkbox.checked = false;
-        });
-
-        // Then copy selections from current day
-        currentDaySelections.forEach(sourceCheckbox => {
-          const itemId = sourceCheckbox.dataset.item;
-          const childId = sourceCheckbox.dataset.childId;
-          
-          // Find corresponding checkbox for target day
-          const targetCheckbox = document.querySelector(
-            `input[type="checkbox"][data-item="${itemId}"][data-day="${targetDay}"][data-child-id="${childId}"]`
-          );
-          
-          if (targetCheckbox) {
-            targetCheckbox.checked = true;
-          }
-        });
-      });
-
-      // Update cart and UI
-      updateCart();
-      updateDrinkPricingDisplays();
-      
-      // Show success notification
-      const dayText = targetDays.length === 1 
-        ? targetDays[0].charAt(0).toUpperCase() + targetDays[0].slice(1)
-        : `${targetDays.length} remaining days`;
-      
-      showNotification(`Selections copied to ${dayText}!`, 'success');
-
-      // Update copy button for new state
-      updateCopyButton();
-    }
-
-    function showNotification(message, type = 'info') {
-      // Remove existing notification
-      const existingNotif = document.querySelector('.notification');
-      if (existingNotif) {
-        existingNotif.remove();
-      }
-      
-      let bgColor, textColor, borderColor, icon;
-      switch(type) {
-        case 'success':
-          bgColor = '#d4edda';
-          textColor = '#155724';
-          borderColor = '#c3e6cb';
-          icon = '✅ ';
-          break;
-        case 'error':
-          bgColor = '#f8d7da';
-          textColor = '#721c24';
-          borderColor = '#f5c6cb';
-          icon = '❌ ';
-          break;
-        case 'warning':
-          bgColor = '#fff3cd';
-          textColor = '#856404';
-          borderColor = '#ffeaa7';
-          icon = '⚠️ ';
-          break;
-        default:
-          bgColor = '#e3f2fd';
-          textColor = '#1976d2';
-          borderColor = '#bbdefb';
-          icon = 'ℹ️ ';
-      }
-      
-      const notif = document.createElement('div');
-      notif.className = 'notification';
-      notif.style.cssText = `
-        background: ${bgColor};
-        color: ${textColor};
-        border: 2px solid ${borderColor};
+      <h3>Items Ordered by Child:</h3>
+    `;
+    
+    let totalItems = 0;
+    
+    Object.keys(itemsByChild).forEach(childName => {
+      const child = itemsByChild[childName];
+      emailBody += `
+        <h4>${childName} (${child.grade})</h4>
+        <div style="margin-left: 20px;">
       `;
-      notif.textContent = icon + message;
       
-      document.body.appendChild(notif);
+      child.items.forEach(item => {
+        emailBody += `<p>• ${item.name} (${item.day}) - $${item.price.toFixed(2)}</p>`;
+        totalItems++;
+      });
       
-      setTimeout(() => {
-        if (notif.parentNode) {
-          notif.remove();
-        }
-      }, 5000);
+      emailBody += `</div>`;
+    });
+    
+    emailBody += `
+      <hr>
+      <p><strong>Order Summary:</strong></p>
+      <ul>
+        <li><strong>Total Items:</strong> ${totalItems}</li>`;
+    
+    if (orderData.discount && orderData.discount > 0) {
+      emailBody += `
+        <li><strong>Subtotal:</strong> $${orderData.subtotal.toFixed(2)}</li>
+        <li><strong>Staff Discount (10%):</strong> -$${orderData.discount.toFixed(2)}</li>
+        <li><strong>Final Total:</strong> $${orderData.total.toFixed(2)}</li>`;
+    } else {
+      emailBody += `
+        <li><strong>Total Cost:</strong> $${orderData.total.toFixed(2)}</li>`;
     }
+    
+    emailBody += `
+        <li><strong>Payment Method:</strong> ${orderData.paymentMethod || 'Venmo'}</li>
+      </ul>
+      
+      <p><strong>Payment Instructions:</strong><br>
+      ${orderData.paymentMethod === 'Venmo' ? 'Payment sent via Venmo to @ChanTa-Rivers' : 'Payment details will be provided separately'}</p>
+      
+      <hr>
+      <p>Questions? Contact: <a href="mailto:CRivers@artiosacademies.com">CRivers@artiosacademies.com</a></p>
+      
+      <p><em>This is an automated confirmation from Artios Academies of Sugar Hill. Please keep this email for your records.</em></p>
+    `;
+    
+    GmailApp.sendEmail(
+      orderData.email,
+      subject,
+      stripHtmlTags(emailBody),
+      {
+        htmlBody: emailBody,
+        name: 'Artios Academies Cafe',
+        charset: 'UTF-8'
+      }
+    );
+    
+    console.log('Multi-child confirmation email sent to:', orderData.email);
+    
+  } catch (error) {
+    console.error('Error sending multi-child confirmation email:', error);
+  }
+}
 
-    // Make removeChild available globally
-    window.removeChild = removeChild;
-  </script>
-</body>
-</html>
+/**
+ * Send enhanced report notification email - UPDATED FOR STAFF DISCOUNT
+ */
+function sendEnhancedReportNotificationEmail(reportResult, reportDate, isManualReport = false, recipientEmail = null) {
+  try {
+    const dateString = reportDate.toDateString();
+    const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][reportDate.getDay()];
+    
+    const subject = `${isManualReport ? 'Manual' : 'Daily'} Cafe Report - ${dayName} ${reportDate.toLocaleDateString()} (${reportResult.orderCount} items)`;
+    
+    const emailRecipient = recipientEmail || NOTIFICATION_EMAIL;
+    
+    let emailBody = `
+      <html>
+      <head>
+        <style>
+          body { font-family: 'Google Sans', Arial, sans-serif; line-height: 1.6; color: #333; }
+          .header { background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+          .content { padding: 20px; background: white; }
+          .summary-box { background: #f0f5ff; padding: 15px; border-radius: 8px; border-left: 4px solid #4285f4; margin: 15px 0; }
+          .highlight-box { background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 4px solid #34a853; margin: 15px 0; }
+          .warning-box { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800; margin: 15px 0; }
+          .discount-box { background: #f3e5f5; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0; margin: 15px 0; }
+          .copy-section { background: #f44336; color: white; padding: 15px; border-radius: 8px; margin: 15px 0; }
+          .copy-item { background: white; color: #333; padding: 8px; margin: 5px 0; border-radius: 4px; font-weight: bold; }
+          .footer { background: #f8f9fa; padding: 15px; text-align: center; font-size: 0.9em; color: #666; border-radius: 0 0 8px 8px; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>${isManualReport ? 'Manual Admin Report' : 'Daily Cafe Report'}</h1>
+          <h2>${dayName}, ${dateString}</h2>
+        </div>
+        
+        <div class="content">
+          <div class="summary-box">
+            <h3>Report Summary</h3>
+            <ul>
+              <li><strong>Date:</strong> ${dayName}, ${dateString}</li>
+              <li><strong>Items Found:</strong> ${reportResult.orderCount}</li>
+              <li><strong>Generated:</strong> ${new Date().toLocaleString()} EST</li>
+              <li><strong>Type:</strong> ${isManualReport ? 'Manual Admin Report' : 'Automatic Daily Report'}</li>
+            </ul>
+          </div>
+    `;
+    
+    if (reportResult.orderCount > 0 && reportResult.reportData) {
+      const data = reportResult.reportData;
+      
+      emailBody += `
+          <div class="highlight-box">
+            <h3>${dayName} Lunch Orders Found</h3>
+            <p><strong>${reportResult.orderCount} items</strong> need to be ordered from Chick-fil-A for ${dayName}.</p>
+          </div>
+      `;
+      
+      // Add staff discount information if applicable
+      if (data.totalDiscounts > 0) {
+        emailBody += `
+          <div class="discount-box">
+            <h3>💰 Staff Discounts Applied</h3>
+            <p><strong>Total Staff Discounts:</strong> $${data.totalDiscounts.toFixed(2)}</p>
+            <p><strong>Revenue after Discounts:</strong> $${data.totalRevenue.toFixed(2)}</p>
+          </div>
+        `;
+      }
+
+      emailBody += `
+          <div class="copy-section">
+            <h3>COPY THIS TO CHICK-FIL-A ORDER</h3>
+      `;
+      
+      Object.keys(data.itemCounts).forEach(itemName => {
+        emailBody += `<div class="copy-item">${data.itemCounts[itemName].count}x ${itemName}</div>`;
+      });
+      
+      emailBody += `</div>`;
+      
+    } else {
+      emailBody += `
+          <div class="warning-box">
+            <h3>No Orders for ${dayName}</h3>
+            <p><strong>No lunch orders were placed for ${dayName} ${dateString}.</strong></p>
+            <p><strong>✅ No Chick-fil-A order needed today!</strong></p>
+          </div>
+      `;
+    }
+    
+    emailBody += `
+        </div>
+        <div class="footer">
+          <p><strong>Artios Academies of Sugar Hill - Cafe Lunch Order System</strong></p>
+          <p>Questions? Contact: <a href="mailto:CRivers@artiosacademies.com">CRivers@artiosacademies.com</a></p>
+          <p><em>This report was automatically generated and sent via email only.</em></p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    GmailApp.sendEmail(
+      emailRecipient,
+      subject,
+      stripHtmlTags(emailBody),
+      {
+        htmlBody: emailBody,
+        name: 'Artios Academies Cafe System',
+        charset: 'UTF-8'
+      }
+    );
+    
+    console.log(`Enhanced report email sent to ${emailRecipient} for ${dayName} ${dateString}`);
+    
+  } catch (error) {
+    console.error('Error sending enhanced report notification email:', error);
+  }
+}
+
+/**
+ * Send simple cafe worker email - UPDATED FOR STAFF DISCOUNT
+ */
+function sendSimpleCafeWorkerEmail(reportResult, reportDate, recipientEmail) {
+  try {
+    const dateString = reportDate.toDateString();
+    const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][reportDate.getDay()];
+    
+    const subject = `Cafe Orders for ${dayName} ${reportDate.toLocaleDateString()} (${reportResult.orderCount} items)`;
+    
+    let emailBody = '';
+    let plainTextBody = '';
+    
+    if (reportResult.orderCount > 0 && reportResult.reportData) {
+      const data = reportResult.reportData;
+      
+      // Create single line list of what kids ordered
+      const kidOrdersList = data.itemsForThisDate.map(item => 
+        `${item.studentName}: ${item.item.name}${item.promoCode ? ' (Staff Discount)' : ''}`
+      ).join(', ');
+      
+      // Create Chick-fil-A order list
+      const chickFilAOrderList = Object.keys(data.itemCounts).map(itemName => 
+        `${data.itemCounts[itemName].count}x ${itemName}`
+      ).join('\n');
+      
+      emailBody = `
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .header { background: #4285f4; color: white; padding: 15px; text-align: center; border-radius: 6px 6px 0 0; }
+            .content { padding: 20px; background: white; }
+            .section { margin: 15px 0; }
+            .chick-order { background: #f44336; color: white; padding: 15px; border-radius: 6px; margin: 15px 0; }
+            .order-item { background: white; color: #333; padding: 8px; margin: 3px 0; border-radius: 4px; font-weight: bold; }
+            .kids-orders { background: #e8f5e8; padding: 15px; border-radius: 6px; border-left: 4px solid #34a853; }
+            .discount-note { background: #f3e5f5; padding: 10px; border-radius: 6px; border-left: 4px solid #9c27b0; margin: 10px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>Cafe Orders - ${dayName}</h2>
+            <p>${reportResult.orderCount} items total</p>
+          </div>
+          
+          <div class="content">
+            <div class="kids-orders">
+              <h3>What Kids Ordered Today:</h3>
+              <p>${kidOrdersList}</p>
+            </div>
+            
+            <div class="chick-order">
+              <h3>📋 ORDER FROM CHICK-FIL-A:</h3>
+              ${Object.keys(data.itemCounts).map(itemName => 
+                `<div class="order-item">${data.itemCounts[itemName].count}x ${itemName}</div>`
+              ).join('')}
+              <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 4px;">
+                <strong>TOTAL: ${reportResult.orderCount} items</strong>
+              </div>
+            </div>
+            
+            <div class="section">
+              <p><strong>Total Revenue:</strong> $${data.totalRevenue.toFixed(2)}</p>
+              <p><strong>Families Served:</strong> ${data.familiesServed}</p>`;
+              
+      if (data.totalDiscounts > 0) {
+        emailBody += `
+              <div class="discount-note">
+                <strong>💰 Staff Discounts Applied:</strong> $${data.totalDiscounts.toFixed(2)}
+              </div>`;
+      }
+      
+      emailBody += `
+            </div>
+            
+            <div class="section">
+              <p>Questions? Contact: <a href="mailto:CRivers@artiosacademies.com">CRivers@artiosacademies.com</a></p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      plainTextBody = `
+CAFE ORDERS - ${dayName} ${dateString}
+${reportResult.orderCount} items total
+
+WHAT KIDS ORDERED TODAY:
+${kidOrdersList}
+
+ORDER FROM CHICK-FIL-A:
+${chickFilAOrderList}
+
+TOTAL: ${reportResult.orderCount} items
+Total Revenue: $${data.totalRevenue.toFixed(2)}
+${data.totalDiscounts > 0 ? `Staff Discounts: $${data.totalDiscounts.toFixed(2)}\n` : ''}Families Served: ${data.familiesServed}
+
+Questions? Contact: CRivers@artiosacademies.com
+      `.trim();
+      
+    } else {
+      // No orders found
+      emailBody = `
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .header { background: #ff9800; color: white; padding: 15px; text-align: center; border-radius: 6px 6px 0 0; }
+            .content { padding: 20px; background: white; }
+            .no-orders { background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 4px solid #ff9800; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>No Cafe Orders - ${dayName}</h2>
+          </div>
+          
+          <div class="content">
+            <div class="no-orders">
+              <h3>No Orders for ${dayName}</h3>
+              <p><strong>✅ No Chick-fil-A order needed today!</strong></p>
+              <p>No lunch orders were placed for this date.</p>
+            </div>
+            
+            <div class="section">
+              <p>Questions? Contact: <a href="mailto:CRivers@artiosacademies.com">CRivers@artiosacademies.com</a></p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      plainTextBody = `
+NO CAFE ORDERS - ${dayName} ${dateString}
+
+✅ No Chick-fil-A order needed today!
+No lunch orders were placed for this date.
+
+Questions? Contact: CRivers@artiosacademies.com
+      `.trim();
+    }
+    
+    // Send email
+    GmailApp.sendEmail(
+      recipientEmail,
+      subject,
+      plainTextBody,
+      {
+        htmlBody: emailBody,
+        name: 'Artios Academies Cafe System',
+        charset: 'UTF-8'
+      }
+    );
+    
+    console.log(`Simple cafe worker email sent to ${recipientEmail} for ${dayName} ${dateString}`);
+    
+  } catch (error) {
+    console.error('Error sending simple cafe worker email:', error);
+    // Don't throw error - email failure shouldn't break report generation
+  }
+}
+
+// ============================================
+// HELPER FUNCTIONS - UNCHANGED
+// ============================================
+/**
+ * Strip HTML tags for plain text email version
+ */
+function stripHtmlTags(html) {
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Get Monday of the week containing the given date
+ */
+function getMonday(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+/**
+ * Convert day name to actual date based on week start
+ */
+function getDateFromDayName(dayName, weekStart) {
+  const dayMap = {
+    'Monday': 1,
+    'Tuesday': 2,
+    'Wednesday': 3,
+    'Thursday': 4,
+    'Friday': 5
+  };
+  
+  const monday = getMonday(new Date(weekStart));
+  const targetDay = new Date(monday);
+  const dayOffset = dayMap[dayName] - 1;
+  
+  if (dayOffset !== undefined) {
+    targetDay.setDate(monday.getDate() + dayOffset);
+  }
+  
+  return targetDay;
+}
+
+// ============================================
+// DAILY AUTOMATION - UNCHANGED
+// ============================================
+/**
+ * Daily order compilation (automatically runs at 8:05 AM EST)
+ */
+function compileDailyOrders() {
+  try {
+    const today = new Date();
+    
+    console.log(`Compiling daily multi-child orders for ${today.toDateString()}`);
+    
+    const result = generateEmailOnlyReport(today);
+    
+    sendEnhancedReportNotificationEmail(result, today, false);
+    
+    console.log(`✅ Daily multi-child report sent via email: ${result.orderCount} items for ${today.toDateString()}`);
+    console.log(`📧 Enhanced email notification sent to ${NOTIFICATION_EMAIL}`);
+    
+  } catch (error) {
+    console.error('Error in daily compilation:', error);
+    
+    try {
+      GmailApp.sendEmail(
+        NOTIFICATION_EMAIL,
+        '❌ Daily Cafe Report Generation Failed',
+        `Error generating daily report for ${new Date().toDateString()}:\n\n${error.toString()}\n\nPlease check the Google Apps Script logs.`,
+        { name: 'Artios Academies Cafe System' }
+      );
+    } catch (emailError) {
+      console.error('Failed to send error notification email:', emailError);
+    }
+  }
+}
