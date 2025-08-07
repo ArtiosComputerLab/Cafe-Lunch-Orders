@@ -1541,10 +1541,12 @@
 
       document.addEventListener('change', function(e) {
         if (e.target.type === 'checkbox' && e.target.dataset.item) {
-          // Check drink restrictions before allowing selection
-          if (!validateDrinkSelection(e.target)) {
-            e.target.checked = false;
-            return;
+          // For drink items, validate selection (only if trying to check)
+          if (e.target.checked) {
+            if (!validateDrinkSelection(e.target)) {
+              e.target.checked = false;
+              return;
+            }
           }
           
           // Delay the update to allow for proper state changes
@@ -1824,23 +1826,31 @@
       
       // Check if child has discount (entree/salad + side)
       const hasDiscount = checkChildHasEntreeOrSaladAndSide(childId, day);
+      console.log(`Child ${childId} on ${day}: hasDiscount=${hasDiscount}`);
+      
       if (!hasDiscount) return true; // No restrictions without discount
       
-      // Count existing drink selections for this child/day
-      const existingDrinks = document.querySelectorAll(
-        `input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]:checked`
+      // Find all checkboxes for this child/day
+      const allCheckboxes = document.querySelectorAll(
+        `input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]`
       );
       
-      let drinkCount = 0;
-      existingDrinks.forEach(cb => {
-        const cbItemId = cb.dataset.item;
-        if (menuData.drinks?.some(drink => drink.id === cbItemId)) {
-          drinkCount++;
+      // Count how many drinks are currently selected (excluding the one being clicked)
+      let selectedDrinks = 0;
+      allCheckboxes.forEach(cb => {
+        if (cb !== checkbox && cb.checked) {
+          const cbItemId = cb.dataset.item;
+          if (menuData.drinks?.some(drink => drink.id === cbItemId)) {
+            selectedDrinks++;
+            console.log(`Found existing drink: ${cbItemId}`);
+          }
         }
       });
       
-      // If trying to check and already have a drink, prevent it
-      if (checkbox.checked && drinkCount > 0) {
+      console.log(`Trying to select ${itemId}, already have ${selectedDrinks} drinks`);
+      
+      // If there's already a drink selected, don't allow another one
+      if (selectedDrinks > 0) {
         showNotification('Only 1 drink allowed with meal combo discount', 'warning');
         return false;
       }
@@ -1876,19 +1886,21 @@
           }
           
           // Count drinks for this child/day
-          const drinkSelections = document.querySelectorAll(
-            `input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]:checked`
+          const allChildCheckboxes = document.querySelectorAll(
+            `input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]`
           );
           
           let drinkCount = 0;
-          drinkSelections.forEach(cb => {
-            const cbItemId = cb.dataset.item;
-            if (menuData.drinks?.some(drink => drink.id === cbItemId)) {
-              drinkCount++;
+          allChildCheckboxes.forEach(cb => {
+            if (cb.checked) {
+              const cbItemId = cb.dataset.item;
+              if (menuData.drinks?.some(drink => drink.id === cbItemId)) {
+                drinkCount++;
+              }
             }
           });
           
-          // If already has drink and this isn't checked, restrict it
+          // If child has discount AND already has a drink selected AND this isn't that drink, restrict it
           if (drinkCount > 0 && !checkbox.checked) {
             childCheckbox.classList.add('drink-restricted');
           } else {
@@ -2006,7 +2018,7 @@
       return hasEntreeOrSalad && hasSide;
     }
 
-    // Update drink pricing displays dynamically
+    // Update drink pricing displays dynamically - PER CHILD
     function updateDrinkPricingDisplays() {
       // Update all drink item displays based on current child selections
       document.querySelectorAll('.menu-item').forEach(menuItem => {
@@ -2024,39 +2036,59 @@
         });
         
         if (drinkItem) {
-          // Find the day and update pricing dynamically
+          // Find the day for this menu item
           const dayMatch = menuItem.closest('.menu-for-day');
           if (dayMatch) {
             const day = dayMatch.dataset.day;
             
-            // Check if any child has (entree or salad) + side for this day
-            let discountedPrice = drinkItem.basePrice;
-            let hasDiscount = false;
+            // Check each child individually and show their applicable price
+            let priceInfo = [];
+            let hasAnyDiscounts = false;
             
             document.querySelectorAll('.child-section').forEach(childDiv => {
               const childId = childDiv.dataset.child;
+              const firstName = childDiv.querySelector('.child-first-name').value || `Child ${childId}`;
+              
               if (checkChildHasEntreeOrSaladAndSide(childId, day)) {
-                hasDiscount = true;
+                hasAnyDiscounts = true;
                 if (drinkItem.category === 'regular') {
-                  discountedPrice = 0;
+                  priceInfo.push(`${firstName}: FREE`);
                 } else if (drinkItem.category === 'premium') {
-                  discountedPrice = 1.50;
+                  priceInfo.push(`${firstName}: $1.50`);
                 }
+              } else {
+                priceInfo.push(`${firstName}: ${drinkItem.basePrice.toFixed(2)}`);
               }
             });
             
-            // Update the price display to show current applicable price
-            if (hasDiscount && discountedPrice < drinkItem.basePrice) {
-              if (discountedPrice === 0) {
-                priceDiv.innerHTML = 'FREE';
+            // Update the price display
+            if (priceInfo.length === 1) {
+              // Single child - show their price
+              const childPrice = priceInfo[0].split(': ')[1];
+              priceDiv.innerHTML = childPrice;
+              if (childPrice === 'FREE') {
                 priceDiv.style.color = '#4caf50';
-              } else {
-                priceDiv.innerHTML = `$${discountedPrice.toFixed(2)}`;
+              } else if (childPrice === '$1.50' && drinkItem.category === 'premium') {
                 priceDiv.style.color = '#ff9800';
+              } else {
+                priceDiv.style.color = '#34a853';
+              }
+            } else if (hasAnyDiscounts) {
+              // Multiple children with mixed pricing
+              if (drinkItem.category === 'regular') {
+                priceDiv.innerHTML = '$1.50 / FREE';
+                priceDiv.style.color = '#34a853';
+                priceDiv.title = priceInfo.join('\n');
+              } else {
+                priceDiv.innerHTML = '$3.00 / $1.50';
+                priceDiv.style.color = '#34a853';
+                priceDiv.title = priceInfo.join('\n');
               }
             } else {
-              priceDiv.innerHTML = `$${drinkItem.basePrice.toFixed(2)}`;
+              // No discounts for any child
+              priceDiv.innerHTML = `${drinkItem.basePrice.toFixed(2)}`;
               priceDiv.style.color = '#34a853';
+              priceDiv.title = priceInfo.join('\n');
             }
           }
         }
