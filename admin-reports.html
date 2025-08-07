@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cafe Admin - Enhanced Report Generator</title>
+  <title>Artios Academies Admin - Report Generator</title>
   <style>
     * {
       margin: 0;
@@ -228,176 +228,6 @@
       display: none;
     }
 
-    /* Venmo Upload Section */
-    .venmo-upload {
-      background: linear-gradient(135deg, #3d95ce 0%, #2980b9 100%);
-      color: white;
-      border-radius: 15px;
-      padding: 25px;
-      margin-bottom: 25px;
-      text-align: left;
-    }
-
-    .venmo-upload h4 {
-      color: white;
-      margin-bottom: 15px;
-      font-size: 1.2em;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .upload-instructions {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      font-size: 0.9em;
-    }
-
-    .upload-instructions ol {
-      margin-left: 20px;
-    }
-
-    .upload-instructions li {
-      margin-bottom: 8px;
-    }
-
-    .file-upload-area {
-      border: 2px dashed rgba(255, 255, 255, 0.5);
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .file-upload-area:hover {
-      border-color: white;
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .file-upload-area.dragover {
-      border-color: #34a853;
-      background: rgba(52, 168, 83, 0.2);
-    }
-
-    .upload-icon {
-      font-size: 2em;
-      margin-bottom: 10px;
-    }
-
-    .file-input {
-      display: none;
-    }
-
-    .file-info {
-      margin-top: 15px;
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 6px;
-      display: none;
-    }
-
-    /* Results Section */
-    .results-section {
-      background: #f8f9fa;
-      border-radius: 15px;
-      padding: 25px;
-      margin-top: 25px;
-      display: none;
-    }
-
-    .results-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .results-stats {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      flex: 1;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: 600;
-    }
-
-    .stat-matched {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .stat-missing {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    .stat-review {
-      background: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeaa7;
-    }
-
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 15px 0;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .results-table th {
-      background: #4285f4;
-      color: white;
-      padding: 12px;
-      text-align: left;
-      font-weight: 600;
-    }
-
-    .results-table td {
-      padding: 12px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .results-table tr:hover {
-      background: #f8f9fa;
-    }
-
-    .status-badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .status-matched {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .status-missing {
-      background: #f8d7da;
-      color: #721c24;
-    }
-
-    .status-review {
-      background: #fff3cd;
-      color: #856404;
-    }
-
     /* Button Styles */
     .generate-btn, .upload-btn, .reconcile-btn {
       background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
@@ -517,8 +347,6 @@
       border-color: #4285f4;
     }
 
-
-
     /* Responsive Design */
     @media (max-width: 768px) {
       .admin-container {
@@ -530,34 +358,19 @@
         flex-direction: column;
         gap: 5px;
       }
-
-      .results-stats {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .results-table {
-        font-size: 0.9em;
-      }
-
-      .results-table th,
-      .results-table td {
-        padding: 8px;
-      }
     }
   </style>
 </head>
 <body>
   <div class="admin-container">
     <div class="admin-header">
-      <h1 class="admin-title">📊 Cafe Admin Portal</h1>
-      <p class="admin-subtitle">Report Generation & Payment Reconciliation</p>
+      <h1 class="admin-title">📊 Artios Academies Admin Portal</h1>
+      <p class="admin-subtitle">Report Generation System</p>
     </div>
 
     <div class="tab-container">
       <div class="tab-buttons">
         <button class="tab-btn active" data-tab="reports">📋 Generate Reports</button>
-        <button class="tab-btn" data-tab="payments">💳 Payment Reconciliation</button>
       </div>
 
       <!-- Reports Tab -->
@@ -622,92 +435,7 @@
           <div class="status-message" id="status-message"></div>
         </form>
       </div>
-
-      <!-- Payment Reconciliation Tab -->
-      <div class="tab-content" id="payments-tab">
-        <div class="venmo-upload">
-          <h4>💳 Venmo Payment Reconciliation</h4>
-          
-          <div class="upload-instructions">
-            <strong>How to get your Venmo transaction data:</strong>
-            <ol>
-              <li>Open Venmo app → Settings → Privacy</li>
-              <li>Tap "Export Data" → "Transaction History"</li>
-              <li>Download the CSV file when ready</li>
-              <li>Upload it below to automatically match against orders</li>
-            </ol>
-          </div>
-
-          <div class="file-upload-area" id="file-upload-area">
-            <div class="upload-icon">📁</div>
-            <div>
-              <strong>Drop your Venmo CSV file here</strong><br>
-              <span>or click to browse</span>
-            </div>
-            <input type="file" id="venmo-file" class="file-input" accept=".csv">
-          </div>
-
-          <div class="file-info" id="file-info">
-            <strong>File selected:</strong> <span id="file-name"></span><br>
-            <strong>Size:</strong> <span id="file-size"></span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="reconciliation-date-range">Date Range for Reconciliation:</label>
-          <div style="display: flex; gap: 10px;">
-            <input type="date" id="reconcile-start-date" class="date-input" style="flex: 1;" placeholder="Start Date">
-            <input type="date" id="reconcile-end-date" class="date-input" style="flex: 1;" placeholder="End Date">
-          </div>
-        </div>
-
-        <button type="button" class="reconcile-btn" id="reconcile-btn" disabled>
-          🔍 Analyze Payments
-        </button>
-
-        <!-- Results Section -->
-        <div class="results-section" id="results-section">
-          <div class="results-header">
-            <h3>Payment Reconciliation Results</h3>
-            <div class="results-stats">
-              <div class="stat-card stat-matched">
-                <div id="matched-count">0</div>
-                <div>✅ Matched</div>
-              </div>
-              <div class="stat-card stat-missing">
-                <div id="missing-count">0</div>
-                <div>❌ Missing</div>
-              </div>
-              <div class="stat-card stat-review">
-                <div id="review-count">0</div>
-                <div>⚠️ Review</div>
-              </div>
-            </div>
-          </div>
-
-          <table class="results-table" id="results-table">
-            <thead>
-              <tr>
-                <th>Status</th>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Order Amount</th>
-                <th>Venmo Amount</th>
-                <th>Date</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="results-tbody">
-              <!-- Results will be populated here -->
-            </tbody>
-          </table>
-        </div>
-
-        <div class="status-message" id="payment-status-message"></div>
-      </div>
     </div>
-
-
   </div>
 
   <script>
@@ -717,22 +445,11 @@
       useGoogleSheets: true
     };
 
-    let uploadedVenmoData = null;
-    let reconciliationResults = null;
-
     document.addEventListener('DOMContentLoaded', function() {
       // Set default date to today
       const today = new Date();
       const todayStr = today.toISOString().split('T')[0];
       document.getElementById('report-date').value = todayStr;
-      
-      // Set default date range (last 7 days)
-      const lastWeek = new Date();
-      lastWeek.setDate(lastWeek.getDate() - 7);
-      document.getElementById('reconcile-start-date').value = lastWeek.toISOString().split('T')[0];
-      document.getElementById('reconcile-end-date').value = todayStr;
-
-
 
       // Setup event listeners
       setupEventListeners();
@@ -740,14 +457,6 @@
     });
 
     function setupEventListeners() {
-      // Tab switching
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const tabId = this.dataset.tab;
-          switchTab(tabId);
-        });
-      });
-
       // Report form submission
       document.getElementById('report-form').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -796,430 +505,9 @@
 
       // Initialize custom email input as disabled
       customEmailInput.disabled = true;
-
-      // File upload events
-      const fileUploadArea = document.getElementById('file-upload-area');
-      const fileInput = document.getElementById('venmo-file');
-
-      fileUploadArea.addEventListener('click', () => fileInput.click());
-      fileUploadArea.addEventListener('dragover', handleDragOver);
-      fileUploadArea.addEventListener('dragleave', handleDragLeave);
-      fileUploadArea.addEventListener('drop', handleFileDrop);
-      fileInput.addEventListener('change', handleFileSelect);
-
-      // Reconciliation button
-      document.getElementById('reconcile-btn').addEventListener('click', performReconciliation);
-
-      // Date range validation
-      document.getElementById('reconcile-start-date').addEventListener('change', validateDateRange);
-      document.getElementById('reconcile-end-date').addEventListener('change', validateDateRange);
     }
 
-    function switchTab(tabId) {
-      // Update button states
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.tab === tabId) {
-          btn.classList.add('active');
-        }
-      });
-
-      // Update content visibility
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      document.getElementById(tabId + '-tab').classList.add('active');
-    }
-
-    // File Upload Handlers
-    function handleDragOver(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.classList.add('dragover');
-    }
-
-    function handleDragLeave(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.classList.remove('dragover');
-    }
-
-    function handleFileDrop(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.classList.remove('dragover');
-      
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        processVenmoFile(files[0]);
-      }
-    }
-
-    function handleFileSelect(e) {
-      const files = e.target.files;
-      if (files.length > 0) {
-        processVenmoFile(files[0]);
-      }
-    }
-
-    function processVenmoFile(file) {
-      if (!file.name.toLowerCase().endsWith('.csv')) {
-        showPaymentStatus('Please select a CSV file', 'error');
-        return;
-      }
-
-      // Show file info
-      const fileInfo = document.getElementById('file-info');
-      const fileName = document.getElementById('file-name');
-      const fileSize = document.getElementById('file-size');
-      
-      fileName.textContent = file.name;
-      fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
-      fileInfo.style.display = 'block';
-
-      // Read and parse CSV
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const csvText = e.target.result;
-        try {
-          uploadedVenmoData = parseVenmoCSV(csvText);
-          showPaymentStatus(`Successfully loaded ${uploadedVenmoData.length} Venmo transactions`, 'success');
-          
-          // Enable reconciliation button
-          const reconcileBtn = document.getElementById('reconcile-btn');
-          reconcileBtn.disabled = false;
-          reconcileBtn.textContent = `🔍 Analyze ${uploadedVenmoData.length} Transactions`;
-          
-        } catch (error) {
-          console.error('Error parsing CSV:', error);
-          showPaymentStatus('Error parsing CSV file. Please check the format.', 'error');
-        }
-      };
-      
-      reader.readAsText(file);
-    }
-
-    function parseVenmoCSV(csvText) {
-      const lines = csvText.split('\n').filter(line => line.trim());
-      const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
-      
-      console.log('CSV Headers:', headers);
-      
-      const transactions = [];
-      for (let i = 1; i < lines.length; i++) {
-        const values = parseCSVLine(lines[i]);
-        if (values.length >= headers.length) {
-          const transaction = {};
-          headers.forEach((header, index) => {
-            transaction[header] = values[index] ? values[index].replace(/"/g, '').trim() : '';
-          });
-          
-          // Only include payments TO Chan Ta (not from her)
-          if (transaction.type && transaction.type.toLowerCase().includes('payment') && 
-              transaction.to && transaction.to.toLowerCase().includes('chanta-rivers')) {
-            transactions.push(transaction);
-          }
-        }
-      }
-      
-      console.log('Parsed Venmo transactions:', transactions);
-      return transactions;
-    }
-
-    function parseCSVLine(line) {
-      const values = [];
-      let current = '';
-      let inQuotes = false;
-      
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          values.push(current);
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      values.push(current);
-      return values;
-    }
-
-    async function performReconciliation() {
-      if (!uploadedVenmoData || uploadedVenmoData.length === 0) {
-        showPaymentStatus('Please upload a Venmo CSV file first', 'error');
-        return;
-      }
-
-      const startDate = document.getElementById('reconcile-start-date').value;
-      const endDate = document.getElementById('reconcile-end-date').value;
-      
-      if (!startDate || !endDate) {
-        showPaymentStatus('Please select date range for reconciliation', 'error');
-        return;
-      }
-
-      showPaymentStatus('Fetching orders from Google Sheets...', 'info');
-      const reconcileBtn = document.getElementById('reconcile-btn');
-      reconcileBtn.disabled = true;
-      reconcileBtn.textContent = '⏳ Analyzing...';
-
-      try {
-        // Fetch orders from Google Sheets for the date range
-        const ordersUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=get_orders_for_reconciliation&start_date=${startDate}&end_date=${endDate}`;
-        const response = await fetch(ordersUrl);
-        const ordersData = await response.json();
-        
-        if (!ordersData.success) {
-          throw new Error(ordersData.error || 'Failed to fetch orders');
-        }
-
-        const orders = ordersData.orders || [];
-        showPaymentStatus(`Analyzing ${orders.length} orders against ${uploadedVenmoData.length} Venmo transactions...`, 'info');
-
-        // Perform matching
-        reconciliationResults = matchPaymentsToOrders(orders, uploadedVenmoData);
-        
-        // Display results
-        displayReconciliationResults(reconciliationResults);
-        
-        showPaymentStatus(`Reconciliation complete! Found ${reconciliationResults.matched.length} matches.`, 'success');
-
-      } catch (error) {
-        console.error('Reconciliation error:', error);
-        showPaymentStatus('Error during reconciliation: ' + error.message, 'error');
-      } finally {
-        reconcileBtn.disabled = false;
-        reconcileBtn.textContent = '🔍 Analyze Payments';
-      }
-    }
-
-    function matchPaymentsToOrders(orders, venmoTransactions) {
-      const matched = [];
-      const missingPayments = [];
-      const needsReview = [];
-      const extraPayments = [];
-
-      console.log('Matching orders:', orders);
-      console.log('Against Venmo transactions:', venmoTransactions);
-
-      // Create a copy of Venmo transactions to track which ones we've matched
-      const remainingTransactions = [...venmoTransactions];
-
-      orders.forEach(order => {
-        const orderAmount = parseFloat(order.total) || 0;
-        let bestMatch = null;
-        let bestMatchIndex = -1;
-        let bestMatchScore = 0;
-
-        remainingTransactions.forEach((transaction, index) => {
-          const venmoAmount = parseFloat(transaction.amount?.replace('$', '').replace('-', '')) || 0;
-          const score = calculateMatchScore(order, transaction, orderAmount, venmoAmount);
-          
-          if (score > bestMatchScore) {
-            bestMatch = transaction;
-            bestMatchIndex = index;
-            bestMatchScore = score;
-          }
-        });
-
-        if (bestMatch && bestMatchScore >= 0.7) {
-          matched.push({
-            order: order,
-            venmoTransaction: bestMatch,
-            matchScore: bestMatchScore,
-            status: bestMatchScore >= 0.9 ? 'exact' : 'probable'
-          });
-          remainingTransactions.splice(bestMatchIndex, 1);
-        } else if (bestMatch && bestMatchScore >= 0.4) {
-          needsReview.push({
-            order: order,
-            venmoTransaction: bestMatch,
-            matchScore: bestMatchScore,
-            status: 'review'
-          });
-        } else {
-          missingPayments.push({
-            order: order,
-            status: 'missing'
-          });
-        }
-      });
-
-      // Any remaining transactions are extras
-      remainingTransactions.forEach(transaction => {
-        extraPayments.push({
-          venmoTransaction: transaction,
-          status: 'extra'
-        });
-      });
-
-      return {
-        matched,
-        missingPayments,
-        needsReview,
-        extraPayments,
-        summary: {
-          totalOrders: orders.length,
-          matchedCount: matched.length,
-          missingCount: missingPayments.length,
-          reviewCount: needsReview.length,
-          extraCount: extraPayments.length
-        }
-      };
-    }
-
-    function calculateMatchScore(order, transaction, orderAmount, venmoAmount) {
-      let score = 0;
-
-      // Amount matching (50% weight)
-      if (Math.abs(orderAmount - venmoAmount) < 0.01) {
-        score += 0.5; // Exact amount match
-      } else if (Math.abs(orderAmount - venmoAmount) < 1.00) {
-        score += 0.3; // Close amount match
-      }
-
-      // Date proximity (20% weight)
-      const orderDate = new Date(order.timestamp);
-      const transactionDate = new Date(transaction.datetime || transaction.date);
-      const daysDiff = Math.abs((orderDate - transactionDate) / (1000 * 60 * 60 * 24));
-      
-      if (daysDiff <= 1) {
-        score += 0.2;
-      } else if (daysDiff <= 3) {
-        score += 0.1;
-      }
-
-      // Name/email matching (20% weight)
-      const customerName = `${order.firstName} ${order.lastName}`.toLowerCase();
-      const transactionNote = (transaction.note || '').toLowerCase();
-      const transactionFrom = (transaction.from || '').toLowerCase();
-      
-      if (transactionNote.includes(customerName) || transactionFrom.includes(customerName)) {
-        score += 0.2;
-      } else if (transactionNote.includes(order.firstName.toLowerCase()) || 
-                 transactionFrom.includes(order.firstName.toLowerCase())) {
-        score += 0.1;
-      }
-
-      // Order ID matching (10% weight)
-      if (transactionNote.includes(order.orderId.toLowerCase())) {
-        score += 0.1;
-      }
-
-      return score;
-    }
-
-    function displayReconciliationResults(results) {
-      const resultsSection = document.getElementById('results-section');
-      const matchedCount = document.getElementById('matched-count');
-      const missingCount = document.getElementById('missing-count');
-      const reviewCount = document.getElementById('review-count');
-      const tbody = document.getElementById('results-tbody');
-
-      // Update summary stats
-      matchedCount.textContent = results.summary.matchedCount;
-      missingCount.textContent = results.summary.missingCount;
-      reviewCount.textContent = results.summary.reviewCount + results.summary.extraCount;
-
-      // Clear existing results
-      tbody.innerHTML = '';
-
-      // Add matched results
-      results.matched.forEach(match => {
-        const row = createResultRow({
-          status: 'matched',
-          orderId: match.order.orderId,
-          customer: `${match.order.firstName} ${match.order.lastName}`,
-          orderAmount: match.order.total,
-          venmoAmount: match.venmoTransaction.amount,
-          date: match.order.timestamp,
-          notes: `Score: ${(match.matchScore * 100).toFixed(0)}%`
-        });
-        tbody.appendChild(row);
-      });
-
-      // Add missing payments
-      results.missingPayments.forEach(missing => {
-        const row = createResultRow({
-          status: 'missing',
-          orderId: missing.order.orderId,
-          customer: `${missing.order.firstName} ${missing.order.lastName}`,
-          orderAmount: missing.order.total,
-          venmoAmount: '-',
-          date: missing.order.timestamp,
-          notes: 'No matching Venmo payment found'
-        });
-        tbody.appendChild(row);
-      });
-
-      // Add items needing review
-      results.needsReview.forEach(review => {
-        const row = createResultRow({
-          status: 'review',
-          orderId: review.order.orderId,
-          customer: `${review.order.firstName} ${review.order.lastName}`,
-          orderAmount: review.order.total,
-          venmoAmount: review.venmoTransaction.amount,
-          date: review.order.timestamp,
-          notes: `Partial match: ${(review.matchScore * 100).toFixed(0)}%`
-        });
-        tbody.appendChild(row);
-      });
-
-      // Add extra payments
-      results.extraPayments.forEach(extra => {
-        const row = createResultRow({
-          status: 'review',
-          orderId: '-',
-          customer: extra.venmoTransaction.from || 'Unknown',
-          orderAmount: '-',
-          venmoAmount: extra.venmoTransaction.amount,
-          date: extra.venmoTransaction.datetime || extra.venmoTransaction.date,
-          notes: 'Venmo payment with no matching order'
-        });
-        tbody.appendChild(row);
-      });
-
-      // Show results section
-      resultsSection.style.display = 'block';
-    }
-
-    function createResultRow(data) {
-      const row = document.createElement('tr');
-      
-      const statusBadge = document.createElement('span');
-      statusBadge.className = `status-badge status-${data.status}`;
-      statusBadge.textContent = data.status === 'matched' ? '✅ Matched' : 
-                               data.status === 'missing' ? '❌ Missing' : '⚠️ Review';
-
-      row.innerHTML = `
-        <td></td>
-        <td>${data.orderId}</td>
-        <td>${data.customer}</td>
-        <td>${data.orderAmount !== '-' ? '$' + parseFloat(data.orderAmount).toFixed(2) : '-'}</td>
-        <td>${data.venmoAmount !== '-' ? data.venmoAmount : '-'}</td>
-        <td>${new Date(data.date).toLocaleDateString()}</td>
-        <td>${data.notes}</td>
-      `;
-
-      row.cells[0].appendChild(statusBadge);
-      return row;
-    }
-
-    function validateDateRange() {
-      const startDate = document.getElementById('reconcile-start-date').value;
-      const endDate = document.getElementById('reconcile-end-date').value;
-      
-      if (startDate && endDate && startDate > endDate) {
-        showPaymentStatus('End date must be after start date', 'error');
-        return false;
-      }
-      return true;
-    }
-
-    // Report Generation Functions (existing functionality)
+    // Report Generation Functions
     function updateEmailCheckboxStyles() {
       // Update checkbox styling
       document.querySelectorAll('.email-checkbox').forEach(checkboxDiv => {
@@ -1307,7 +595,6 @@
           if (data.success) {
             let message = `✅ Report Generated Successfully!\n\n`;
             message += `📅 Date: ${dateInput}\n`;
-            message += `📊 Sheet: ${data.sheetName}\n`;
             message += `🍽️ Orders Found: ${data.ordersProcessed}\n`;
             
             if (adminRecipients.length > 0) {
@@ -1326,40 +613,26 @@
               });
             }
             
-            message += `\n`;
-            
             if (data.ordersProcessed > 0) {
-              message += `The report includes:\n`;
-              message += `• Customer order details (admin)\n`;
-              message += `• Restaurant preparation summary (admin)\n`;
-              message += `• Simple order list (cafe worker)\n`;
-              message += `• Copy-friendly ordering format\n\n`;
-              showStatus(`Report created: ${data.ordersProcessed} orders for ${dateInput}`, 'success');
+              message += `\nThe report includes customer order details and restaurant preparation summary.`;
+              showStatus(`Report sent: ${data.ordersProcessed} orders for ${dateInput}`, 'success');
             } else {
-              message += `No orders found for this date.\n`;
-              message += `✅ No Chick-fil-A order needed!\n\n`;
+              message += `\nNo orders found for this date. ✅ No Chick-fil-A order needed!`;
               showStatus(`No orders found for ${dateInput}`, 'info');
             }
 
-            message += `Check your Google Sheet and email for details.`;
-            alert(message);
+            // Show simple success message on page instead of popup
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
+            statusDiv.className = 'status-message success show';
 
-            if (data.sheetUrl) {
-              setTimeout(() => {
-                if (confirm('Open the Google Sheet to view the report?')) {
-                  window.open(data.sheetUrl, '_blank');
-                }
-              }, 1000);
-            }
           } else {
             showStatus(`Report failed: ${data.error}`, 'error');
-            alert(`❌ Report Generation Failed!\n\nError: ${data.error}\n\nPlease check your Google Apps Script configuration.`);
           }
         })
         .catch(error => {
           console.error('Report error:', error);
           showStatus('Network error generating report', 'error');
-          alert(`❌ Network Error!\n\nFailed to generate report: ${error.message}\n\nPlease check your internet connection and Google Apps Script URL.`);
         })
         .finally(() => {
           generateBtn.disabled = false;
@@ -1385,12 +658,10 @@
         .then(response => response.json())
         .then(result => {
           showStatus('✅ Google Sheets connection successful!', 'success');
-          alert(`✅ Connection Test PASSED!\n\nGoogle Apps Script is working correctly.\nResponse: ${JSON.stringify(result, null, 2)}`);
         })
         .catch(error => {
           console.error('Connection test failed:', error);
           showStatus('❌ Google Sheets connection failed', 'error');
-          alert(`❌ Connection Test FAILED!\n\nError: ${error.message}\n\nPlease check your Google Apps Script configuration.`);
         })
         .finally(() => {
           testBtn.disabled = false;
@@ -1405,17 +676,7 @@
 
       setTimeout(() => {
         statusDiv.classList.remove('show');
-      }, 5000);
-    }
-
-    function showPaymentStatus(message, type) {
-      const statusDiv = document.getElementById('payment-status-message');
-      statusDiv.textContent = message;
-      statusDiv.className = `status-message ${type} show`;
-
-      setTimeout(() => {
-        statusDiv.classList.remove('show');
-      }, 5000);
+      }, 8000);
     }
   </script>
 </body>
