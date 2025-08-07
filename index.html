@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cafe Lunch Order Form 2025-2026</title>
+  <title>Artios Academies of Sugar Hill - Cafe Lunch Order Form 2025-2026</title>
   <style>
     * {
       margin: 0;
@@ -904,7 +904,7 @@
         ☁️ Cloud Sync Active
       </div>
       
-      <h1>🍽️ Artios Academies Cafe Lunch Order Form 2025-2026</h1>
+      <h1>🍽️ Artios Academies of Sugar Hill Cafe Lunch Order Form 2025-2026</h1>
       <div class="notice">
         <strong>Order & Payment Cutoff: Daily at 8:00 AM</strong><br>
         ONE FORM PER FAMILY • Order for multiple children with one email<br>
@@ -1291,7 +1291,7 @@
           dayMenu.classList.add('active');
         }
         
-        // Generate menu categories - REMOVED ADDONS, ADDED DRINKS
+        // Generate menu categories - REORDERED: entrees, salads, sides, drinks
         Object.keys(menuData).forEach(category => {
           const categoryDiv = document.createElement('div');
           categoryDiv.className = 'menu-category';
@@ -1326,15 +1326,15 @@
             // Dynamic pricing display for drinks - show current price only
             let priceDisplay;
             if (category === 'drinks') {
-              priceDisplay = `${item.basePrice.toFixed(2)}`;
+              priceDisplay = `$${item.basePrice.toFixed(2)}`;
             } else {
-              priceDisplay = `${item.price.toFixed(2)}`;
+              priceDisplay = `$${item.price.toFixed(2)}`;
             }
             
             itemDiv.innerHTML = `
               <div class="item-header">
                 <div class="item-name">${item.name}</div>
-                <div class="item-price" data-item-id="${item.id}">${priceDisplay}</div>
+                <div class="item-price" data-item-id="${item.id}">$${priceDisplay}</div>
               </div>
               <div class="item-desc">${item.desc}</div>
               <div class="child-checkboxes" id="${item.id}-${day}-checkboxes"></div>
@@ -1651,9 +1651,9 @@
           let finalPrice = item.price || item.basePrice;
           
           if (category === 'drinks') {
-            const hasEntreeAndSide = checkChildHasEntreeAndSide(childId, day);
+            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
             
-            if (hasEntreeAndSide) {
+            if (hasEntreeOrSaladAndSide) {
               // Apply discount
               if (item.category === 'regular') {
                 finalPrice = 0; // FREE
@@ -1692,9 +1692,9 @@
       updateCopyButton();
     }
 
-    // Helper function to check if child has both entree and side for the same day
-    function checkChildHasEntreeAndSide(childId, day) {
-      let hasEntree = false;
+    // UPDATED: Helper function to check if child has (entree OR salad) AND side for the same day
+    function checkChildHasEntreeOrSaladAndSide(childId, day) {
+      let hasEntreeOrSalad = false;
       let hasSide = false;
       
       // Check all checked items for this child and day
@@ -1705,8 +1705,8 @@
         Object.keys(menuData).forEach(category => {
           const found = menuData[category].find(i => i.id === itemId);
           if (found) {
-            if (category === 'entrees') {
-              hasEntree = true;
+            if (category === 'entrees' || category === 'salads') {
+              hasEntreeOrSalad = true;
             } else if (category === 'sides') {
               hasSide = true;
             }
@@ -1714,53 +1714,60 @@
         });
       });
       
-      return hasEntree && hasSide;
+      return hasEntreeOrSalad && hasSide;
     }
 
     // Update drink pricing displays dynamically
     function updateDrinkPricingDisplays() {
       // Update all drink item displays based on current child selections
       document.querySelectorAll('.menu-item').forEach(menuItem => {
-        const itemHeader = menuItem.querySelector('.item-header');
-        if (!itemHeader) return;
+        const priceDiv = menuItem.querySelector('.item-price');
+        if (!priceDiv) return;
         
-        const itemName = itemHeader.querySelector('.item-name').textContent;
+        const itemId = priceDiv.dataset.itemId;
         
-        // Check if this is a drink item
-        let isDrink = false;
-        let drinkCategory = null;
+        // Find if this is a drink item
+        let drinkItem = null;
         menuData.drinks?.forEach(drink => {
-          if (drink.name === itemName) {
-            isDrink = true;
-            drinkCategory = drink.category;
+          if (drink.id === itemId) {
+            drinkItem = drink;
           }
         });
         
-        if (isDrink) {
-          // Find the day and update pricing for each child's context
+        if (drinkItem) {
+          // Find the day and update pricing dynamically
           const dayMatch = menuItem.closest('.menu-for-day');
           if (dayMatch) {
             const day = dayMatch.dataset.day;
             
-            // Check if any child has entree + side for this day
-            let anyChildHasDiscount = false;
+            // Check if any child has (entree or salad) + side for this day
+            let discountedPrice = drinkItem.basePrice;
+            let hasDiscount = false;
+            
             document.querySelectorAll('.child-section').forEach(childDiv => {
               const childId = childDiv.dataset.child;
-              if (checkChildHasEntreeAndSide(childId, day)) {
-                anyChildHasDiscount = true;
+              if (checkChildHasEntreeOrSaladAndSide(childId, day)) {
+                hasDiscount = true;
+                if (drinkItem.category === 'regular') {
+                  discountedPrice = 0;
+                } else if (drinkItem.category === 'premium') {
+                  discountedPrice = 1.50;
+                }
               }
             });
             
-            // Update the price display
-            const priceDiv = itemHeader.querySelector('.item-price');
-            if (drinkCategory === 'regular') {
-              priceDiv.innerHTML = anyChildHasDiscount ? 
-                '$1.50 / <strong style="color: #4caf50;">FREE</strong>*' : 
-                '$1.50 / FREE*';
+            // Update the price display to show current applicable price
+            if (hasDiscount && discountedPrice < drinkItem.basePrice) {
+              if (discountedPrice === 0) {
+                priceDiv.innerHTML = 'FREE';
+                priceDiv.style.color = '#4caf50';
+              } else {
+                priceDiv.innerHTML = `$${discountedPrice.toFixed(2)}`;
+                priceDiv.style.color = '#ff9800';
+              }
             } else {
-              priceDiv.innerHTML = anyChildHasDiscount ? 
-                '$3.00 / <strong style="color: #ff9800;">$1.50</strong>*' : 
-                '$3.00 / $1.50*';
+              priceDiv.innerHTML = `$${drinkItem.basePrice.toFixed(2)}`;
+              priceDiv.style.color = '#34a853';
             }
           }
         }
@@ -1920,7 +1927,7 @@
       venmoTotal.textContent = currentTotal.toFixed(2);
       
       // Create order summary for Venmo
-      let orderSummary = `Cafe Lunch Order - $${currentTotal.toFixed(2)}`;
+      let orderSummary = `Artios Academies Cafe Lunch Order - $${currentTotal.toFixed(2)}`;
       const children = [...new Set(orderItems.map(item => item.childName))];
       if (children.length <= 2) {
         orderSummary += ` for ${children.join(' & ')}`;
