@@ -1,1507 +1,1022 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Artios Academies of Sugar Hill - Cafe Lunch Order System</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      background: #f8f9fa;
-      color: #202124;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      min-height: 100vh;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-
-    .header-brand {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .artios-logo {
-      width: 60px;
-      height: 60px;
-      flex-shrink: 0;
-      object-fit: contain;
-    }
-
-    .header-text {
-      text-align: left;
-    }
-
-    .header h1 {
-      font-size: 2.2em;
-      font-weight: 600;
-      margin: 0;
-      line-height: 1.2;
-    }
-
-    .header .subtitle {
-      font-size: 1.1em;
-      font-weight: 300;
-      margin: 5px 0 0 0;
-      opacity: 0.9;
-    }
-
-    .header .notice {
-      background: rgba(255,255,255,0.15);
-      padding: 20px;
-      border-radius: 12px;
-      font-size: 0.95em;
-      margin-top: 25px;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .sync-status {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      background: rgba(255,255,255,0.2);
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.8em;
-    }
-
-    .store-status {
-      position: absolute;
-      top: 10px;
-      left: 20px;
-      background: rgba(255,255,255,0.2);
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.8em;
-    }
-
-    .main-content {
-      display: flex;
-      min-height: calc(100vh - 140px);
-    }
-
-    .form-section {
-      flex: 2;
-      padding: 30px;
-      background: white;
-    }
-
-    .shared-email {
-      background: #e8f5e8;
-      border: 2px solid #4caf50;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .shared-email h3 {
-      color: #2e7d32;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .child-section {
-      background: #f8f9fa;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .child-section:hover {
-      border-color: #4285f4;
-    }
-
-    .child-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e0e0e0;
-    }
-
-    .child-title {
-      font-size: 1.1em;
-      font-weight: 600;
-      color: #4285f4;
-      display: flex;
-      align-items: center;
-    }
-
-    .child-icon {
-      background: #4285f4;
-      color: white;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-      font-weight: bold;
-      font-size: 0.9em;
-    }
-
-    .remove-child {
-      background: #ff5722;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-
-    .remove-child:hover {
-      background: #d32f2f;
-      transform: scale(1.1);
-    }
-
-    .form-row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      flex: 1;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      color: #444;
-    }
-
-    .required {
-      color: #d32f2f;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      background: white;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: #4285f4;
-      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
-    }
-
-    .add-child-btn {
-      background: #34a853;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 30px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: center;
-      width: 100%;
-      max-width: 300px;
-    }
-
-    .add-child-btn:hover {
-      background: #2e7d32;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
-    }
-
-    .menu-section {
-      margin-top: 30px;
-    }
-
-    .menu-section h3 {
-      color: #4285f4;
-      margin-bottom: 20px;
-      font-size: 1.3em;
-    }
-
-    .day-tabs {
-      display: flex;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #e0e0e0;
-      overflow-x: auto;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .day-tab {
-      padding: 15px 25px;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-      font-weight: 500;
-      color: #666;
-    }
-
-    .day-tab:hover {
-      background: rgba(66, 133, 244, 0.1);
-      color: #4285f4;
-    }
-
-    .day-tab.active {
-      color: #4285f4;
-      border-bottom-color: #4285f4;
-      background: rgba(66, 133, 244, 0.1);
-    }
-
-    .day-tab.disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      color: #999;
-    }
-
-    .day-tab.disabled:hover {
-      background: none;
-      color: #999;
-    }
-
-    .menu-for-day {
-      display: none;
-    }
-
-    .menu-for-day.active {
-      display: block;
-    }
-
-    .menu-category {
-      margin-bottom: 30px;
-    }
-
-    .menu-category h4 {
-      color: #34a853;
-      margin-bottom: 15px;
-      font-size: 1.3em;
-      font-weight: 700;
-      padding: 15px;
-      background: linear-gradient(135deg, rgba(52, 168, 83, 0.15) 0%, rgba(52, 168, 83, 0.05) 100%);
-      border-radius: 8px;
-      border-left: 4px solid #34a853;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-align: center;
-    }
-
-    .drink-discount-notice {
-      margin-bottom: 15px;
-    }
-
-    .menu-item {
-      background: white;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .menu-item:hover {
-      border-color: #4285f4;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .item-name {
-      font-weight: 600;
-      color: #333;
-    }
-
-    .item-price {
-      font-weight: 700;
-      color: #34a853;
-      font-size: 1.1em;
-    }
-
-    .item-desc {
-      color: #666;
-      font-size: 0.9em;
-      margin-bottom: 15px;
-    }
-
-    .child-checkboxes {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .child-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f8f9fa;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-    }
-
-    .child-checkbox:has(input:checked) {
-      background: rgba(66, 133, 244, 0.1);
-      border-color: #4285f4;
-    }
-
-    .child-checkbox input {
-      width: auto;
-      margin: 0;
-    }
-
-    .child-checkbox label {
-      margin: 0;
-      cursor: pointer;
-      font-weight: 500;
-      color: #4285f4;
-    }
-
-    .sidebar {
-      flex: 1;
-      background: #f8f9fa;
-      border-left: 1px solid #e0e0e0;
-      padding: 30px;
-    }
-
-    .cart-summary {
-      position: sticky;
-      top: 30px;
-    }
-
-    .cart-title {
-      font-size: 1.4em;
-      font-weight: 600;
-      color: #4285f4;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .cart-items {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 20px;
-      padding-right: 10px;
-    }
-
-    .empty-cart {
-      text-align: center;
-      color: #999;
-      padding: 40px 20px;
-      font-style: italic;
-    }
-
-    .child-cart-section {
-      margin-bottom: 20px;
-    }
-
-    .child-cart-header {
-      background: #4285f4;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 6px 6px 0 0;
-      font-weight: 600;
-      font-size: 0.9em;
-    }
-
-    .cart-item {
-      background: white;
-      border: 1px solid #e0e0e0;
-      padding: 12px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .cart-item:last-child {
-      border-radius: 0 0 6px 6px;
-    }
-
-    .cart-item-name {
-      font-weight: 500;
-      color: #333;
-      flex: 1;
-    }
-
-    .cart-item-price {
-      font-weight: 700;
-      color: #34a853;
-    }
-
-    .cart-item.free-item {
-      background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%);
-      border-left: 4px solid #4caf50;
-    }
-
-    .cart-item.free-item .cart-item-price {
-      color: #4caf50;
-      font-weight: 800;
-    }
-
-    .cart-item.discounted-item {
-      background: linear-gradient(90deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
-      border-left: 4px solid #ff9800;
-    }
-
-    .cart-item.discounted-item .cart-item-price {
-      color: #ff9800;
-      font-weight: 800;
-    }
-
-    .cart-total {
-      background: white;
-      border: 2px solid #4285f4;
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    .total-label {
-      font-size: 1.1em;
-      font-weight: 600;
-      color: #4285f4;
-      margin-bottom: 10px;
-    }
-
-    .total-amount {
-      font-size: 2em;
-      font-weight: 700;
-      color: #34a853;
-      margin-bottom: 20px;
-    }
-
-    .checkout-btn {
-      width: 100%;
-      background: #34a853;
-      color: white;
-      border: none;
-      padding: 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .checkout-btn:hover:not(:disabled) {
-      background: #2e7d32;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
-    }
-
-    .checkout-btn:disabled {
-      background: #bbb;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .promo-section {
-      background: #fff3e0;
-      border: 2px solid #ff9800;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-
-    .promo-section h4 {
-      color: #f57c00;
-      margin-bottom: 10px;
-      font-size: 0.9em;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .promo-input {
-      width: 100%;
-      padding: 10px;
-      border: 2px solid #ffcc02;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
-      text-align: center;
-      text-transform: uppercase;
-      background: white;
-      transition: all 0.3s ease;
-    }
-
-    .promo-input:focus {
-      outline: none;
-      border-color: #ff9800;
-      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
-    }
-
-    .promo-status {
-      margin-top: 8px;
-      text-align: center;
-      font-size: 0.8em;
-      font-weight: 600;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .promo-status.valid {
-      color: #4caf50;
-      opacity: 1;
-    }
-
-    .promo-status.invalid {
-      color: #f44336;
-      opacity: 1;
-    }
-
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      z-index: 10002;
-      animation: slideIn 0.3s ease;
-      max-width: 300px;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .main-content {
-        flex-direction: column;
-      }
-
-      .form-section, .sidebar {
-        flex: none;
-      }
-
-      .sidebar {
-        border-left: none;
-        border-top: 1px solid #e0e0e0;
-      }
-
-      .form-row {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .day-tabs {
-        overflow-x: scroll;
-      }
-
-      .child-checkboxes {
-        flex-direction: column;
-      }
-
-      .header-brand {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-      }
-
-      .header-text {
-        text-align: center;
-      }
-
-      .header h1 {
-        font-size: 1.8em;
-      }
-
-      .header .subtitle {
-        font-size: 1em;
-      }
-
-      .artios-logo {
-        width: 50px;
-        height: 50px;
-        object-fit: contain;
-      }
-
-      .sync-status, .store-status {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        display: inline-block;
-        margin: 5px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artios Academies - Cafe Lunch Orders</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .store-status {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+
+        .sync-status {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .notice {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 0.95em;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 200px);
+        }
+
+        .form-section {
+            flex: 2;
+            padding: 30px;
+        }
+
+        .sidebar {
+            flex: 1;
+            background: #f8f9fa;
+            border-left: 1px solid #e0e0e0;
+            padding: 30px;
+        }
+
+        .shared-email {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .shared-email h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .required {
+            color: #d32f2f;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+
+        .child-section {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .child-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .child-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #4285f4;
+            display: flex;
+            align-items: center;
+        }
+
+        .child-icon {
+            background: #4285f4;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .remove-child {
+            background: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .add-child-btn {
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .add-child-btn:hover {
+            background: #2e7d32;
+        }
+
+        .menu-section h3 {
+            color: #4285f4;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .day-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;
+        }
+
+        .day-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .day-tab:hover {
+            background: rgba(66, 133, 244, 0.1);
+            color: #4285f4;
+        }
+
+        .day-tab.active {
+            color: #4285f4;
+            border-bottom-color: #4285f4;
+            background: rgba(66, 133, 244, 0.1);
+        }
+
+        .day-tab.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            color: #999;
+        }
+
+        .day-tab.disabled:hover {
+            background: none;
+            color: #999;
+        }
+
+        .menu-for-day {
+            display: none;
+        }
+
+        .menu-for-day.active {
+            display: block;
+        }
+
+        .menu-category {
+            margin-bottom: 30px;
+        }
+
+        .menu-category h4 {
+            color: #34a853;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            font-weight: 700;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(52, 168, 83, 0.15) 0%, rgba(52, 168, 83, 0.05) 100%);
+            border-radius: 8px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .menu-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .menu-item:hover {
+            border-color: #4285f4;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-name {
+            font-weight: 600;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #34a853;
+            font-size: 1.1em;
+        }
+
+        .item-desc {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .child-checkboxes {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .child-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+        }
+
+        .child-checkbox:has(input:checked) {
+            background: rgba(66, 133, 244, 0.1);
+            border-color: #4285f4;
+        }
+
+        .child-checkbox input {
+            width: auto;
+            margin: 0;
+        }
+
+        .child-checkbox label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: #4285f4;
+        }
+
+        .cart-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #4285f4;
+            margin-bottom: 20px;
+        }
+
+        .cart-items {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .child-cart-section {
+            margin-bottom: 20px;
+        }
+
+        .child-cart-header {
+            background: #4285f4;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px 6px 0 0;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .cart-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item:last-child {
+            border-radius: 0 0 6px 6px;
+        }
+
+        .cart-item-name {
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+
+        .cart-item-price {
+            font-weight: 700;
+            color: #34a853;
+        }
+
+        .promo-section {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .promo-section h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .promo-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ffcc02;
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .promo-status {
+            margin-top: 8px;
+            text-align: center;
+            font-size: 0.8em;
+            font-weight: 600;
+            opacity: 0;
+        }
+
+        .promo-status.valid {
+            color: #4caf50;
+            opacity: 1;
+        }
+
+        .promo-status.invalid {
+            color: #f44336;
+            opacity: 1;
+        }
+
+        .cart-total {
+            background: white;
+            border: 2px solid #4285f4;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .total-label {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #4285f4;
+            margin-bottom: 10px;
+        }
+
+        .total-amount {
+            font-size: 2em;
+            font-weight: 700;
+            color: #34a853;
+            margin-bottom: 20px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .checkout-btn:hover:not(:disabled) {
+            background: #2e7d32;
+        }
+
+        .checkout-btn:disabled {
+            background: #bbb;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                border-left: none;
+                border-top: 1px solid #e0e0e0;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .day-tabs {
+                overflow-x: scroll;
+            }
+
+            .store-status, .sync-status {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                display: inline-block;
+                margin: 5px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="store-status" id="store-status">
-        Checking store hours...
-      </div>
-      <div class="sync-status">
-        ☁️ Cloud Sync Active
-      </div>
-      
-      <div class="header-brand">
-        <img class="artios-logo" src="artios-logo.png" alt="Artios Academies Logo">
-        <div class="header-text">
-          <h1>Artios Academies of Sugar Hill</h1>
-          <div class="subtitle">Cafe Lunch Order System 2025-2026</div>
-        </div>
-      </div>
-      
-      <div class="notice">
-        <strong>Order & Payment Cutoff: Daily at 8:00 AM</strong><br>
-        ONE FORM PER FAMILY • Order for multiple children with one email<br>
-        Form closed daily from 8:00 AM - 1:00 PM<br>
-        <strong>🔄 Next week orders open Fridays at 12:00 PM</strong><br>
-        <em>💾 Your family info is automatically saved for convenience</em><br>
-        Contact: CRivers@artiosacademies.com | Artios Academies of Sugar Hill
-      </div>
-    </div>
-
-    <div class="main-content">
-      <div class="form-section">
-        <!-- Shared Email Section -->
-        <div class="shared-email">
-          <h3>📧 Family Email</h3>
-          <div class="form-group">
-            <label for="family-email">Email Address <span class="required">*</span></label>
-            <input type="email" id="family-email" required placeholder="parent@example.com">
-          </div>
-        </div>
-
-        <!-- Children Sections -->
-        <div id="children-container">
-          <div class="child-section" data-child="1">
-            <div class="child-header">
-              <div class="child-title">
-                <div class="child-icon">1</div>
-                Child 1
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>First Name <span class="required">*</span></label>
-                <input type="text" class="child-first-name" required>
-              </div>
-              <div class="form-group">
-                <label>Last Name <span class="required">*</span></label>
-                <input type="text" class="child-last-name" required>
-              </div>
-              <div class="form-group">
-                <label>Grade <span class="required">*</span></label>
-                <select class="child-grade" required>
-                  <option value="">Select Grade</option>
-                  <option value="K-2">K-2</option>
-                  <option value="3-4">3-4</option>
-                  <option value="5-6">5-6</option>
-                  <option value="7-8">7-8</option>
-                  <option value="9-12">9-12</option>
-                  <option value="Staff">Staff</option>
-                  <option value="Parent">Parent</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button type="button" class="add-child-btn" id="add-child-btn">
-          <span>➕ </span> Add Another Child
-        </button>
-
-        <div class="menu-section">
-          <h3>Select Days & Menu Items</h3>
-          <div class="day-tabs" id="day-tabs">
-            <!-- Tabs will be generated by JavaScript -->
-          </div>
-          <div id="menu-container">
-            <!-- Menu for each day will be generated by JavaScript -->
-          </div>
-        </div>
-      </div>
-
-      <div class="sidebar">
-        <div class="cart-summary">
-          <div class="cart-title">🛒 Your Order</div>
-
-          <div class="cart-items" id="cart-items">
-            <div class="empty-cart">No items selected</div>
-          </div>
-
-          <!-- Promo Code Section -->
-          <div class="promo-section">
-            <h4>🎟️ Discount Codes</h4>
-            <input type="text" 
-                   id="promo-code" 
-                   class="promo-input" 
-                   placeholder="Enter discount code"
-                   maxlength="20">
-            <div class="promo-status" id="promo-status"></div>
-          </div>
-
-          <div class="cart-total">
-            <div class="total-label">Order Total</div>
-            <div class="total-amount">$<span id="total-amount">0.00</span></div>
-            <div id="discount-line" style="display: none; color: #4caf50; font-weight: 600; margin-bottom: 10px;">
-              Discount Applied: -$<span id="discount-amount">0.00</span>
-            </div>
-            <button type="button" class="checkout-btn" id="checkout-btn" disabled>
-              Review & Pay Order
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // ============================================
-    // CONFIGURATION
-    // ============================================
-    const GOOGLE_SHEETS_CONFIG = {
-      webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
-      useGoogleSheets: true,
-      fallbackToLocalStorage: true
-    };
-
-    // ============================================
-    // STATE MANAGEMENT
-    // ============================================
-    let currentTotal = 0;
-    let currentSubtotal = 0;
-    let currentDiscount = 0;
-    let orderItems = [];
-    let currentDay = 'monday';
-    let storeIsOpen = true;
-    let childCount = 1;
-    let discountType = 'none';
-
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-    const menuData = {
-      entrees: [
-        { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken' },
-        { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning' },
-        { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces' },
-        { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces' },
-        { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich' },
-        { id: 'grilled-gf', name: 'Grilled Sandwich (GF Bun)', price: 9.50, desc: 'Grilled chicken with gluten-free bun' },
-        { id: 'chicken-wrap', name: 'Chicken Wrap', price: 9.75, desc: 'Grilled chicken in tortilla wrap' },
-        { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Vegetarian wrap with southwest flavors' },
-        { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips' }
-      ],
-      salads: [
-        { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more' },
-        { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers' },
-        { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Mixed greens with chicken and seasonal toppings' }
-      ],
-      sides: [
-        { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries' },
-        { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit' },
-        { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese' },
-        { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings' },
-        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream' },
-        { id: 'chips-only', name: 'Chips', price: 1.50, desc: 'Variety of chips (provided by Artios)' }
-      ],
-      drinks: [
-        { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
-        { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
-      ]
-    };
-
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, starting initialization...');
-      
-      checkStoreHours();
-      generateDayTabs();
-      generateMenus();
-      setupEventListeners();
-      updateCart();
-      validateForm();
-      
-      console.log('Initialization complete');
-    });
-
-    function checkStoreHours() {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const dayOfWeek = now.getDay();
-      const storeStatus = document.getElementById('store-status');
-      
-      const isTestingMode = window.location.hostname === 'artioscomputerlab.github.io' || 
-                           window.location.search.includes('debug=true') ||
-                           window.location.hostname === 'localhost';
-      
-      // Block orders from 8:15 AM to 1:00 PM (except on Fridays after noon)
-      const isFriday = dayOfWeek === 5;
-      const isFridayAfterNoon = isFriday && (hours >= 12);
-      const isInBlockedHours = (hours === 8 && minutes >= 15) || (hours > 8 && hours < 13);
-      
-      console.log('Store hours check:', { hours, minutes, dayOfWeek, isFriday, isFridayAfterNoon, isInBlockedHours, isTestingMode });
-      
-      if (isInBlockedHours && !isFridayAfterNoon && !isTestingMode) {
-        storeIsOpen = false;
-        storeStatus.textContent = '🔒 Store Closed (8:00 AM - 1:00 PM)';
-        storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
-        
-        document.body.style.pointerEvents = 'none';
-        document.body.style.opacity = '0.7';
-        
-        const notice = document.querySelector('.notice');
-        notice.innerHTML = '<strong style="color: #ff5722;">⚠️ ORDERING CLOSED</strong><br>Form reopens daily at 1:00 PM<br>Current time: ' + now.toLocaleTimeString() + '<br>Contact: CRivers@artiosacademies.com';
-      } else {
-        storeIsOpen = true;
-        let statusText = '✅ Store Open - Orders Accepted';
-        
-        if (isTestingMode) {
-          statusText = '🧪 Testing Mode - Store Open';
-        } else if (isFridayAfterNoon) {
-          statusText = '📅 Next Week Orders Open';
-        }
-        
-        storeStatus.textContent = statusText;
-        storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
-      }
-    }
-
-    function initializeDates() {
-      const today = new Date();
-      const todayDayOfWeek = today.getDay();
-      const hours = today.getHours();
-      
-      // Check if we should show next week (Friday at noon or later)
-      const isFriday = todayDayOfWeek === 5;
-      const isFridayAfterNoon = isFriday && hours >= 12;
-      
-      let monday;
-      
-      if (isFridayAfterNoon) {
-        // Show next week's dates (starting from next Monday)
-        monday = new Date(today);
-        const daysUntilNextMonday = (8 - todayDayOfWeek) % 7;
-        monday.setDate(today.getDate() + daysUntilNextMonday);
-        monday.setHours(0, 0, 0, 0);
-      } else {
-        // Show current week's dates
-        const diff = today.getDate() - todayDayOfWeek + (todayDayOfWeek === 0 ? -6 : 1);
-        monday = new Date(today);
-        monday.setDate(diff);
-        monday.setHours(0, 0, 0, 0);
-      }
-      
-      return monday;
-    }
-
-    function generateDayTabs() {
-      const tabsContainer = document.getElementById('day-tabs');
-      tabsContainer.innerHTML = '';
-      
-      const monday = initializeDates();
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinutes = now.getMinutes();
-      const todayDayOfWeek = now.getDay();
-      let firstAvailableDay = null;
-
-      // Check if we're showing next week
-      const isFriday = todayDayOfWeek === 5;
-      const isFridayAfterNoon = isFriday && currentHour >= 12;
-      const isShowingNextWeek = isFridayAfterNoon;
-
-      days.forEach(function(day, index) {
-        const date = new Date(monday);
-        date.setDate(monday.getDate() + index);
-
-        const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        const isToday = dateOnly.getTime() === todayOnly.getTime();
-        const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
-        
-        const cutoffPassed = isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15));
-        
-        // If showing next week, no days should be disabled (all are in the future)
-        const isPast = !isShowingNextWeek && (isBeforeToday || cutoffPassed);
-
-        const tab = document.createElement('div');
-        tab.className = 'day-tab';
-        tab.dataset.day = day;
-
-        tab.innerHTML = '<div>' + dayNames[index] + '</div><div style="font-size: 0.8em; opacity: 0.8;">' + (date.getMonth() + 1) + '/' + date.getDate() + '</div>';
-
-        if (isPast) {
-          tab.classList.add('disabled');
-          tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:00 AM cutoff passed)';
-        } else {
-          tab.addEventListener('click', function() { switchDay(day); });
-          if (!firstAvailableDay) {
-            firstAvailableDay = day;
-          }
-        }
-
-        tabsContainer.appendChild(tab);
-      });
-
-      // Set the active day
-      const dayToActivate = firstAvailableDay || 'monday';
-      currentDay = dayToActivate;
-      
-      const tabToActivate = document.querySelector('[data-day="' + dayToActivate + '"]');
-      if (tabToActivate) {
-        tabToActivate.classList.add('active');
-      }
-
-      // Update header notice if showing next week
-      if (isShowingNextWeek) {
-        const notice = document.querySelector('.notice');
-        const currentNotice = notice.innerHTML;
-        if (!currentNotice.includes('NEXT WEEK')) {
-          notice.innerHTML = '<strong>📅 NEXT WEEK ORDERS NOW OPEN!</strong><br>Ordering for next week opened Friday at noon<br>' + currentNotice;
-        }
-      }
-
-      console.log('Generated day tabs. Current day selected:', currentDay);
-    }
-
-    function generateMenus() {
-      const container = document.getElementById('menu-container');
-      container.innerHTML = '';
-      
-      days.forEach(function(day) {
-        const dayMenu = document.createElement('div');
-        dayMenu.className = 'menu-for-day';
-        dayMenu.dataset.day = day;
-        
-        if (day === currentDay) {
-          dayMenu.classList.add('active');
-        }
-        
-        Object.keys(menuData).forEach(function(category) {
-          const categoryDiv = document.createElement('div');
-          categoryDiv.className = 'menu-category';
-          
-          let categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
-          if (category === 'drinks') {
-            categoryTitle = 'Drinks';
-          }
-          
-          categoryDiv.innerHTML = '<h4>' + categoryTitle + '</h4>';
-          
-          if (category === 'drinks') {
-            const discountNotice = document.createElement('div');
-            discountNotice.className = 'drink-discount-notice';
-            discountNotice.innerHTML = '<div style="background: #e8f5e8; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #34a853;"><strong>💡 Combo Meal Drink Discount!</strong><br>Order an <strong>Entree or Salad + Side</strong> to get drink discounts applied in your cart!<br>• Regular Drink = <strong>FREE!</strong><br>• Premium Drink = <strong>$1.50</strong> (save $1.50!)<br></div>';
-            categoryDiv.appendChild(discountNotice);
-          }
-          
-          menuData[category].forEach(function(item) {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'menu-item';
+    <div class="container">
+        <div class="header">
+            <div class="store-status" id="store-status">🧪 Testing Mode - Store Open</div>
+            <div class="sync-status">☁️ Cloud Sync Active</div>
             
-            let priceDisplay;
-            if (category === 'drinks') {
-              priceDisplay = '$' + item.basePrice.toFixed(2);
+            <h1>Artios Academies of Sugar Hill</h1>
+            <div class="subtitle">Cafe Lunch Order System 2025-2026</div>
+            
+            <div class="notice">
+                <strong>Order & Payment Cutoff: Daily at 8:00 AM</strong><br>
+                ONE FORM PER FAMILY • Order for multiple children with one email<br>
+                Form closed daily from 8:00 AM - 1:00 PM<br>
+                <strong>🔄 Next week orders open Fridays at 12:00 PM</strong><br>
+                <em>💾 Your family info is automatically saved for convenience</em><br>
+                Contact: CRivers@artiosacademies.com | Artios Academies of Sugar Hill
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <div class="shared-email">
+                    <h3>📧 Family Email</h3>
+                    <div class="form-group">
+                        <label for="family-email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="family-email" required placeholder="parent@example.com">
+                    </div>
+                </div>
+
+                <div id="children-container">
+                    <div class="child-section" data-child="1">
+                        <div class="child-header">
+                            <div class="child-title">
+                                <div class="child-icon">1</div>
+                                Child 1
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name <span class="required">*</span></label>
+                                <input type="text" class="child-first-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name <span class="required">*</span></label>
+                                <input type="text" class="child-last-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Grade <span class="required">*</span></label>
+                                <select class="child-grade" required>
+                                    <option value="">Select Grade</option>
+                                    <option value="K-2">K-2</option>
+                                    <option value="3-4">3-4</option>
+                                    <option value="5-6">5-6</option>
+                                    <option value="7-8">7-8</option>
+                                    <option value="9-12">9-12</option>
+                                    <option value="Staff">Staff</option>
+                                    <option value="Parent">Parent</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="add-child-btn" id="add-child-btn">
+                    ➕ Add Another Child
+                </button>
+
+                <div class="menu-section">
+                    <h3>Select Days & Menu Items</h3>
+                    <div class="day-tabs" id="day-tabs"></div>
+                    <div id="menu-container"></div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="cart-title">🛒 Your Order</div>
+
+                <div class="cart-items" id="cart-items">
+                    <div class="empty-cart">No items selected</div>
+                </div>
+
+                <div class="promo-section">
+                    <h4>🎟️ Discount Codes</h4>
+                    <input type="text" id="promo-code" class="promo-input" placeholder="Enter discount code" maxlength="20">
+                    <div class="promo-status" id="promo-status"></div>
+                </div>
+
+                <div class="cart-total">
+                    <div class="total-label">Order Total</div>
+                    <div class="total-amount">$<span id="total-amount">0.00</span></div>
+                    <button type="button" class="checkout-btn" id="checkout-btn" disabled>
+                        Select Items to Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTotal = 0;
+        let currentSubtotal = 0;
+        let currentDiscount = 0;
+        let orderItems = [];
+        let currentDay = 'monday';
+        let childCount = 1;
+        let discountType = 'none';
+
+        const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+        const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+        const menuData = {
+            entrees: [
+                { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken' },
+                { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning' },
+                { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces' },
+                { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces' },
+                { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich' }
+            ],
+            salads: [
+                { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more' },
+                { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers' }
+            ],
+            sides: [
+                { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries' },
+                { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit' },
+                { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese' }
+            ],
+            drinks: [
+                { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
+                { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
+            ]
+        };
+
+        function initializeDates() {
+            const today = new Date();
+            const todayDayOfWeek = today.getDay();
+            const hours = today.getHours();
+            
+            const isFriday = todayDayOfWeek === 5;
+            const isFridayAfterNoon = isFriday && hours >= 12;
+            
+            let monday;
+            
+            if (isFridayAfterNoon) {
+                monday = new Date(today);
+                const daysUntilNextMonday = (8 - todayDayOfWeek) % 7;
+                monday.setDate(today.getDate() + daysUntilNextMonday);
+                monday.setHours(0, 0, 0, 0);
             } else {
-              priceDisplay = '$' + item.price.toFixed(2);
+                const diff = today.getDate() - todayDayOfWeek + (todayDayOfWeek === 0 ? -6 : 1);
+                monday = new Date(today);
+                monday.setDate(diff);
+                monday.setHours(0, 0, 0, 0);
             }
             
-            itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
+            return monday;
+        }
+
+        function generateDayTabs() {
+            const tabsContainer = document.getElementById('day-tabs');
+            tabsContainer.innerHTML = '';
             
-            categoryDiv.appendChild(itemDiv);
-          });
-          
-          dayMenu.appendChild(categoryDiv);
-        });
-        
-        container.appendChild(dayMenu);
-      });
-      
-      updateChildCheckboxes();
-      console.log('Generated menus for all days');
-    }
+            const monday = initializeDates();
+            const now = new Date();
+            let firstAvailableDay = null;
 
-    function switchDay(day) {
-      console.log('Switching to day:', day);
-      
-      document.querySelectorAll('.day-tab').forEach(function(tab) {
-        tab.classList.remove('active');
-        if (tab.dataset.day === day) {
-          tab.classList.add('active');
+            days.forEach(function(day, index) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + index);
+
+                const tab = document.createElement('div');
+                tab.className = 'day-tab';
+                tab.dataset.day = day;
+                tab.innerHTML = '<div>' + dayNames[index] + '</div><div style="font-size: 0.8em; opacity: 0.8;">' + (date.getMonth() + 1) + '/' + date.getDate() + '</div>';
+
+                tab.addEventListener('click', function() { switchDay(day); });
+                if (!firstAvailableDay) {
+                    firstAvailableDay = day;
+                }
+
+                tabsContainer.appendChild(tab);
+            });
+
+            currentDay = firstAvailableDay || 'monday';
+            const tabToActivate = document.querySelector('[data-day="' + currentDay + '"]');
+            if (tabToActivate) {
+                tabToActivate.classList.add('active');
+            }
         }
-      });
 
-      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
-        menu.classList.remove('active');
-        if (menu.dataset.day === day) {
-          menu.classList.add('active');
+        function generateMenus() {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = '';
+            
+            days.forEach(function(day) {
+                const dayMenu = document.createElement('div');
+                dayMenu.className = 'menu-for-day';
+                dayMenu.dataset.day = day;
+                
+                if (day === currentDay) {
+                    dayMenu.classList.add('active');
+                }
+                
+                Object.keys(menuData).forEach(function(category) {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'menu-category';
+                    
+                    let categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
+                    categoryDiv.innerHTML = '<h4>' + categoryTitle + '</h4>';
+                    
+                    menuData[category].forEach(function(item) {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'menu-item';
+                        
+                        let priceDisplay;
+                        if (category === 'drinks') {
+                            priceDisplay = '$' + item.basePrice.toFixed(2);
+                        } else {
+                            priceDisplay = '$' + item.price.toFixed(2);
+                        }
+                        
+                        itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
+                        
+                        categoryDiv.appendChild(itemDiv);
+                    });
+                    
+                    dayMenu.appendChild(categoryDiv);
+                });
+                
+                container.appendChild(dayMenu);
+            });
+            
+            updateChildCheckboxes();
         }
-      });
 
-      currentDay = day;
-    }
+        function switchDay(day) {
+            document.querySelectorAll('.day-tab').forEach(function(tab) {
+                tab.classList.remove('active');
+                if (tab.dataset.day === day) {
+                    tab.classList.add('active');
+                }
+            });
 
-    function updateChildCheckboxes() {
-      const children = document.querySelectorAll('.child-section');
-      
-      document.querySelectorAll('.child-checkboxes').forEach(function(container) {
-        const parts = container.id.split('-');
-        const day = parts[parts.length - 2];
-        const itemId = parts.slice(0, -2).join('-');
-        
-        container.innerHTML = '';
-        
-        children.forEach(function(child) {
-          const childId = child.dataset.child;
-          const firstName = child.querySelector('.child-first-name').value || ('Child ' + childId);
-          
-          const checkboxContainer = document.createElement('div');
-          checkboxContainer.className = 'child-checkbox';
-          
-          const checkboxId = itemId + '-' + day + '-child-' + childId;
-          
-          checkboxContainer.innerHTML = '<input type="checkbox" id="' + checkboxId + '" data-item="' + itemId + '" data-day="' + day + '" data-child-id="' + childId + '"><label for="' + checkboxId + '">' + firstName + '</label>';
-          
-          container.appendChild(checkboxContainer);
-        });
-      });
-    }
+            document.querySelectorAll('.menu-for-day').forEach(function(menu) {
+                menu.classList.remove('active');
+                if (menu.dataset.day === day) {
+                    menu.classList.add('active');
+                }
+            });
 
-    function setupEventListeners() {
-      document.getElementById('add-child-btn').addEventListener('click', addChild);
+            currentDay = day;
+        }
 
-      document.addEventListener('change', function(e) {
-        if (e.target.type === 'checkbox' && e.target.dataset.item) {
-          setTimeout(function() {
+        function updateChildCheckboxes() {
+            const children = document.querySelectorAll('.child-section');
+            
+            document.querySelectorAll('.child-checkboxes').forEach(function(container) {
+                const parts = container.id.split('-');
+                const day = parts[parts.length - 2];
+                const itemId = parts.slice(0, -2).join('-');
+                
+                container.innerHTML = '';
+                
+                children.forEach(function(child) {
+                    const childId = child.dataset.child;
+                    const firstName = child.querySelector('.child-first-name').value || ('Child ' + childId);
+                    
+                    const checkboxContainer = document.createElement('div');
+                    checkboxContainer.className = 'child-checkbox';
+                    
+                    const checkboxId = itemId + '-' + day + '-child-' + childId;
+                    
+                    checkboxContainer.innerHTML = '<input type="checkbox" id="' + checkboxId + '" data-item="' + itemId + '" data-day="' + day + '" data-child-id="' + childId + '"><label for="' + checkboxId + '">' + firstName + '</label>';
+                    
+                    container.appendChild(checkboxContainer);
+                });
+            });
+        }
+
+        function addChild() {
+            childCount++;
+            const container = document.getElementById('children-container');
+            
+            const childDiv = document.createElement('div');
+            childDiv.className = 'child-section';
+            childDiv.dataset.child = childCount;
+            
+            childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
+            
+            const removeBtn = childDiv.querySelector('.remove-child');
+            removeBtn.addEventListener('click', function() {
+                removeChild(parseInt(this.dataset.childId));
+            });
+            
+            container.appendChild(childDiv);
+            updateChildCheckboxes();
+            validateForm();
+        }
+
+        function removeChild(childId) {
+            const childSection = document.querySelector('[data-child="' + childId + '"]');
+            if (childSection && childCount > 1) {
+                childSection.remove();
+                childCount--;
+                updateChildCheckboxes();
+                updateCart();
+            }
+        }
+
+        function validatePromoCode(code) {
+            const promoStatus = document.getElementById('promo-status');
+            const trimmedCode = code.trim().toUpperCase();
+            
+            if (trimmedCode === '') {
+                discountType = 'none';
+                promoStatus.textContent = '';
+                promoStatus.className = 'promo-status';
+            } else if (trimmedCode === 'STAFF2025') {
+                discountType = 'staff';
+                promoStatus.textContent = '✅ Staff Discount Applied (10% off)';
+                promoStatus.className = 'promo-status valid';
+            } else if (trimmedCode === 'JOHN') {
+                discountType = 'john';
+                promoStatus.textContent = '✅ JOHN Discount Applied (50% off)';
+                promoStatus.className = 'promo-status valid';
+            } else {
+                discountType = 'none';
+                promoStatus.textContent = '❌ Invalid Code';
+                promoStatus.className = 'promo-status invalid';
+            }
+            
             updateCart();
-          }, 50);
         }
-      });
 
-      document.getElementById('promo-code').addEventListener('input', function(e) {
-        validatePromoCode(e.target.value);
-      });
-
-      document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('child-first-name') || 
-            e.target.classList.contains('child-last-name')) {
-          updateChildCheckboxes();
-        }
-        validateForm();
-      });
-    }
-
-    function addChild() {
-      childCount++;
-      const container = document.getElementById('children-container');
-      
-      const childDiv = document.createElement('div');
-      childDiv.className = 'child-section';
-      childDiv.dataset.child = childCount;
-      
-      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
-      
-      const removeBtn = childDiv.querySelector('.remove-child');
-      removeBtn.addEventListener('click', function() {
-        const childId = this.dataset.childId;
-        removeChild(parseInt(childId));
-      });
-      
-      container.appendChild(childDiv);
-      updateChildCheckboxes();
-      validateForm();
-    }
-
-    function removeChild(childId) {
-      const childSection = document.querySelector('[data-child="' + childId + '"]');
-      if (childSection && childCount > 1) {
-        orderItems = orderItems.filter(function(item) {
-          return item.childId !== childId.toString();
-        });
-        
-        childSection.remove();
-        renumberChildren();
-        updateChildCheckboxes();
-        updateCart();
-      }
-    }
-
-    function renumberChildren() {
-      const childSections = document.querySelectorAll('.child-section');
-      childCount = childSections.length;
-      
-      childSections.forEach(function(section, index) {
-        const newChildId = index + 1;
-        section.dataset.child = newChildId;
-        section.querySelector('.child-icon').textContent = newChildId;
-        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
-        
-        const removeBtn = section.querySelector('.remove-child');
-        if (removeBtn) {
-          removeBtn.dataset.childId = newChildId;
-          
-          const newRemoveBtn = removeBtn.cloneNode(true);
-          newRemoveBtn.addEventListener('click', function() {
-            const childId = this.dataset.childId;
-            removeChild(parseInt(childId));
-          });
-          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
-        }
-      });
-    }
-
-    function validatePromoCode(code) {
-      const promoStatus = document.getElementById('promo-status');
-      const trimmedCode = code.trim().toUpperCase();
-      
-      if (trimmedCode === '') {
-        discountType = 'none';
-        promoStatus.textContent = '';
-        promoStatus.className = 'promo-status';
-      } else if (trimmedCode === 'STAFF2025') {
-        discountType = 'staff';
-        promoStatus.textContent = '✅ Staff Discount Applied (10% off)';
-        promoStatus.className = 'promo-status valid';
-      } else if (trimmedCode === 'JOHN') {
-        discountType = 'john';
-        promoStatus.textContent = '✅ JOHN Discount Applied (50% off)';
-        promoStatus.className = 'promo-status valid';
-      } else {
-        discountType = 'none';
-        promoStatus.textContent = '❌ Invalid Code';
-        promoStatus.className = 'promo-status invalid';
-      }
-      
-      updateCart();
-    }
-
-    function updateCart() {
-      orderItems = [];
-      currentSubtotal = 0;
-      
-      const childDayDrinks = {};
-      
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
-        const itemId = checkbox.dataset.item;
-        const day = checkbox.dataset.day;
-        const childId = checkbox.dataset.childId;
-        
-        const child = document.querySelector('[data-child="' + childId + '"]');
-        if (!child) {
-          return;
-        }
-        
-        const childFirstName = child.querySelector('.child-first-name').value;
-        const childLastName = child.querySelector('.child-last-name').value;
-        const childGrade = child.querySelector('.child-grade').value;
-        
-        let item = null;
-        let category = null;
-        Object.keys(menuData).forEach(function(cat) {
-          const found = menuData[cat].find(function(i) { return i.id === itemId; });
-          if (found) {
-            item = found;
-            category = cat;
-          }
-        });
-        
-        if (item) {
-          let finalPrice = item.price || item.basePrice;
-          let isDiscounted = false;
-          
-          if (category === 'drinks') {
-            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
-            const childDayKey = childId + '-' + day;
+        function updateCart() {
+            orderItems = [];
+            currentSubtotal = 0;
             
-            if (!childDayDrinks[childDayKey]) {
-              childDayDrinks[childDayKey] = { discountedDrinks: 0, hasCombo: hasEntreeOrSaladAndSide };
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
+                const itemId = checkbox.dataset.item;
+                const day = checkbox.dataset.day;
+                const childId = checkbox.dataset.childId;
+                
+                const child = document.querySelector('[data-child="' + childId + '"]');
+                if (!child) return;
+                
+                const childFirstName = child.querySelector('.child-first-name').value;
+                const childLastName = child.querySelector('.child-last-name').value;
+                
+                let item = null;
+                let category = null;
+                Object.keys(menuData).forEach(function(cat) {
+                    const found = menuData[cat].find(function(i) { return i.id === itemId; });
+                    if (found) {
+                        item = found;
+                        category = cat;
+                    }
+                });
+                
+                if (item) {
+                    let finalPrice = item.price || item.basePrice;
+                    
+                    const orderItem = {
+                        childId: childId,
+                        childName: childFirstName + ' ' + childLastName,
+                        name: item.name,
+                        price: finalPrice,
+                        day: day.charAt(0).toUpperCase() + day.slice(1),
+                        category: category
+                    };
+                    
+                    orderItems.push(orderItem);
+                    currentSubtotal += finalPrice;
+                }
+            });
+            
+            if (discountType === 'staff') {
+                currentDiscount = currentSubtotal * 0.10;
+            } else if (discountType === 'john') {
+                currentDiscount = currentSubtotal * 0.50;
+            } else {
+                currentDiscount = 0;
             }
             
-            if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
-              if (item.category === 'regular') {
-                finalPrice = 0;
-                isDiscounted = true;
-              } else if (item.category === 'premium') {
-                finalPrice = 1.50;
-                isDiscounted = true;
-              }
-              childDayDrinks[childDayKey].discountedDrinks++;
+            currentTotal = currentSubtotal - currentDiscount;
+            
+            displayCart();
+            validateForm();
+        }
+
+        function displayCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            const totalSpan = document.getElementById('total-amount');
+            
+            if (orderItems.length === 0) {
+                cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
+                totalSpan.textContent = '0.00';
+                return;
+            }
+            
+            const itemsByChild = {};
+            orderItems.forEach(function(item) {
+                if (!itemsByChild[item.childId]) {
+                    itemsByChild[item.childId] = {
+                        name: item.childName,
+                        items: []
+                    };
+                }
+                itemsByChild[item.childId].items.push(item);
+            });
+            
+            let html = '';
+            Object.keys(itemsByChild).forEach(function(childId) {
+                const child = itemsByChild[childId];
+                html += '<div class="child-cart-section">';
+                html += '<div class="child-cart-header">' + child.name + '</div>';
+                
+                child.items.forEach(function(item) {
+                    html += '<div class="cart-item"><div class="cart-item-name">' + item.name + ' (' + item.day + ')</div><div class="cart-item-price">$' + item.price.toFixed(2) + '</div></div>';
+                });
+                html += '</div>';
+            });
+            
+            cartItemsDiv.innerHTML = html;
+            totalSpan.textContent = currentTotal.toFixed(2);
+        }
+
+        function validateForm() {
+            const email = document.getElementById('family-email').value.trim();
+            const checkoutBtn = document.getElementById('checkout-btn');
+            
+            const hasItems = orderItems.length > 0;
+            const hasEmail = email.length > 0 && email.includes('@');
+            
+            const children = document.querySelectorAll('.child-section');
+            let allChildrenComplete = true;
+            children.forEach(function(child) {
+                const firstName = child.querySelector('.child-first-name').value.trim();
+                const lastName = child.querySelector('.child-last-name').value.trim();
+                const grade = child.querySelector('.child-grade').value;
+                if (!firstName || !lastName || !grade) {
+                    allChildrenComplete = false;
+                }
+            });
+            
+            const isValid = hasItems && hasEmail && allChildrenComplete;
+            
+            checkoutBtn.disabled = !isValid;
+            
+            if (isValid) {
+                checkoutBtn.textContent = 'Review & Pay Order ($' + currentTotal.toFixed(2) + ')';
+            } else if (!hasItems) {
+                checkoutBtn.textContent = 'Select Items to Continue';
+            } else if (!hasEmail) {
+                checkoutBtn.textContent = 'Enter Email to Continue';
+            } else if (!allChildrenComplete) {
+                checkoutBtn.textContent = 'Complete Child Info';
             } else {
-              finalPrice = item.basePrice;
+                checkoutBtn.textContent = 'Review & Pay Order';
             }
-          }
-          
-          const orderItem = {
-            childId: childId,
-            childName: childFirstName + ' ' + childLastName,
-            firstName: childFirstName,
-            lastName: childLastName,
-            grade: childGrade,
-            name: item.name,
-            price: finalPrice,
-            originalPrice: item.price || item.basePrice,
-            day: day.charAt(0).toUpperCase() + day.slice(1),
-            category: category,
-            isDiscounted: isDiscounted
-          };
-          
-          orderItems.push(orderItem);
-          currentSubtotal += finalPrice;
         }
-      });
-      
-      if (discountType === 'staff') {
-        currentDiscount = currentSubtotal * 0.10;
-      } else if (discountType === 'john') {
-        currentDiscount = currentSubtotal * 0.50;
-      } else {
-        currentDiscount = 0;
-      }
-      
-      currentTotal = currentSubtotal - currentDiscount;
-      
-      displayCart();
-      validateForm();
-    }
 
-    function checkChildHasEntreeOrSaladAndSide(childId, day) {
-      let hasEntreeOrSalad = false;
-      let hasSide = false;
-      
-      document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked').forEach(function(checkbox) {
-        const itemId = checkbox.dataset.item;
-        
-        Object.keys(menuData).forEach(function(category) {
-          const found = menuData[category].find(function(i) { return i.id === itemId; });
-          if (found) {
-            if (category === 'entrees' || category === 'salads') {
-              hasEntreeOrSalad = true;
-            } else if (category === 'sides') {
-              hasSide = true;
-            }
-          }
+        function showAlert(message) {
+            alert(message);
+        }
+
+        // Setup event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            generateDayTabs();
+            generateMenus();
+            
+            document.getElementById('add-child-btn').addEventListener('click', addChild);
+            
+            document.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox' && e.target.dataset.item) {
+                    updateCart();
+                }
+            });
+            
+            document.getElementById('promo-code').addEventListener('input', function(e) {
+                validatePromoCode(e.target.value);
+            });
+            
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('child-first-name') || 
+                    e.target.classList.contains('child-last-name') ||
+                    e.target.id === 'family-email') {
+                    updateChildCheckboxes();
+                    validateForm();
+                }
+            });
+            
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('child-grade')) {
+                    validateForm();
+                }
+            });
+            
+            document.getElementById('checkout-btn').addEventListener('click', function() {
+                if (!this.disabled) {
+                    const orderSummary = 'Order Total: $' + currentTotal.toFixed(2) + '\n\nItems:\n' + 
+                        orderItems.map(item => '• ' + item.name + ' (' + item.day + ') - $' + item.price.toFixed(2)).join('\n') +
+                        '\n\nNext: Pay via Venmo to @ChanTa-Rivers';
+                    showAlert(orderSummary);
+                }
+            });
         });
-      });
-      
-      return hasEntreeOrSalad && hasSide;
-    }
-
-    function displayCart() {
-      const cartItemsDiv = document.getElementById('cart-items');
-      const totalSpan = document.getElementById('total-amount');
-      
-      if (orderItems.length === 0) {
-        cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
-        totalSpan.textContent = '0.00';
-        return;
-      }
-      
-      const itemsByChild = {};
-      orderItems.forEach(function(item) {
-        if (!itemsByChild[item.childId]) {
-          itemsByChild[item.childId] = {
-            name: item.childName,
-            items: []
-          };
-        }
-        itemsByChild[item.childId].items.push(item);
-      });
-      
-      let html = '';
-      Object.keys(itemsByChild).sort(function(a, b) {
-        return parseInt(a) - parseInt(b);
-      }).forEach(function(childId) {
-        const child = itemsByChild[childId];
-        html += '<div class="child-cart-section">';
-        html += '<div class="child-cart-header">' + child.name + '</div>';
-        
-        child.items.forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
-          let extraClass = '';
-          
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE';
-              extraClass = 'free-item';
-            } else {
-              priceDisplay = '$' + item.price.toFixed(2);
-              extraClass = 'discounted-item';
-            }
-          }
-          
-          html += '<div class="cart-item ' + extraClass + '"><div class="cart-item-name">' + item.name + ' (' + item.day + ')</div><div class="cart-item-price">' + priceDisplay + '</div></div>';
-        });
-        html += '</div>';
-      });
-      
-      cartItemsDiv.innerHTML = html;
-      totalSpan.textContent = currentTotal.toFixed(2);
-      
-      const discountLine = document.getElementById('discount-line');
-      const discountAmount = document.getElementById('discount-amount');
-      
-      if (currentDiscount > 0) {
-        discountLine.style.display = 'block';
-        discountAmount.textContent = currentDiscount.toFixed(2);
-        
-        const discountLabel = discountLine.firstChild;
-        if (discountType === 'staff') {
-          discountLabel.textContent = 'Staff Discount (10%): -$';
-        } else if (discountType === 'john') {
-          discountLabel.textContent = 'JOHN Discount (50%): -$';
-        }
-      } else {
-        discountLine.style.display = 'none';
-      }
-    }
-
-    function validateForm() {
-      const email = document.getElementById('family-email').value.trim();
-      const checkoutBtn = document.getElementById('checkout-btn');
-      
-      if (!checkoutBtn) {
-        return false;
-      }
-      
-      const hasItems = orderItems.length > 0;
-      const hasEmail = email.length > 0 && email.includes('@');
-      
-      const children = document.querySelectorAll('.child-section');
-      let allChildrenComplete = true;
-      children.forEach(function(child) {
-        const firstName = child.querySelector('.child-first-name').value.trim();
-        const lastName = child.querySelector('.child-last-name').value.trim();
-        const grade = child.querySelector('.child-grade').value;
-        if (!firstName || !lastName || !grade) {
-          allChildrenComplete = false;
-        }
-      });
-      
-      const isValid = hasItems && hasEmail && allChildrenComplete && storeIsOpen;
-      
-      checkoutBtn.disabled = !isValid;
-      
-      if (isValid) {
-        checkoutBtn.textContent = 'Review & Pay Order ($' + currentTotal.toFixed(2) + ')';
-        checkoutBtn.style.opacity = '1';
-        checkoutBtn.style.cursor = 'pointer';
-      } else {
-        if (!storeIsOpen) {
-          checkoutBtn.textContent = 'Store Closed';
-        } else if (!hasItems) {
-          checkoutBtn.textContent = 'Select Items to Continue';
-        } else if (!hasEmail) {
-          checkoutBtn.textContent = 'Enter Email to Continue';
-        } else if (!allChildrenComplete) {
-          checkoutBtn.textContent = 'Complete Child Info';
-        } else {
-          checkoutBtn.textContent = 'Review & Pay Order';
-        }
-        checkoutBtn.style.opacity = '0.6';
-        checkoutBtn.style.cursor = 'not-allowed';
-      }
-      
-      return isValid;
-    }
-
-    function showNotification(message, type) {
-      const existingNotif = document.querySelector('.notification');
-      if (existingNotif) {
-        existingNotif.remove();
-      }
-      
-      let bgColor, textColor, borderColor, icon;
-      switch(type) {
-        case 'success':
-          bgColor = '#d4edda';
-          textColor = '#155724';
-          borderColor = '#c3e6cb';
-          icon = '✅ ';
-          break;
-        case 'error':
-          bgColor = '#f8d7da';
-          textColor = '#721c24';
-          borderColor = '#f5c6cb';
-          icon = '❌ ';
-          break;
-        case 'warning':
-          bgColor = '#fff3cd';
-          textColor = '#856404';
-          borderColor = '#ffeaa7';
-          icon = '⚠️ ';
-          break;
-        default:
-          bgColor = '#e3f2fd';
-          textColor = '#1976d2';
-          borderColor = '#bbdefb';
-          icon = 'ℹ️ ';
-      }
-      
-      const notif = document.createElement('div');
-      notif.className = 'notification';
-      notif.style.cssText = 'background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + ';';
-      notif.textContent = icon + message;
-      
-      document.body.appendChild(notif);
-      
-      setTimeout(function() {
-        if (notif.parentNode) {
-          notif.remove();
-        }
-      }, 5000);
-    }
-  </script>
+    </script>
 </body>
 </html>
