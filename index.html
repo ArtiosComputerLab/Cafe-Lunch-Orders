@@ -1027,9 +1027,9 @@
       </div>
       
       <div class="notice">
-        <strong>Order & Payment Cutoff: Daily at 8:15 AM</strong><br>
+        <strong>Order & Payment Cutoff: Daily at 8:00 AM</strong><br>
         ONE FORM PER FAMILY • Order for multiple children with one email<br>
-        Form closed daily from 8:15 AM - 1:00 PM<br>
+        Form closed daily from 8:00 AM - 1:00 PM<br>
         <strong>🔄 Next week orders open Fridays at 12:00 PM</strong><br>
         <em>💾 Your family info is automatically saved for convenience</em><br>
         Contact: CRivers@artiosacademies.com | Artios Academies of Sugar Hill
@@ -1469,7 +1469,7 @@
       
       if (isInBlockedHours && !isFridayAfterNoon && !isTestingMode) {
         storeIsOpen = false;
-        storeStatus.textContent = '🔒 Store Closed (8:15 AM - 1:00 PM)';
+        storeStatus.textContent = '🔒 Store Closed (8:00 AM - 1:00 PM)';
         storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
         
         document.body.style.pointerEvents = 'none';
@@ -1558,7 +1558,7 @@
 
         if (isPast) {
           tab.classList.add('disabled');
-          tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:15 AM cutoff passed)';
+          tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:00 AM cutoff passed)';
         } else {
           tab.addEventListener('click', function() { switchDay(day); });
           if (!firstAvailableDay) {
