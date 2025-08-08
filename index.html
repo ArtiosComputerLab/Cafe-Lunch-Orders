@@ -109,7 +109,6 @@
       background: white;
     }
 
-    /* Shared Email Section */
     .shared-email {
       background: #e8f5e8;
       border: 2px solid #4caf50;
@@ -126,7 +125,6 @@
       gap: 8px;
     }
 
-    /* Child Section Styles */
     .child-section {
       background: #f8f9fa;
       border: 2px solid #e0e0e0;
@@ -192,7 +190,6 @@
       transform: scale(1.1);
     }
 
-    /* Form Elements */
     .form-row {
       display: flex;
       gap: 20px;
@@ -255,7 +252,6 @@
       box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
     }
 
-    /* Menu Section */
     .menu-section {
       margin-top: 30px;
     }
@@ -273,27 +269,6 @@
       overflow-x: auto;
       align-items: center;
       flex-wrap: wrap;
-    }
-
-    .copy-days-btn {
-      background: #ff9800;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      margin-left: 15px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .copy-days-btn:hover {
-      background: #f57c00;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
     }
 
     .day-tab {
@@ -430,7 +405,6 @@
       color: #4285f4;
     }
 
-    /* Sidebar */
     .sidebar {
       flex: 1;
       background: #f8f9fa;
@@ -451,24 +425,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .history-btn {
-      width: 100%;
-      background: white;
-      color: #4285f4;
-      border: 2px solid #4285f4;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .history-btn:hover {
-      background: #4285f4;
-      color: white;
     }
 
     .cart-items {
@@ -589,280 +545,6 @@
       box-shadow: none;
     }
 
-    /* Payment Modal */
-    .payment-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 10000;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .payment-modal.show {
-      display: flex !important;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .payment-content {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-      text-align: center;
-      animation: slideUp 0.3s ease;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    /* Confirmation Modal */
-    .confirmation-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 10001;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .confirmation-modal.show {
-      display: flex !important;
-    }
-
-    .confirmation-content {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      text-align: left;
-      animation: slideUp 0.3s ease;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    .confirmation-header {
-      text-align: center;
-      color: #34a853;
-      font-size: 1.8em;
-      font-weight: 600;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #e0e0e0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .confirmation-section {
-      margin-bottom: 20px;
-    }
-
-    .confirmation-section h4 {
-      color: #4285f4;
-      margin-bottom: 10px;
-      font-size: 1.1em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .confirmation-section p, .confirmation-section ul {
-      margin-bottom: 8px;
-      line-height: 1.5;
-    }
-
-    .confirmation-section ul {
-      padding-left: 20px;
-    }
-
-    .confirmation-items {
-      background: #f8f9fa;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 10px 0;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .confirmation-day {
-      font-weight: 600;
-      color: #34a853;
-      margin-bottom: 8px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .confirmation-item {
-      margin-left: 10px;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .confirmation-total {
-      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 1.2em;
-      font-weight: 600;
-      margin: 20px 0;
-    }
-
-    .confirmation-close-btn {
-      background: #4285f4;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      width: 100%;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .confirmation-close-btn:hover {
-      background: #3367d6;
-      transform: translateY(-2px);
-    }
-
-    @keyframes slideUp {
-      from { 
-        transform: translateY(50px);
-        opacity: 0;
-      }
-      to { 
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .payment-header {
-      font-size: 1.5em;
-      font-weight: 600;
-      color: #4285f4;
-      margin-bottom: 15px;
-    }
-
-    .payment-amount {
-      font-size: 2em;
-      font-weight: 700;
-      color: #34a853;
-      margin-bottom: 25px;
-      background: #f0f9ff;
-      padding: 15px;
-      border-radius: 8px;
-    }
-
-    .payment-steps {
-      text-align: left;
-      margin-bottom: 25px;
-    }
-
-    .payment-step {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 15px;
-      gap: 15px;
-    }
-
-    .step-number {
-      background: #4285f4;
-      color: white;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 0.9em;
-      flex-shrink: 0;
-    }
-
-    .venmo-btn {
-      display: inline-block;
-      background: #3d95ce;
-      color: white;
-      text-decoration: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 16px;
-      transition: all 0.3s ease;
-      margin: 10px 0;
-      border: none;
-      cursor: pointer;
-    }
-
-    .venmo-btn:hover {
-      background: #357ca5;
-      transform: translateY(-2px);
-      text-decoration: none;
-      color: white;
-    }
-
-    .confirmation-btn {
-      background: #34a853;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .confirmation-btn:hover {
-      background: #2e7d32;
-      transform: translateY(-2px);
-    }
-
-    .cancel-btn {
-      background: #666;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      margin: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .cancel-btn:hover {
-      background: #555;
-      transform: translateY(-2px);
-    }
-
-    /* Promo Code Section */
     .promo-section {
       background: #fff3e0;
       border: 2px solid #ff9800;
@@ -934,11 +616,6 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
       .main-content {
@@ -965,12 +642,6 @@
 
       .child-checkboxes {
         flex-direction: column;
-      }
-
-      .payment-content, .confirmation-content {
-        margin: 20px;
-        width: calc(100% - 40px);
-        padding: 20px;
       }
 
       .header-brand {
@@ -1088,11 +759,9 @@
 
         <div class="menu-section">
           <h3>Select Days & Menu Items</h3>
-
           <div class="day-tabs" id="day-tabs">
             <!-- Tabs will be generated by JavaScript -->
           </div>
-
           <div id="menu-container">
             <!-- Menu for each day will be generated by JavaScript -->
           </div>
@@ -1130,97 +799,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Payment Modal -->
-  <div class="payment-modal" id="payment-modal">
-    <div class="payment-content">
-      <div class="payment-header">Complete Your Order</div>
-      <div class="payment-amount">
-        Total: $<span id="modal-total">0.00</span>
-      </div>
-
-      <div class="payment-steps">
-        <div class="payment-step">
-          <div class="step-number">1</div>
-          <div>Click "Pay with Venmo" to open Venmo with order details</div>
-        </div>
-        <div class="payment-step">
-          <div class="step-number">2</div>
-          <div>Complete payment to <strong>@ChanTa-Rivers</strong></div>
-        </div>
-        <div class="payment-step">
-          <div class="step-number">3</div>
-          <div>Return here and click "I've Paid" to submit your order</div>
-        </div>
-      </div>
-
-      <div style="margin: 20px 0;">
-        <a href="#" id="venmo-payment-link" class="venmo-btn">
-          💳 Pay with Venmo ($<span id="venmo-total">0.00</span>)
-        </a>
-      </div>
-
-      <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
-        <button type="button" class="confirmation-btn" id="confirm-payment-btn">
-          ✅ I've Paid - Submit Order
-        </button>
-        <button type="button" class="cancel-btn" id="cancel-payment-btn">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Confirmation Modal -->
-  <div class="confirmation-modal" id="confirmation-modal">
-    <div class="confirmation-content">
-      <div class="confirmation-header">
-        ✅ Order Confirmed!
-      </div>
-      
-      <div class="confirmation-section">
-        <h4>📋 Order Details</h4>
-        <ul>
-          <li><strong>Order ID:</strong> <span id="conf-order-id"></span></li>
-          <li><strong>Date:</strong> <span id="conf-date"></span></li>
-          <li><strong>Family Email:</strong> <span id="conf-email"></span></li>
-          <li><strong>Children:</strong> <span id="conf-children-count"></span></li>
-        </ul>
-      </div>
-
-      <div class="confirmation-section">
-        <h4>👥 Family Information</h4>
-        <div id="conf-children-list"></div>
-      </div>
-
-      <div class="confirmation-section">
-        <h4>🍽️ Items Ordered</h4>
-        <div class="confirmation-items" id="conf-items-list"></div>
-      </div>
-
-      <div class="confirmation-total" id="conf-total">
-        Total: $0.00
-      </div>
-
-      <div class="confirmation-section">
-        <h4>💳 Payment Summary</h4>
-        <ul>
-          <li><strong>Payment Method:</strong> Venmo (@ChanTa-Rivers)</li>
-          <li><strong>Status:</strong> Confirmed</li>
-        </ul>
-      </div>
-
-      <div class="confirmation-section">
-        <h4>📧 Next Steps</h4>
-        <p>A confirmation email will be sent to your family email address.</p>
-        <p>Questions? Contact: <strong>CRivers@artiosacademies.com</strong></p>
-      </div>
-
-      <button class="confirmation-close-btn" id="confirmation-close-btn">
-        Got It! Close
-      </button>
     </div>
   </div>
 
@@ -1281,191 +859,26 @@
     };
 
     // ============================================
-    // COOKIE FUNCTIONALITY
-    // ============================================
-    function saveUserDataToCookies(showIndicator) {
-      if (showIndicator === undefined) showIndicator = true;
-      
-      try {
-        const familyData = {
-          email: document.getElementById('family-email').value.trim(),
-          children: []
-        };
-        
-        document.querySelectorAll('.child-section').forEach(function(child) {
-          const childData = {
-            firstName: child.querySelector('.child-first-name').value.trim(),
-            lastName: child.querySelector('.child-last-name').value.trim(),
-            grade: child.querySelector('.child-grade').value
-          };
-          
-          if (childData.firstName) {
-            familyData.children.push(childData);
-          }
-        });
-        
-        const expires = new Date();
-        expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
-        document.cookie = 'artios_family_data=' + encodeURIComponent(JSON.stringify(familyData)) + '; expires=' + expires.toUTCString() + '; path=/';
-        
-        console.log('Family data saved to cookies:', familyData);
-        
-        if (showIndicator && Math.random() < 0.3) {
-          showSavedIndicator();
-        }
-        
-      } catch (error) {
-        console.error('Error saving family data to cookies:', error);
-      }
-    }
-
-    function saveUserDataQuietly() {
-      saveUserDataToCookies(false);
-    }
-
-    function loadUserDataFromCookies() {
-      try {
-        const cookies = document.cookie.split(';');
-        let familyData = null;
-        
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          const parts = cookie.split('=');
-          if (parts[0] === 'artios_family_data') {
-            familyData = JSON.parse(decodeURIComponent(parts[1]));
-            break;
-          }
-        }
-        
-        if (!familyData) {
-          console.log('No saved family data found');
-          setTimeout(function() {
-            showNotification('💾 Your family info will be automatically saved as you type for convenience!', 'info');
-          }, 2000);
-          return;
-        }
-        
-        console.log('Loading saved family data:', familyData);
-        
-        if (familyData.email) {
-          document.getElementById('family-email').value = familyData.email;
-        }
-        
-        if (familyData.children && familyData.children.length > 0) {
-          const defaultChild = document.querySelector('.child-section');
-          if (defaultChild && familyData.children.length > 0) {
-            const firstChild = familyData.children[0];
-            defaultChild.querySelector('.child-first-name').value = firstChild.firstName || '';
-            defaultChild.querySelector('.child-last-name').value = firstChild.lastName || '';
-            defaultChild.querySelector('.child-grade').value = firstChild.grade || '';
-            
-            for (let i = 1; i < familyData.children.length; i++) {
-              addChild();
-              const newChild = document.querySelector('[data-child="' + (i + 1) + '"]');
-              if (newChild) {
-                const childData = familyData.children[i];
-                newChild.querySelector('.child-first-name').value = childData.firstName || '';
-                newChild.querySelector('.child-last-name').value = childData.lastName || '';
-                newChild.querySelector('.child-grade').value = childData.grade || '';
-              }
-            }
-          }
-          
-          updateChildCheckboxes();
-        }
-        
-        showNotification('Welcome back! Your family info has been loaded.', 'info');
-        
-      } catch (error) {
-        console.error('Error loading family data from cookies:', error);
-      }
-    }
-
-    function showSavedIndicator() {
-      const existingIndicator = document.querySelector('.saved-indicator');
-      if (existingIndicator) {
-        existingIndicator.remove();
-      }
-      
-      const indicator = document.createElement('div');
-      indicator.className = 'saved-indicator';
-      indicator.textContent = '✓ Saved';
-      indicator.style.cssText = 'position: fixed; top: 70px; right: 20px; background: #4caf50; color: white; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; z-index: 10003; animation: slideIn 0.2s ease, fadeOut 0.2s ease 1s forwards; pointer-events: none; opacity: 0.9;';
-      
-      document.body.appendChild(indicator);
-      
-      setTimeout(function() {
-        if (indicator.parentNode) {
-          indicator.remove();
-        }
-      }, 1200);
-    }
-
-    function setupAutoSave() {
-      document.getElementById('family-email').addEventListener('input', debounce(function() {
-        saveUserDataToCookies(false);
-      }, 3000));
-      
-      document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('child-first-name') || e.target.classList.contains('child-last-name')) {
-          debounce(function() {
-            saveUserDataToCookies(false);
-          }, 3000)();
-        }
-      });
-      
-      document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('child-grade')) {
-          saveUserDataQuietly();
-        }
-      });
-    }
-
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction() {
-        const args = arguments;
-        const later = function() {
-          clearTimeout(timeout);
-          func.apply(null, args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    // ============================================
     // INITIALIZATION
     // ============================================
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOM loaded, starting initialization...');
       
       checkStoreHours();
-      generateDayTabs();  // This sets currentDay
-      generateMenus();    // This uses currentDay to show the right menu
+      generateDayTabs();
+      generateMenus();
       setupEventListeners();
-      loadUserDataFromCookies();
-      setupAutoSave();
       updateCart();
       validateForm();
       
       console.log('Initialization complete');
-      
-      // Additional debug logging
-      setTimeout(function() {
-        console.log('Post-initialization check:');
-        console.log('Current day:', currentDay);
-        console.log('Active day tab:', document.querySelector('.day-tab.active'));
-        console.log('Active menu:', document.querySelector('.menu-for-day.active'));
-        console.log('Menu categories visible:', document.querySelectorAll('.menu-for-day.active .menu-category').length);
-      }, 100);
     });
 
     function checkStoreHours() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-      const dayOfWeek = now.getDay(); // Renamed for clarity
+      const dayOfWeek = now.getDay();
       const storeStatus = document.getElementById('store-status');
       
       const isTestingMode = window.location.hostname === 'artioscomputerlab.github.io' || 
@@ -1473,7 +886,7 @@
                            window.location.hostname === 'localhost';
       
       // Block orders from 8:15 AM to 1:00 PM (except on Fridays after noon)
-      const isFriday = dayOfWeek === 5; // 5 = Friday
+      const isFriday = dayOfWeek === 5;
       const isFridayAfterNoon = isFriday && (hours >= 12);
       const isInBlockedHours = (hours === 8 && minutes >= 15) || (hours > 8 && hours < 13);
       
@@ -1506,7 +919,7 @@
 
     function initializeDates() {
       const today = new Date();
-      const todayDayOfWeek = today.getDay(); // Renamed to avoid conflict
+      const todayDayOfWeek = today.getDay();
       const hours = today.getHours();
       
       // Check if we should show next week (Friday at noon or later)
@@ -1518,7 +931,7 @@
       if (isFridayAfterNoon) {
         // Show next week's dates (starting from next Monday)
         monday = new Date(today);
-        const daysUntilNextMonday = (8 - todayDayOfWeek) % 7; // Days until next Monday
+        const daysUntilNextMonday = (8 - todayDayOfWeek) % 7;
         monday.setDate(today.getDate() + daysUntilNextMonday);
         monday.setHours(0, 0, 0, 0);
       } else {
@@ -1534,15 +947,13 @@
 
     function generateDayTabs() {
       const tabsContainer = document.getElementById('day-tabs');
-      
-      // Clear existing tabs first
       tabsContainer.innerHTML = '';
       
       const monday = initializeDates();
       const now = new Date();
       const currentHour = now.getHours();
       const currentMinutes = now.getMinutes();
-      const todayDayOfWeek = now.getDay(); // Renamed to avoid conflict
+      const todayDayOfWeek = now.getDay();
       let firstAvailableDay = null;
 
       // Check if we're showing next week
@@ -1560,7 +971,6 @@
         const isToday = dateOnly.getTime() === todayOnly.getTime();
         const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
         
-        // Update cutoff time to 8:15 AM
         const cutoffPassed = isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15));
         
         // If showing next week, no days should be disabled (all are in the future)
@@ -1594,7 +1004,7 @@
         tabToActivate.classList.add('active');
       }
 
-      // Update the header notice to reflect the current week being shown
+      // Update header notice if showing next week
       if (isShowingNextWeek) {
         const notice = document.querySelector('.notice');
         const currentNotice = notice.innerHTML;
@@ -1603,142 +1013,11 @@
         }
       }
 
-      // Debug logging
       console.log('Generated day tabs. Current day selected:', currentDay);
-      console.log('First available day:', firstAvailableDay);
-      console.log('Is showing next week:', isShowingNextWeek);
-    }
-
-    function switchDay(day) {
-      console.log('Switching to day:', day);
-      
-      document.querySelectorAll('.day-tab').forEach(function(tab) {
-        tab.classList.remove('active');
-        if (tab.dataset.day === day) {
-          tab.classList.add('active');
-        }
-      });
-
-      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
-        menu.classList.remove('active');
-        if (menu.dataset.day === day) {
-          menu.classList.add('active');
-          console.log('Activated menu for day:', day);
-        }
-      });
-
-      currentDay = day;
-      
-      // Debug check
-      setTimeout(function() {
-        const activeMenu = document.querySelector('.menu-for-day.active');
-        console.log('After switch - Active menu:', activeMenu);
-        if (activeMenu) {
-          console.log('Active menu categories:', activeMenu.querySelectorAll('.menu-category').length);
-        }
-      }, 50);
-    }
-
-    function setupEventListeners() {
-      document.getElementById('add-child-btn').addEventListener('click', addChild);
-
-      document.addEventListener('change', function(e) {
-        if (e.target.type === 'checkbox' && e.target.dataset.item) {
-          setTimeout(function() {
-            updateCart();
-          }, 50);
-        }
-      });
-
-      document.getElementById('promo-code').addEventListener('input', function(e) {
-        validatePromoCode(e.target.value);
-      });
-
-      document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('child-first-name') || 
-            e.target.classList.contains('child-last-name')) {
-          updateChildCheckboxes();
-        }
-        validateForm();
-      });
-
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          if (validateForm() && storeIsOpen) {
-            openPaymentModal();
-          } else {
-            if (!storeIsOpen) {
-              showNotification('Store is closed. Orders cannot be placed now.', 'error');
-            } else {
-              showNotification('Please complete all required fields and add items to your order.', 'warning');
-            }
-          }
-        });
-      }
-
-      const cancelBtn = document.getElementById('cancel-payment-btn');
-      if (cancelBtn) {
-        cancelBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          closePaymentModal();
-        });
-      }
-
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          confirmBtn.disabled = true;
-          confirmBtn.textContent = '⏳ Submitting Order...';
-          
-          try {
-            submitOrder();
-          } catch (error) {
-            console.error('Error in submitOrder:', error);
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-            showNotification('Error submitting order. Please try again.', 'error');
-          }
-        });
-      }
-
-      const confirmationCloseBtn = document.getElementById('confirmation-close-btn');
-      if (confirmationCloseBtn) {
-        confirmationCloseBtn.addEventListener('click', function() {
-          closeConfirmationModal();
-        });
-      }
-
-      const paymentModal = document.getElementById('payment-modal');
-      if (paymentModal) {
-        paymentModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            closePaymentModal();
-          }
-        });
-      }
-
-      const confirmationModal = document.getElementById('confirmation-modal');
-      if (confirmationModal) {
-        confirmationModal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            closeConfirmationModal();
-          }
-        });
-      }
     }
 
     function generateMenus() {
       const container = document.getElementById('menu-container');
-      
-      // Clear existing menus first
       container.innerHTML = '';
       
       days.forEach(function(day) {
@@ -1748,7 +1027,6 @@
         
         if (day === currentDay) {
           dayMenu.classList.add('active');
-          console.log('Setting menu active for day:', day);
         }
         
         Object.keys(menuData).forEach(function(category) {
@@ -1775,1382 +1053,12 @@
             
             let priceDisplay;
             if (category === 'drinks') {
-              priceDisplay = '
-
-    function addChild() {
-      childCount++;
-      const container = document.getElementById('children-container');
-      
-      const childDiv = document.createElement('div');
-      childDiv.className = 'child-section';
-      childDiv.dataset.child = childCount;
-      
-      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
-      
-      const removeBtn = childDiv.querySelector('.remove-child');
-      removeBtn.addEventListener('click', function() {
-        const childId = this.dataset.childId;
-        removeChild(parseInt(childId));
-      });
-      
-      container.appendChild(childDiv);
-      updateChildCheckboxes();
-      validateForm();
-      
-      saveUserDataToCookies(Math.random() < 0.5);
-    }
-
-    function removeChild(childId) {
-      const childSection = document.querySelector('[data-child="' + childId + '"]');
-      if (childSection && childCount > 1) {
-        orderItems = orderItems.filter(function(item) {
-          return item.childId !== childId.toString();
-        });
-        
-        childSection.remove();
-        renumberChildren();
-        updateChildCheckboxes();
-        updateCart();
-        
-        saveUserDataQuietly();
-      }
-    }
-
-    function renumberChildren() {
-      const childSections = document.querySelectorAll('.child-section');
-      childCount = childSections.length;
-      
-      childSections.forEach(function(section, index) {
-        const newChildId = index + 1;
-        section.dataset.child = newChildId;
-        section.querySelector('.child-icon').textContent = newChildId;
-        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
-        
-        const removeBtn = section.querySelector('.remove-child');
-        if (removeBtn) {
-          removeBtn.dataset.childId = newChildId;
-          
-          const newRemoveBtn = removeBtn.cloneNode(true);
-          newRemoveBtn.addEventListener('click', function() {
-            const childId = this.dataset.childId;
-            removeChild(parseInt(childId));
-          });
-          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
-        }
-      });
-    }
-
-    function updateChildCheckboxes() {
-      const children = document.querySelectorAll('.child-section');
-      
-      document.querySelectorAll('.child-checkboxes').forEach(function(container) {
-        const parts = container.id.split('-');
-        const day = parts[parts.length - 2];
-        const itemId = parts.slice(0, -2).join('-');
-        
-        container.innerHTML = '';
-        
-        children.forEach(function(child) {
-          const childId = child.dataset.child;
-          const firstName = child.querySelector('.child-first-name').value || ('Child ' + childId);
-          
-          const checkboxContainer = document.createElement('div');
-          checkboxContainer.className = 'child-checkbox';
-          
-          const checkboxId = itemId + '-' + day + '-child-' + childId;
-          
-          checkboxContainer.innerHTML = '<input type="checkbox" id="' + checkboxId + '" data-item="' + itemId + '" data-day="' + day + '" data-child-id="' + childId + '"><label for="' + checkboxId + '">' + firstName + '</label>';
-          
-          container.appendChild(checkboxContainer);
-        });
-      });
-    }
-
-    function validatePromoCode(code) {
-      const promoStatus = document.getElementById('promo-status');
-      const trimmedCode = code.trim().toUpperCase();
-      
-      if (trimmedCode === '') {
-        discountType = 'none';
-        promoStatus.textContent = '';
-        promoStatus.className = 'promo-status';
-      } else if (trimmedCode === 'STAFF2025') {
-        discountType = 'staff';
-        promoStatus.textContent = '✅ Staff Discount Applied (10% off)';
-        promoStatus.className = 'promo-status valid';
-      } else if (trimmedCode === 'JOHN') {
-        discountType = 'john';
-        promoStatus.textContent = '✅ JOHN Discount Applied (50% off)';
-        promoStatus.className = 'promo-status valid';
-      } else {
-        discountType = 'none';
-        promoStatus.textContent = '❌ Invalid Code';
-        promoStatus.className = 'promo-status invalid';
-      }
-      
-      updateCart();
-    }
-
-    function updateCart() {
-      orderItems = [];
-      currentSubtotal = 0;
-      
-      const childDayDrinks = {};
-      
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
-        const itemId = checkbox.dataset.item;
-        const day = checkbox.dataset.day;
-        const childId = checkbox.dataset.childId;
-        
-        const child = document.querySelector('[data-child="' + childId + '"]');
-        if (!child) {
-          return;
-        }
-        
-        const childFirstName = child.querySelector('.child-first-name').value;
-        const childLastName = child.querySelector('.child-last-name').value;
-        const childGrade = child.querySelector('.child-grade').value;
-        
-        let item = null;
-        let category = null;
-        Object.keys(menuData).forEach(function(cat) {
-          const found = menuData[cat].find(function(i) { return i.id === itemId; });
-          if (found) {
-            item = found;
-            category = cat;
-          }
-        });
-        
-        if (item) {
-          let finalPrice = item.price || item.basePrice;
-          let isDiscounted = false;
-          
-          if (category === 'drinks') {
-            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
-            const childDayKey = childId + '-' + day;
-            
-            if (!childDayDrinks[childDayKey]) {
-              childDayDrinks[childDayKey] = { discountedDrinks: 0, hasCombo: hasEntreeOrSaladAndSide };
-            }
-            
-            if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
-              if (item.category === 'regular') {
-                finalPrice = 0;
-                isDiscounted = true;
-              } else if (item.category === 'premium') {
-                finalPrice = 1.50;
-                isDiscounted = true;
-              }
-              childDayDrinks[childDayKey].discountedDrinks++;
-            } else {
-              finalPrice = item.basePrice;
-            }
-          }
-          
-          const orderItem = {
-            childId: childId,
-            childName: childFirstName + ' ' + childLastName,
-            firstName: childFirstName,
-            lastName: childLastName,
-            grade: childGrade,
-            name: item.name,
-            price: finalPrice,
-            originalPrice: item.price || item.basePrice,
-            day: day.charAt(0).toUpperCase() + day.slice(1),
-            category: category,
-            isDiscounted: isDiscounted
-          };
-          
-          orderItems.push(orderItem);
-          currentSubtotal += finalPrice;
-        }
-      });
-      
-      if (discountType === 'staff') {
-        currentDiscount = currentSubtotal * 0.10;
-      } else if (discountType === 'john') {
-        currentDiscount = currentSubtotal * 0.50;
-      } else {
-        currentDiscount = 0;
-      }
-      
-      currentTotal = currentSubtotal - currentDiscount;
-      
-      displayCart();
-      validateForm();
-    }
-
-    function checkChildHasEntreeOrSaladAndSide(childId, day) {
-      let hasEntreeOrSalad = false;
-      let hasSide = false;
-      
-      document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked').forEach(function(checkbox) {
-        const itemId = checkbox.dataset.item;
-        
-        Object.keys(menuData).forEach(function(category) {
-          const found = menuData[category].find(function(i) { return i.id === itemId; });
-          if (found) {
-            if (category === 'entrees' || category === 'salads') {
-              hasEntreeOrSalad = true;
-            } else if (category === 'sides') {
-              hasSide = true;
-            }
-          }
-        });
-      });
-      
-      return hasEntreeOrSalad && hasSide;
-    }
-
-    function displayCart() {
-      const cartItemsDiv = document.getElementById('cart-items');
-      const totalSpan = document.getElementById('total-amount');
-      
-      if (orderItems.length === 0) {
-        cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
-        totalSpan.textContent = '0.00';
-        return;
-      }
-      
-      const itemsByChild = {};
-      orderItems.forEach(function(item) {
-        if (!itemsByChild[item.childId]) {
-          itemsByChild[item.childId] = {
-            name: item.childName,
-            items: []
-          };
-        }
-        itemsByChild[item.childId].items.push(item);
-      });
-      
-      let html = '';
-      Object.keys(itemsByChild).sort(function(a, b) {
-        return parseInt(a) - parseInt(b);
-      }).forEach(function(childId) {
-        const child = itemsByChild[childId];
-        html += '<div class="child-cart-section">';
-        html += '<div class="child-cart-header">' + child.name + '</div>';
-        
-        child.items.forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
-          let extraClass = '';
-          
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE';
-              extraClass = 'free-item';
+              priceDisplay = '$' + item.basePrice.toFixed(2);
             } else {
               priceDisplay = '$' + item.price.toFixed(2);
-              extraClass = 'discounted-item';
-            }
-          }
-          
-          html += '<div class="cart-item ' + extraClass + '"><div class="cart-item-name">' + item.name + ' (' + item.day + ')</div><div class="cart-item-price">' + priceDisplay + '</div></div>';
-        });
-        html += '</div>';
-      });
-      
-      cartItemsDiv.innerHTML = html;
-      totalSpan.textContent = currentTotal.toFixed(2);
-      
-      const discountLine = document.getElementById('discount-line');
-      const discountAmount = document.getElementById('discount-amount');
-      
-      if (currentDiscount > 0) {
-        discountLine.style.display = 'block';
-        discountAmount.textContent = currentDiscount.toFixed(2);
-        
-        const discountLabel = discountLine.firstChild;
-        if (discountType === 'staff') {
-          discountLabel.textContent = 'Staff Discount (10%): -$';
-        } else if (discountType === 'john') {
-          discountLabel.textContent = 'JOHN Discount (50%): -$';
-        }
-      } else {
-        discountLine.style.display = 'none';
-      }
-    }
-
-    function validateForm() {
-      const email = document.getElementById('family-email').value.trim();
-      const checkoutBtn = document.getElementById('checkout-btn');
-      
-      if (!checkoutBtn) {
-        return false;
-      }
-      
-      const hasItems = orderItems.length > 0;
-      const hasEmail = email.length > 0 && email.includes('@');
-      
-      const children = document.querySelectorAll('.child-section');
-      let allChildrenComplete = true;
-      children.forEach(function(child) {
-        const firstName = child.querySelector('.child-first-name').value.trim();
-        const lastName = child.querySelector('.child-last-name').value.trim();
-        const grade = child.querySelector('.child-grade').value;
-        if (!firstName || !lastName || !grade) {
-          allChildrenComplete = false;
-        }
-      });
-      
-      const isValid = hasItems && hasEmail && allChildrenComplete && storeIsOpen;
-      
-      checkoutBtn.disabled = !isValid;
-      
-      if (isValid) {
-        checkoutBtn.textContent = 'Review & Pay Order ($' + currentTotal.toFixed(2) + ')';
-        checkoutBtn.style.opacity = '1';
-        checkoutBtn.style.cursor = 'pointer';
-      } else {
-        if (!storeIsOpen) {
-          checkoutBtn.textContent = 'Store Closed';
-        } else if (!hasItems) {
-          checkoutBtn.textContent = 'Select Items to Continue';
-        } else if (!hasEmail) {
-          checkoutBtn.textContent = 'Enter Email to Continue';
-        } else if (!allChildrenComplete) {
-          checkoutBtn.textContent = 'Complete Child Info';
-        } else {
-          checkoutBtn.textContent = 'Review & Pay Order';
-        }
-        checkoutBtn.style.opacity = '0.6';
-        checkoutBtn.style.cursor = 'not-allowed';
-      }
-      
-      return isValid;
-    }
-
-    function openPaymentModal() {
-      if (!validateForm()) {
-        return;
-      }
-      
-      const modal = document.getElementById('payment-modal');
-      const modalTotal = document.getElementById('modal-total');
-      const venmoTotal = document.getElementById('venmo-total');
-      const venmoLink = document.getElementById('venmo-payment-link');
-      
-      if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
-        showNotification('Payment system error. Please refresh the page.', 'error');
-        return;
-      }
-      
-      modalTotal.textContent = currentTotal.toFixed(2);
-      venmoTotal.textContent = currentTotal.toFixed(2);
-      
-      let orderSummary = 'Artios Academies Cafe Lunch Order - $' + currentTotal.toFixed(2);
-      const children = orderItems.map(function(item) { return item.childName; }).filter(function(value, index, self) { return self.indexOf(value) === index; });
-      if (children.length <= 2) {
-        orderSummary += ' for ' + children.join(' & ');
-      } else {
-        orderSummary += ' for ' + children.length + ' children';
-      }
-      
-      const venmoUrl = 'venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
-      const venmoWebUrl = 'https://venmo.com/ChanTa-Rivers?txn=pay&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
-      
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        venmoLink.href = venmoUrl;
-      } else {
-        venmoLink.href = venmoWebUrl;
-        venmoLink.target = '_blank';
-        
-        const paymentDetails = 'Pay @ChanTa-Rivers $' + currentTotal.toFixed(2) + ' for: ' + orderSummary;
-        
-        venmoLink.onclick = function(e) {
-          e.preventDefault();
-          window.open(venmoWebUrl, '_blank');
-          
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(paymentDetails).then(function() {
-              showNotification('Payment details copied to clipboard!', 'success');
-            }).catch(function() {
-              alert('Please send payment to:\n\n' + paymentDetails);
-            });
-          } else {
-            alert('Please send payment to:\n\n' + paymentDetails);
-          }
-        };
-      }
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-      
-      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (focusableElements.length > 0) {
-        focusableElements[0].focus();
-      }
-    }
-
-    function closePaymentModal() {
-      const modal = document.getElementById('payment-modal');
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-      
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-    }
-
-    function showDetailedOrderConfirmation(order) {
-      const modal = document.getElementById('confirmation-modal');
-      
-      document.getElementById('conf-order-id').textContent = order.orderId;
-      document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
-      document.getElementById('conf-email').textContent = order.email;
-      document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
-      
-      const childrenListDiv = document.getElementById('conf-children-list');
-      let childrenHtml = '<ul>';
-      if (order.children && order.children.length > 0) {
-        order.children.forEach(function(child) {
-          childrenHtml += '<li><strong>' + child.firstName + ' ' + child.lastName + '</strong> (' + child.grade + ')</li>';
-        });
-      }
-      childrenHtml += '</ul>';
-      childrenListDiv.innerHTML = childrenHtml;
-      
-      const itemsListDiv = document.getElementById('conf-items-list');
-      const itemsByDay = {};
-      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-      
-      order.items.forEach(function(item) {
-        if (!itemsByDay[item.day]) {
-          itemsByDay[item.day] = [];
-        }
-        itemsByDay[item.day].push(item);
-      });
-      
-      const sortedDays = Object.keys(itemsByDay).sort(function(a, b) {
-        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
-      });
-      
-      let itemsHtml = '';
-      sortedDays.forEach(function(day) {
-        itemsHtml += '<div class="confirmation-day">' + day + ':</div>';
-        itemsByDay[day].forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE 🎉';
-            } else {
-              priceDisplay = '$' + item.price.toFixed(2) + ' 💰';
-            }
-          }
-          
-          itemsHtml += '<div class="confirmation-item"><span>• ' + item.name + ' - ' + (item.childName || 'Student') + '</span><span><strong>' + priceDisplay + '</strong></span></div>';
-        });
-      });
-      itemsListDiv.innerHTML = itemsHtml;
-      
-      let totalHtml = 'Total: $' + order.total.toFixed(2);
-      if (order.discount && order.discount > 0) {
-        let discountLabel = 'Discount';
-        if (order.promoCode === 'STAFF2025') {
-          discountLabel = 'Staff Discount (10%)';
-        } else if (order.promoCode === 'JOHN') {
-          discountLabel = 'JOHN Discount (50%)';
-        }
-        
-        totalHtml = 'Subtotal: $' + order.subtotal.toFixed(2) + '<br>' + discountLabel + ': -$' + order.discount.toFixed(2) + '<br><strong>Total: $' + order.total.toFixed(2) + '</strong>';
-      }
-      document.getElementById('conf-total').innerHTML = totalHtml;
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-    }
-
-    function closeConfirmationModal() {
-      const modal = document.getElementById('confirmation-modal');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-    }
-
-    function submitOrder() {
-      const now = new Date();
-      const familyEmail = document.getElementById('family-email').value.trim();
-      const firstChild = document.querySelector('.child-section');
-      const lastName = firstChild ? firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 'FAMILY';
-      
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hour = String(now.getHours()).padStart(2, '0');
-      const minute = String(now.getMinutes()).padStart(2, '0');
-      
-      const orderId = lastName + '-' + month + day + '-' + hour + minute;
-      
-      const orderData = {
-        orderId: orderId,
-        timestamp: new Date().toISOString(),
-        email: familyEmail,
-        children: [],
-        items: orderItems,
-        subtotal: currentSubtotal,
-        discount: currentDiscount,
-        total: currentTotal,
-        promoCode: discountType === 'staff' ? 'STAFF2025' : (discountType === 'john' ? 'JOHN' : ''),
-        paymentMethod: 'Venmo',
-        paymentStatus: 'confirmed',
-        sendConfirmation: true,
-        weekStart: new Date().toISOString().split('T')[0]
-      };
-
-      document.querySelectorAll('.child-section').forEach(function(child) {
-        orderData.children.push({
-          id: child.dataset.child,
-          firstName: child.querySelector('.child-first-name').value.trim(),
-          lastName: child.querySelector('.child-last-name').value.trim(),
-          grade: child.querySelector('.child-grade').value
-        });
-      });
-      
-      showNotification('Submitting order to cloud...', 'info');
-      
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
-        })
-        .then(function(response) {
-          if (!response.ok) {
-            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
-          }
-          return response.json();
-        })
-        .then(function(result) {
-          if (result.success) {
-            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-              saveToLocalStorage(orderData);
-            }
-            closePaymentModal();
-            showDetailedOrderConfirmation(orderData);
-            showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
-            resetForm();
-          } else {
-            throw new Error(result.error || 'Unknown error from Google Sheets');
-          }
-        })
-        .catch(function(error) {
-          handleSubmissionFailure(orderData, orderId, error.message);
-        });
-      } else {
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order ' + orderId + ' saved locally!', 'success');
-        resetForm();
-      }
-    }
-
-    function handleSubmissionFailure(orderData, orderId, errorMessage) {
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-      
-      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order saved locally (cloud sync failed)', 'warning');
-        resetForm();
-      } else {
-        showNotification('Error submitting order. Please try again.', 'error');
-      }
-    }
-
-    function saveToLocalStorage(orderData) {
-      try {
-        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
-        orders.push(orderData);
-        localStorage.setItem('cafeOrders', JSON.stringify(orders));
-      } catch (e) {
-        console.error('Error saving to localStorage:', e);
-      }
-    }
-
-    function resetForm() {
-      document.getElementById('family-email').value = '';
-      document.querySelectorAll('.child-first-name').forEach(function(input) { input.value = ''; });
-      document.querySelectorAll('.child-last-name').forEach(function(input) { input.value = ''; });
-      document.querySelectorAll('.child-grade').forEach(function(select) { select.value = ''; });
-      document.getElementById('promo-code').value = '';
-      
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(cb) {
-        cb.checked = false;
-      });
-      
-      discountType = 'none';
-      document.getElementById('promo-status').textContent = '';
-      document.getElementById('promo-status').className = 'promo-status';
-      
-      orderItems = [];
-      currentTotal = 0;
-      currentSubtotal = 0;
-      currentDiscount = 0;
-      updateCart();
-      validateForm();
-    }
-
-    function showNotification(message, type) {
-      const existingNotif = document.querySelector('.notification');
-      if (existingNotif) {
-        existingNotif.remove();
-      }
-      
-      let bgColor, textColor, borderColor, icon;
-      switch(type) {
-        case 'success':
-          bgColor = '#d4edda';
-          textColor = '#155724';
-          borderColor = '#c3e6cb';
-          icon = '✅ ';
-          break;
-        case 'error':
-          bgColor = '#f8d7da';
-          textColor = '#721c24';
-          borderColor = '#f5c6cb';
-          icon = '❌ ';
-          break;
-        case 'warning':
-          bgColor = '#fff3cd';
-          textColor = '#856404';
-          borderColor = '#ffeaa7';
-          icon = '⚠️ ';
-          break;
-        default:
-          bgColor = '#e3f2fd';
-          textColor = '#1976d2';
-          borderColor = '#bbdefb';
-          icon = 'ℹ️ ';
-      }
-      
-      const notif = document.createElement('div');
-      notif.className = 'notification';
-      notif.style.cssText = 'background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + ';';
-      notif.textContent = icon + message;
-      
-      document.body.appendChild(notif);
-      
-      setTimeout(function() {
-        if (notif.parentNode) {
-          notif.remove();
-        }
-      }, 5000);
-    }
-
-    window.removeChild = removeChild;
-  </script>
-</body>
-</html> + item.basePrice.toFixed(2);
-            } else {
-              priceDisplay = '
-
-    function addChild() {
-      childCount++;
-      const container = document.getElementById('children-container');
-      
-      const childDiv = document.createElement('div');
-      childDiv.className = 'child-section';
-      childDiv.dataset.child = childCount;
-      
-      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
-      
-      const removeBtn = childDiv.querySelector('.remove-child');
-      removeBtn.addEventListener('click', function() {
-        const childId = this.dataset.childId;
-        removeChild(parseInt(childId));
-      });
-      
-      container.appendChild(childDiv);
-      updateChildCheckboxes();
-      validateForm();
-      
-      saveUserDataToCookies(Math.random() < 0.5);
-    }
-
-    function removeChild(childId) {
-      const childSection = document.querySelector('[data-child="' + childId + '"]');
-      if (childSection && childCount > 1) {
-        orderItems = orderItems.filter(function(item) {
-          return item.childId !== childId.toString();
-        });
-        
-        childSection.remove();
-        renumberChildren();
-        updateChildCheckboxes();
-        updateCart();
-        
-        saveUserDataQuietly();
-      }
-    }
-
-    function renumberChildren() {
-      const childSections = document.querySelectorAll('.child-section');
-      childCount = childSections.length;
-      
-      childSections.forEach(function(section, index) {
-        const newChildId = index + 1;
-        section.dataset.child = newChildId;
-        section.querySelector('.child-icon').textContent = newChildId;
-        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
-        
-        const removeBtn = section.querySelector('.remove-child');
-        if (removeBtn) {
-          removeBtn.dataset.childId = newChildId;
-          
-          const newRemoveBtn = removeBtn.cloneNode(true);
-          newRemoveBtn.addEventListener('click', function() {
-            const childId = this.dataset.childId;
-            removeChild(parseInt(childId));
-          });
-          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
-        }
-      });
-    }
-
-    function updateChildCheckboxes() {
-      const children = document.querySelectorAll('.child-section');
-      
-      document.querySelectorAll('.child-checkboxes').forEach(function(container) {
-        const parts = container.id.split('-');
-        const day = parts[parts.length - 2];
-        const itemId = parts.slice(0, -2).join('-');
-        
-        container.innerHTML = '';
-        
-        children.forEach(function(child) {
-          const childId = child.dataset.child;
-          const firstName = child.querySelector('.child-first-name').value || ('Child ' + childId);
-          
-          const checkboxContainer = document.createElement('div');
-          checkboxContainer.className = 'child-checkbox';
-          
-          const checkboxId = itemId + '-' + day + '-child-' + childId;
-          
-          checkboxContainer.innerHTML = '<input type="checkbox" id="' + checkboxId + '" data-item="' + itemId + '" data-day="' + day + '" data-child-id="' + childId + '"><label for="' + checkboxId + '">' + firstName + '</label>';
-          
-          container.appendChild(checkboxContainer);
-        });
-      });
-    }
-
-    function validatePromoCode(code) {
-      const promoStatus = document.getElementById('promo-status');
-      const trimmedCode = code.trim().toUpperCase();
-      
-      if (trimmedCode === '') {
-        discountType = 'none';
-        promoStatus.textContent = '';
-        promoStatus.className = 'promo-status';
-      } else if (trimmedCode === 'STAFF2025') {
-        discountType = 'staff';
-        promoStatus.textContent = '✅ Staff Discount Applied (10% off)';
-        promoStatus.className = 'promo-status valid';
-      } else if (trimmedCode === 'JOHN') {
-        discountType = 'john';
-        promoStatus.textContent = '✅ JOHN Discount Applied (50% off)';
-        promoStatus.className = 'promo-status valid';
-      } else {
-        discountType = 'none';
-        promoStatus.textContent = '❌ Invalid Code';
-        promoStatus.className = 'promo-status invalid';
-      }
-      
-      updateCart();
-    }
-
-    function updateCart() {
-      orderItems = [];
-      currentSubtotal = 0;
-      
-      const childDayDrinks = {};
-      
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
-        const itemId = checkbox.dataset.item;
-        const day = checkbox.dataset.day;
-        const childId = checkbox.dataset.childId;
-        
-        const child = document.querySelector('[data-child="' + childId + '"]');
-        if (!child) {
-          return;
-        }
-        
-        const childFirstName = child.querySelector('.child-first-name').value;
-        const childLastName = child.querySelector('.child-last-name').value;
-        const childGrade = child.querySelector('.child-grade').value;
-        
-        let item = null;
-        let category = null;
-        Object.keys(menuData).forEach(function(cat) {
-          const found = menuData[cat].find(function(i) { return i.id === itemId; });
-          if (found) {
-            item = found;
-            category = cat;
-          }
-        });
-        
-        if (item) {
-          let finalPrice = item.price || item.basePrice;
-          let isDiscounted = false;
-          
-          if (category === 'drinks') {
-            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
-            const childDayKey = childId + '-' + day;
-            
-            if (!childDayDrinks[childDayKey]) {
-              childDayDrinks[childDayKey] = { discountedDrinks: 0, hasCombo: hasEntreeOrSaladAndSide };
             }
             
-            if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
-              if (item.category === 'regular') {
-                finalPrice = 0;
-                isDiscounted = true;
-              } else if (item.category === 'premium') {
-                finalPrice = 1.50;
-                isDiscounted = true;
-              }
-              childDayDrinks[childDayKey].discountedDrinks++;
-            } else {
-              finalPrice = item.basePrice;
-            }
-          }
-          
-          const orderItem = {
-            childId: childId,
-            childName: childFirstName + ' ' + childLastName,
-            firstName: childFirstName,
-            lastName: childLastName,
-            grade: childGrade,
-            name: item.name,
-            price: finalPrice,
-            originalPrice: item.price || item.basePrice,
-            day: day.charAt(0).toUpperCase() + day.slice(1),
-            category: category,
-            isDiscounted: isDiscounted
-          };
-          
-          orderItems.push(orderItem);
-          currentSubtotal += finalPrice;
-        }
-      });
-      
-      if (discountType === 'staff') {
-        currentDiscount = currentSubtotal * 0.10;
-      } else if (discountType === 'john') {
-        currentDiscount = currentSubtotal * 0.50;
-      } else {
-        currentDiscount = 0;
-      }
-      
-      currentTotal = currentSubtotal - currentDiscount;
-      
-      displayCart();
-      validateForm();
-    }
-
-    function checkChildHasEntreeOrSaladAndSide(childId, day) {
-      let hasEntreeOrSalad = false;
-      let hasSide = false;
-      
-      document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked').forEach(function(checkbox) {
-        const itemId = checkbox.dataset.item;
-        
-        Object.keys(menuData).forEach(function(category) {
-          const found = menuData[category].find(function(i) { return i.id === itemId; });
-          if (found) {
-            if (category === 'entrees' || category === 'salads') {
-              hasEntreeOrSalad = true;
-            } else if (category === 'sides') {
-              hasSide = true;
-            }
-          }
-        });
-      });
-      
-      return hasEntreeOrSalad && hasSide;
-    }
-
-    function displayCart() {
-      const cartItemsDiv = document.getElementById('cart-items');
-      const totalSpan = document.getElementById('total-amount');
-      
-      if (orderItems.length === 0) {
-        cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
-        totalSpan.textContent = '0.00';
-        return;
-      }
-      
-      const itemsByChild = {};
-      orderItems.forEach(function(item) {
-        if (!itemsByChild[item.childId]) {
-          itemsByChild[item.childId] = {
-            name: item.childName,
-            items: []
-          };
-        }
-        itemsByChild[item.childId].items.push(item);
-      });
-      
-      let html = '';
-      Object.keys(itemsByChild).sort(function(a, b) {
-        return parseInt(a) - parseInt(b);
-      }).forEach(function(childId) {
-        const child = itemsByChild[childId];
-        html += '<div class="child-cart-section">';
-        html += '<div class="child-cart-header">' + child.name + '</div>';
-        
-        child.items.forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
-          let extraClass = '';
-          
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE';
-              extraClass = 'free-item';
-            } else {
-              priceDisplay = '$' + item.price.toFixed(2);
-              extraClass = 'discounted-item';
-            }
-          }
-          
-          html += '<div class="cart-item ' + extraClass + '"><div class="cart-item-name">' + item.name + ' (' + item.day + ')</div><div class="cart-item-price">' + priceDisplay + '</div></div>';
-        });
-        html += '</div>';
-      });
-      
-      cartItemsDiv.innerHTML = html;
-      totalSpan.textContent = currentTotal.toFixed(2);
-      
-      const discountLine = document.getElementById('discount-line');
-      const discountAmount = document.getElementById('discount-amount');
-      
-      if (currentDiscount > 0) {
-        discountLine.style.display = 'block';
-        discountAmount.textContent = currentDiscount.toFixed(2);
-        
-        const discountLabel = discountLine.firstChild;
-        if (discountType === 'staff') {
-          discountLabel.textContent = 'Staff Discount (10%): -$';
-        } else if (discountType === 'john') {
-          discountLabel.textContent = 'JOHN Discount (50%): -$';
-        }
-      } else {
-        discountLine.style.display = 'none';
-      }
-    }
-
-    function validateForm() {
-      const email = document.getElementById('family-email').value.trim();
-      const checkoutBtn = document.getElementById('checkout-btn');
-      
-      if (!checkoutBtn) {
-        return false;
-      }
-      
-      const hasItems = orderItems.length > 0;
-      const hasEmail = email.length > 0 && email.includes('@');
-      
-      const children = document.querySelectorAll('.child-section');
-      let allChildrenComplete = true;
-      children.forEach(function(child) {
-        const firstName = child.querySelector('.child-first-name').value.trim();
-        const lastName = child.querySelector('.child-last-name').value.trim();
-        const grade = child.querySelector('.child-grade').value;
-        if (!firstName || !lastName || !grade) {
-          allChildrenComplete = false;
-        }
-      });
-      
-      const isValid = hasItems && hasEmail && allChildrenComplete && storeIsOpen;
-      
-      checkoutBtn.disabled = !isValid;
-      
-      if (isValid) {
-        checkoutBtn.textContent = 'Review & Pay Order ($' + currentTotal.toFixed(2) + ')';
-        checkoutBtn.style.opacity = '1';
-        checkoutBtn.style.cursor = 'pointer';
-      } else {
-        if (!storeIsOpen) {
-          checkoutBtn.textContent = 'Store Closed';
-        } else if (!hasItems) {
-          checkoutBtn.textContent = 'Select Items to Continue';
-        } else if (!hasEmail) {
-          checkoutBtn.textContent = 'Enter Email to Continue';
-        } else if (!allChildrenComplete) {
-          checkoutBtn.textContent = 'Complete Child Info';
-        } else {
-          checkoutBtn.textContent = 'Review & Pay Order';
-        }
-        checkoutBtn.style.opacity = '0.6';
-        checkoutBtn.style.cursor = 'not-allowed';
-      }
-      
-      return isValid;
-    }
-
-    function openPaymentModal() {
-      if (!validateForm()) {
-        return;
-      }
-      
-      const modal = document.getElementById('payment-modal');
-      const modalTotal = document.getElementById('modal-total');
-      const venmoTotal = document.getElementById('venmo-total');
-      const venmoLink = document.getElementById('venmo-payment-link');
-      
-      if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
-        showNotification('Payment system error. Please refresh the page.', 'error');
-        return;
-      }
-      
-      modalTotal.textContent = currentTotal.toFixed(2);
-      venmoTotal.textContent = currentTotal.toFixed(2);
-      
-      let orderSummary = 'Artios Academies Cafe Lunch Order - $' + currentTotal.toFixed(2);
-      const children = orderItems.map(function(item) { return item.childName; }).filter(function(value, index, self) { return self.indexOf(value) === index; });
-      if (children.length <= 2) {
-        orderSummary += ' for ' + children.join(' & ');
-      } else {
-        orderSummary += ' for ' + children.length + ' children';
-      }
-      
-      const venmoUrl = 'venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
-      const venmoWebUrl = 'https://venmo.com/ChanTa-Rivers?txn=pay&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
-      
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        venmoLink.href = venmoUrl;
-      } else {
-        venmoLink.href = venmoWebUrl;
-        venmoLink.target = '_blank';
-        
-        const paymentDetails = 'Pay @ChanTa-Rivers $' + currentTotal.toFixed(2) + ' for: ' + orderSummary;
-        
-        venmoLink.onclick = function(e) {
-          e.preventDefault();
-          window.open(venmoWebUrl, '_blank');
-          
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(paymentDetails).then(function() {
-              showNotification('Payment details copied to clipboard!', 'success');
-            }).catch(function() {
-              alert('Please send payment to:\n\n' + paymentDetails);
-            });
-          } else {
-            alert('Please send payment to:\n\n' + paymentDetails);
-          }
-        };
-      }
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-      
-      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (focusableElements.length > 0) {
-        focusableElements[0].focus();
-      }
-    }
-
-    function closePaymentModal() {
-      const modal = document.getElementById('payment-modal');
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-      
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-    }
-
-    function showDetailedOrderConfirmation(order) {
-      const modal = document.getElementById('confirmation-modal');
-      
-      document.getElementById('conf-order-id').textContent = order.orderId;
-      document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
-      document.getElementById('conf-email').textContent = order.email;
-      document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
-      
-      const childrenListDiv = document.getElementById('conf-children-list');
-      let childrenHtml = '<ul>';
-      if (order.children && order.children.length > 0) {
-        order.children.forEach(function(child) {
-          childrenHtml += '<li><strong>' + child.firstName + ' ' + child.lastName + '</strong> (' + child.grade + ')</li>';
-        });
-      }
-      childrenHtml += '</ul>';
-      childrenListDiv.innerHTML = childrenHtml;
-      
-      const itemsListDiv = document.getElementById('conf-items-list');
-      const itemsByDay = {};
-      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-      
-      order.items.forEach(function(item) {
-        if (!itemsByDay[item.day]) {
-          itemsByDay[item.day] = [];
-        }
-        itemsByDay[item.day].push(item);
-      });
-      
-      const sortedDays = Object.keys(itemsByDay).sort(function(a, b) {
-        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
-      });
-      
-      let itemsHtml = '';
-      sortedDays.forEach(function(day) {
-        itemsHtml += '<div class="confirmation-day">' + day + ':</div>';
-        itemsByDay[day].forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE 🎉';
-            } else {
-              priceDisplay = '$' + item.price.toFixed(2) + ' 💰';
-            }
-          }
-          
-          itemsHtml += '<div class="confirmation-item"><span>• ' + item.name + ' - ' + (item.childName || 'Student') + '</span><span><strong>' + priceDisplay + '</strong></span></div>';
-        });
-      });
-      itemsListDiv.innerHTML = itemsHtml;
-      
-      let totalHtml = 'Total: $' + order.total.toFixed(2);
-      if (order.discount && order.discount > 0) {
-        let discountLabel = 'Discount';
-        if (order.promoCode === 'STAFF2025') {
-          discountLabel = 'Staff Discount (10%)';
-        } else if (order.promoCode === 'JOHN') {
-          discountLabel = 'JOHN Discount (50%)';
-        }
-        
-        totalHtml = 'Subtotal: $' + order.subtotal.toFixed(2) + '<br>' + discountLabel + ': -$' + order.discount.toFixed(2) + '<br><strong>Total: $' + order.total.toFixed(2) + '</strong>';
-      }
-      document.getElementById('conf-total').innerHTML = totalHtml;
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-    }
-
-    function closeConfirmationModal() {
-      const modal = document.getElementById('confirmation-modal');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-    }
-
-    function submitOrder() {
-      const now = new Date();
-      const familyEmail = document.getElementById('family-email').value.trim();
-      const firstChild = document.querySelector('.child-section');
-      const lastName = firstChild ? firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 'FAMILY';
-      
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hour = String(now.getHours()).padStart(2, '0');
-      const minute = String(now.getMinutes()).padStart(2, '0');
-      
-      const orderId = lastName + '-' + month + day + '-' + hour + minute;
-      
-      const orderData = {
-        orderId: orderId,
-        timestamp: new Date().toISOString(),
-        email: familyEmail,
-        children: [],
-        items: orderItems,
-        subtotal: currentSubtotal,
-        discount: currentDiscount,
-        total: currentTotal,
-        promoCode: discountType === 'staff' ? 'STAFF2025' : (discountType === 'john' ? 'JOHN' : ''),
-        paymentMethod: 'Venmo',
-        paymentStatus: 'confirmed',
-        sendConfirmation: true,
-        weekStart: new Date().toISOString().split('T')[0]
-      };
-
-      document.querySelectorAll('.child-section').forEach(function(child) {
-        orderData.children.push({
-          id: child.dataset.child,
-          firstName: child.querySelector('.child-first-name').value.trim(),
-          lastName: child.querySelector('.child-last-name').value.trim(),
-          grade: child.querySelector('.child-grade').value
-        });
-      });
-      
-      showNotification('Submitting order to cloud...', 'info');
-      
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
-        })
-        .then(function(response) {
-          if (!response.ok) {
-            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
-          }
-          return response.json();
-        })
-        .then(function(result) {
-          if (result.success) {
-            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-              saveToLocalStorage(orderData);
-            }
-            closePaymentModal();
-            showDetailedOrderConfirmation(orderData);
-            showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
-            resetForm();
-          } else {
-            throw new Error(result.error || 'Unknown error from Google Sheets');
-          }
-        })
-        .catch(function(error) {
-          handleSubmissionFailure(orderData, orderId, error.message);
-        });
-      } else {
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order ' + orderId + ' saved locally!', 'success');
-        resetForm();
-      }
-    }
-
-    function handleSubmissionFailure(orderData, orderId, errorMessage) {
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-      
-      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order saved locally (cloud sync failed)', 'warning');
-        resetForm();
-      } else {
-        showNotification('Error submitting order. Please try again.', 'error');
-      }
-    }
-
-    function saveToLocalStorage(orderData) {
-      try {
-        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
-        orders.push(orderData);
-        localStorage.setItem('cafeOrders', JSON.stringify(orders));
-      } catch (e) {
-        console.error('Error saving to localStorage:', e);
-      }
-    }
-
-    function resetForm() {
-      document.getElementById('family-email').value = '';
-      document.querySelectorAll('.child-first-name').forEach(function(input) { input.value = ''; });
-      document.querySelectorAll('.child-last-name').forEach(function(input) { input.value = ''; });
-      document.querySelectorAll('.child-grade').forEach(function(select) { select.value = ''; });
-      document.getElementById('promo-code').value = '';
-      
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(cb) {
-        cb.checked = false;
-      });
-      
-      discountType = 'none';
-      document.getElementById('promo-status').textContent = '';
-      document.getElementById('promo-status').className = 'promo-status';
-      
-      orderItems = [];
-      currentTotal = 0;
-      currentSubtotal = 0;
-      currentDiscount = 0;
-      updateCart();
-      validateForm();
-    }
-
-    function showNotification(message, type) {
-      const existingNotif = document.querySelector('.notification');
-      if (existingNotif) {
-        existingNotif.remove();
-      }
-      
-      let bgColor, textColor, borderColor, icon;
-      switch(type) {
-        case 'success':
-          bgColor = '#d4edda';
-          textColor = '#155724';
-          borderColor = '#c3e6cb';
-          icon = '✅ ';
-          break;
-        case 'error':
-          bgColor = '#f8d7da';
-          textColor = '#721c24';
-          borderColor = '#f5c6cb';
-          icon = '❌ ';
-          break;
-        case 'warning':
-          bgColor = '#fff3cd';
-          textColor = '#856404';
-          borderColor = '#ffeaa7';
-          icon = '⚠️ ';
-          break;
-        default:
-          bgColor = '#e3f2fd';
-          textColor = '#1976d2';
-          borderColor = '#bbdefb';
-          icon = 'ℹ️ ';
-      }
-      
-      const notif = document.createElement('div');
-      notif.className = 'notification';
-      notif.style.cssText = 'background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + ';';
-      notif.textContent = icon + message;
-      
-      document.body.appendChild(notif);
-      
-      setTimeout(function() {
-        if (notif.parentNode) {
-          notif.remove();
-        }
-      }, 5000);
-    }
-
-    window.removeChild = removeChild;
-  </script>
-</body>
-</html> + item.price.toFixed(2);
-            }
-            
-            itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price" data-item-id="' + item.id + '">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
+            itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
             
             categoryDiv.appendChild(itemDiv);
           });
@@ -3161,73 +1069,28 @@
         container.appendChild(dayMenu);
       });
       
-      console.log('Generated menus. Active day:', currentDay);
-      console.log('Active menu element:', document.querySelector('.menu-for-day.active'));
-      
       updateChildCheckboxes();
+      console.log('Generated menus for all days');
     }
 
-    function addChild() {
-      childCount++;
-      const container = document.getElementById('children-container');
+    function switchDay(day) {
+      console.log('Switching to day:', day);
       
-      const childDiv = document.createElement('div');
-      childDiv.className = 'child-section';
-      childDiv.dataset.child = childCount;
-      
-      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
-      
-      const removeBtn = childDiv.querySelector('.remove-child');
-      removeBtn.addEventListener('click', function() {
-        const childId = this.dataset.childId;
-        removeChild(parseInt(childId));
-      });
-      
-      container.appendChild(childDiv);
-      updateChildCheckboxes();
-      validateForm();
-      
-      saveUserDataToCookies(Math.random() < 0.5);
-    }
-
-    function removeChild(childId) {
-      const childSection = document.querySelector('[data-child="' + childId + '"]');
-      if (childSection && childCount > 1) {
-        orderItems = orderItems.filter(function(item) {
-          return item.childId !== childId.toString();
-        });
-        
-        childSection.remove();
-        renumberChildren();
-        updateChildCheckboxes();
-        updateCart();
-        
-        saveUserDataQuietly();
-      }
-    }
-
-    function renumberChildren() {
-      const childSections = document.querySelectorAll('.child-section');
-      childCount = childSections.length;
-      
-      childSections.forEach(function(section, index) {
-        const newChildId = index + 1;
-        section.dataset.child = newChildId;
-        section.querySelector('.child-icon').textContent = newChildId;
-        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
-        
-        const removeBtn = section.querySelector('.remove-child');
-        if (removeBtn) {
-          removeBtn.dataset.childId = newChildId;
-          
-          const newRemoveBtn = removeBtn.cloneNode(true);
-          newRemoveBtn.addEventListener('click', function() {
-            const childId = this.dataset.childId;
-            removeChild(parseInt(childId));
-          });
-          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
+      document.querySelectorAll('.day-tab').forEach(function(tab) {
+        tab.classList.remove('active');
+        if (tab.dataset.day === day) {
+          tab.classList.add('active');
         }
       });
+
+      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
+        menu.classList.remove('active');
+        if (menu.dataset.day === day) {
+          menu.classList.add('active');
+        }
+      });
+
+      currentDay = day;
     }
 
     function updateChildCheckboxes() {
@@ -3253,6 +1116,89 @@
           
           container.appendChild(checkboxContainer);
         });
+      });
+    }
+
+    function setupEventListeners() {
+      document.getElementById('add-child-btn').addEventListener('click', addChild);
+
+      document.addEventListener('change', function(e) {
+        if (e.target.type === 'checkbox' && e.target.dataset.item) {
+          setTimeout(function() {
+            updateCart();
+          }, 50);
+        }
+      });
+
+      document.getElementById('promo-code').addEventListener('input', function(e) {
+        validatePromoCode(e.target.value);
+      });
+
+      document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('child-first-name') || 
+            e.target.classList.contains('child-last-name')) {
+          updateChildCheckboxes();
+        }
+        validateForm();
+      });
+    }
+
+    function addChild() {
+      childCount++;
+      const container = document.getElementById('children-container');
+      
+      const childDiv = document.createElement('div');
+      childDiv.className = 'child-section';
+      childDiv.dataset.child = childCount;
+      
+      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
+      
+      const removeBtn = childDiv.querySelector('.remove-child');
+      removeBtn.addEventListener('click', function() {
+        const childId = this.dataset.childId;
+        removeChild(parseInt(childId));
+      });
+      
+      container.appendChild(childDiv);
+      updateChildCheckboxes();
+      validateForm();
+    }
+
+    function removeChild(childId) {
+      const childSection = document.querySelector('[data-child="' + childId + '"]');
+      if (childSection && childCount > 1) {
+        orderItems = orderItems.filter(function(item) {
+          return item.childId !== childId.toString();
+        });
+        
+        childSection.remove();
+        renumberChildren();
+        updateChildCheckboxes();
+        updateCart();
+      }
+    }
+
+    function renumberChildren() {
+      const childSections = document.querySelectorAll('.child-section');
+      childCount = childSections.length;
+      
+      childSections.forEach(function(section, index) {
+        const newChildId = index + 1;
+        section.dataset.child = newChildId;
+        section.querySelector('.child-icon').textContent = newChildId;
+        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
+        
+        const removeBtn = section.querySelector('.remove-child');
+        if (removeBtn) {
+          removeBtn.dataset.childId = newChildId;
+          
+          const newRemoveBtn = removeBtn.cloneNode(true);
+          newRemoveBtn.addEventListener('click', function() {
+            const childId = this.dataset.childId;
+            removeChild(parseInt(childId));
+          });
+          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
+        }
       });
     }
 
@@ -3510,296 +1456,6 @@
       return isValid;
     }
 
-    function openPaymentModal() {
-      if (!validateForm()) {
-        return;
-      }
-      
-      const modal = document.getElementById('payment-modal');
-      const modalTotal = document.getElementById('modal-total');
-      const venmoTotal = document.getElementById('venmo-total');
-      const venmoLink = document.getElementById('venmo-payment-link');
-      
-      if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
-        showNotification('Payment system error. Please refresh the page.', 'error');
-        return;
-      }
-      
-      modalTotal.textContent = currentTotal.toFixed(2);
-      venmoTotal.textContent = currentTotal.toFixed(2);
-      
-      let orderSummary = 'Artios Academies Cafe Lunch Order - $' + currentTotal.toFixed(2);
-      const children = orderItems.map(function(item) { return item.childName; }).filter(function(value, index, self) { return self.indexOf(value) === index; });
-      if (children.length <= 2) {
-        orderSummary += ' for ' + children.join(' & ');
-      } else {
-        orderSummary += ' for ' + children.length + ' children';
-      }
-      
-      const venmoUrl = 'venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
-      const venmoWebUrl = 'https://venmo.com/ChanTa-Rivers?txn=pay&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
-      
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        venmoLink.href = venmoUrl;
-      } else {
-        venmoLink.href = venmoWebUrl;
-        venmoLink.target = '_blank';
-        
-        const paymentDetails = 'Pay @ChanTa-Rivers $' + currentTotal.toFixed(2) + ' for: ' + orderSummary;
-        
-        venmoLink.onclick = function(e) {
-          e.preventDefault();
-          window.open(venmoWebUrl, '_blank');
-          
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(paymentDetails).then(function() {
-              showNotification('Payment details copied to clipboard!', 'success');
-            }).catch(function() {
-              alert('Please send payment to:\n\n' + paymentDetails);
-            });
-          } else {
-            alert('Please send payment to:\n\n' + paymentDetails);
-          }
-        };
-      }
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-      
-      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (focusableElements.length > 0) {
-        focusableElements[0].focus();
-      }
-    }
-
-    function closePaymentModal() {
-      const modal = document.getElementById('payment-modal');
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-      
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-    }
-
-    function showDetailedOrderConfirmation(order) {
-      const modal = document.getElementById('confirmation-modal');
-      
-      document.getElementById('conf-order-id').textContent = order.orderId;
-      document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
-      document.getElementById('conf-email').textContent = order.email;
-      document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
-      
-      const childrenListDiv = document.getElementById('conf-children-list');
-      let childrenHtml = '<ul>';
-      if (order.children && order.children.length > 0) {
-        order.children.forEach(function(child) {
-          childrenHtml += '<li><strong>' + child.firstName + ' ' + child.lastName + '</strong> (' + child.grade + ')</li>';
-        });
-      }
-      childrenHtml += '</ul>';
-      childrenListDiv.innerHTML = childrenHtml;
-      
-      const itemsListDiv = document.getElementById('conf-items-list');
-      const itemsByDay = {};
-      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-      
-      order.items.forEach(function(item) {
-        if (!itemsByDay[item.day]) {
-          itemsByDay[item.day] = [];
-        }
-        itemsByDay[item.day].push(item);
-      });
-      
-      const sortedDays = Object.keys(itemsByDay).sort(function(a, b) {
-        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
-      });
-      
-      let itemsHtml = '';
-      sortedDays.forEach(function(day) {
-        itemsHtml += '<div class="confirmation-day">' + day + ':</div>';
-        itemsByDay[day].forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
-          if (item.category === 'drinks' && item.isDiscounted) {
-            if (item.price === 0) {
-              priceDisplay = 'FREE 🎉';
-            } else {
-              priceDisplay = '$' + item.price.toFixed(2) + ' 💰';
-            }
-          }
-          
-          itemsHtml += '<div class="confirmation-item"><span>• ' + item.name + ' - ' + (item.childName || 'Student') + '</span><span><strong>' + priceDisplay + '</strong></span></div>';
-        });
-      });
-      itemsListDiv.innerHTML = itemsHtml;
-      
-      let totalHtml = 'Total: $' + order.total.toFixed(2);
-      if (order.discount && order.discount > 0) {
-        let discountLabel = 'Discount';
-        if (order.promoCode === 'STAFF2025') {
-          discountLabel = 'Staff Discount (10%)';
-        } else if (order.promoCode === 'JOHN') {
-          discountLabel = 'JOHN Discount (50%)';
-        }
-        
-        totalHtml = 'Subtotal: $' + order.subtotal.toFixed(2) + '<br>' + discountLabel + ': -$' + order.discount.toFixed(2) + '<br><strong>Total: $' + order.total.toFixed(2) + '</strong>';
-      }
-      document.getElementById('conf-total').innerHTML = totalHtml;
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-    }
-
-    function closeConfirmationModal() {
-      const modal = document.getElementById('confirmation-modal');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-    }
-
-    function submitOrder() {
-      const now = new Date();
-      const familyEmail = document.getElementById('family-email').value.trim();
-      const firstChild = document.querySelector('.child-section');
-      const lastName = firstChild ? firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 'FAMILY';
-      
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hour = String(now.getHours()).padStart(2, '0');
-      const minute = String(now.getMinutes()).padStart(2, '0');
-      
-      const orderId = lastName + '-' + month + day + '-' + hour + minute;
-      
-      const orderData = {
-        orderId: orderId,
-        timestamp: new Date().toISOString(),
-        email: familyEmail,
-        children: [],
-        items: orderItems,
-        subtotal: currentSubtotal,
-        discount: currentDiscount,
-        total: currentTotal,
-        promoCode: discountType === 'staff' ? 'STAFF2025' : (discountType === 'john' ? 'JOHN' : ''),
-        paymentMethod: 'Venmo',
-        paymentStatus: 'confirmed',
-        sendConfirmation: true,
-        weekStart: new Date().toISOString().split('T')[0]
-      };
-
-      document.querySelectorAll('.child-section').forEach(function(child) {
-        orderData.children.push({
-          id: child.dataset.child,
-          firstName: child.querySelector('.child-first-name').value.trim(),
-          lastName: child.querySelector('.child-last-name').value.trim(),
-          grade: child.querySelector('.child-grade').value
-        });
-      });
-      
-      showNotification('Submitting order to cloud...', 'info');
-      
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
-        })
-        .then(function(response) {
-          if (!response.ok) {
-            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
-          }
-          return response.json();
-        })
-        .then(function(result) {
-          if (result.success) {
-            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-              saveToLocalStorage(orderData);
-            }
-            closePaymentModal();
-            showDetailedOrderConfirmation(orderData);
-            showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
-            resetForm();
-          } else {
-            throw new Error(result.error || 'Unknown error from Google Sheets');
-          }
-        })
-        .catch(function(error) {
-          handleSubmissionFailure(orderData, orderId, error.message);
-        });
-      } else {
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order ' + orderId + ' saved locally!', 'success');
-        resetForm();
-      }
-    }
-
-    function handleSubmissionFailure(orderData, orderId, errorMessage) {
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-      
-      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order saved locally (cloud sync failed)', 'warning');
-        resetForm();
-      } else {
-        showNotification('Error submitting order. Please try again.', 'error');
-      }
-    }
-
-    function saveToLocalStorage(orderData) {
-      try {
-        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
-        orders.push(orderData);
-        localStorage.setItem('cafeOrders', JSON.stringify(orders));
-      } catch (e) {
-        console.error('Error saving to localStorage:', e);
-      }
-    }
-
-    function resetForm() {
-      document.getElementById('family-email').value = '';
-      document.querySelectorAll('.child-first-name').forEach(function(input) { input.value = ''; });
-      document.querySelectorAll('.child-last-name').forEach(function(input) { input.value = ''; });
-      document.querySelectorAll('.child-grade').forEach(function(select) { select.value = ''; });
-      document.getElementById('promo-code').value = '';
-      
-      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(cb) {
-        cb.checked = false;
-      });
-      
-      discountType = 'none';
-      document.getElementById('promo-status').textContent = '';
-      document.getElementById('promo-status').className = 'promo-status';
-      
-      orderItems = [];
-      currentTotal = 0;
-      currentSubtotal = 0;
-      currentDiscount = 0;
-      updateCart();
-      validateForm();
-    }
-
     function showNotification(message, type) {
       const existingNotif = document.querySelector('.notification');
       if (existingNotif) {
@@ -3846,8 +1502,6 @@
         }
       }, 5000);
     }
-
-    window.removeChild = removeChild;
   </script>
 </body>
 </html>
