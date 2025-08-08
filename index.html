@@ -266,6 +266,8 @@
       font-size: 1.3em;
     }
 
+
+
     .day-tabs {
       display: flex;
       margin-bottom: 20px;
@@ -345,20 +347,54 @@
 
     .menu-category {
       margin-bottom: 30px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    .menu-category h4 {
+    .menu-category.collapsed .menu-items {
+      display: none;
+    }
+
+    .menu-category-header {
+      background: linear-gradient(135deg, rgba(52, 168, 83, 0.15) 0%, rgba(52, 168, 83, 0.05) 100%);
+      border-left: 4px solid #34a853;
+      padding: 15px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .menu-category-header:hover {
+      background: linear-gradient(135deg, rgba(52, 168, 83, 0.25) 0%, rgba(52, 168, 83, 0.15) 100%);
+    }
+
+    .menu-category-header h4 {
       color: #34a853;
-      margin-bottom: 15px;
       font-size: 1.3em;
       font-weight: 700;
-      padding: 15px;
-      background: linear-gradient(135deg, rgba(52, 168, 83, 0.15) 0%, rgba(52, 168, 83, 0.05) 100%);
-      border-radius: 8px;
-      border-left: 4px solid #34a853;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-align: center;
+      margin: 0;
+    }
+
+    .collapse-icon {
+      color: #34a853;
+      font-size: 1.2em;
+      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-category.collapsed .collapse-icon {
+      transform: rotate(-90deg);
+    }
+
+    .menu-items {
+      padding: 20px;
+      background: white;
     }
 
     .drink-discount-notice {
@@ -460,24 +496,6 @@
       gap: 8px;
     }
 
-    .history-btn {
-      width: 100%;
-      background: white;
-      color: #4285f4;
-      border: 2px solid #4285f4;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .history-btn:hover {
-      background: #4285f4;
-      color: white;
-    }
-
     .cart-items {
       max-height: 400px;
       overflow-y: auto;
@@ -512,16 +530,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
 
     .cart-item:last-child {
       border-radius: 0 0 6px 6px;
     }
 
+    .cart-item-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
     .cart-item-name {
       font-weight: 500;
       color: #333;
-      flex: 1;
     }
 
     .cart-item-price {
@@ -529,24 +554,43 @@
       color: #34a853;
     }
 
+    .discount-line {
+      font-size: 0.85em;
+      color: #ff9800;
+      font-weight: 600;
+    }
+
+    .remove-item-btn {
+      background: #ff5722;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      margin-left: 10px;
+      flex-shrink: 0;
+    }
+
+    .remove-item-btn:hover {
+      background: #d32f2f;
+      transform: scale(1.1);
+    }
+
     .cart-item.free-item {
       background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%);
       border-left: 4px solid #4caf50;
     }
 
-    .cart-item.free-item .cart-item-price {
-      color: #4caf50;
-      font-weight: 800;
-    }
-
     .cart-item.discounted-item {
       background: linear-gradient(90deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
       border-left: 4px solid #ff9800;
-    }
-
-    .cart-item.discounted-item .cart-item-price {
-      color: #ff9800;
-      font-weight: 800;
     }
 
     .cart-total {
@@ -946,8 +990,6 @@
       to { opacity: 0; }
     }
 
-
-
     /* Copy confirmation animation */
     .copy-success {
       background: #4caf50 !important;
@@ -1019,6 +1061,23 @@
         right: auto;
         display: inline-block;
         margin: 5px;
+      }
+    }
+
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .cart-item-content {
+        width: 100%;
+      }
+
+      .remove-item-btn {
+        align-self: flex-end;
+        margin-left: 0;
+        margin-top: 5px;
       }
     }
   </style>
@@ -1362,6 +1421,32 @@
     }
 
     // ============================================
+    // MENU FILTERING AND COLLAPSING
+    // ============================================
+    function setupCategoryToggle(categoryDiv, categoryId) {
+      const header = categoryDiv.querySelector('.menu-category-header');
+      header.addEventListener('click', function() {
+        categoryDiv.classList.toggle('collapsed');
+      });
+    }
+
+    // ============================================
+    // CART ITEM REMOVAL
+    // ============================================
+    function removeItemFromCart(itemId, childId, day) {
+      // Find and uncheck the corresponding checkbox
+      const checkbox = document.querySelector(
+        `input[type="checkbox"][data-item="${itemId}"][data-child-id="${childId}"][data-day="${day}"]`
+      );
+      
+      if (checkbox) {
+        checkbox.checked = false;
+        updateCart();
+        showNotification(`Removed item from order`, 'info');
+      }
+    }
+
+    // ============================================
     // COPY FUNCTIONALITY
     // ============================================
     function copyCurrentDayToRemainingDays() {
@@ -1548,19 +1633,29 @@
         Object.keys(menuData).forEach(function(category) {
           const categoryDiv = document.createElement('div');
           categoryDiv.className = 'menu-category';
+          categoryDiv.dataset.category = category;
           
           let categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
           if (category === 'drinks') {
             categoryTitle = 'Drinks';
           }
           
-          categoryDiv.innerHTML = '<h4>' + categoryTitle + '</h4>';
+          // Create collapsible header
+          const headerDiv = document.createElement('div');
+          headerDiv.className = 'menu-category-header';
+          headerDiv.innerHTML = `
+            <h4>${categoryTitle}</h4>
+            <span class="collapse-icon">▼</span>
+          `;
+          
+          const itemsDiv = document.createElement('div');
+          itemsDiv.className = 'menu-items';
           
           if (category === 'drinks') {
             const discountNotice = document.createElement('div');
             discountNotice.className = 'drink-discount-notice';
             discountNotice.innerHTML = '<div style="background: #e8f5e8; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #34a853;"><strong>💡 Combo Meal Drink Discount!</strong><br>Order an <strong>Entree or Salad + Side</strong> to get drink discounts applied in your cart!<br>• Regular Drink = <strong>FREE!</strong><br>• Premium Drink = <strong>$1.50</strong> (save $1.50!)<br></div>';
-            categoryDiv.appendChild(discountNotice);
+            itemsDiv.appendChild(discountNotice);
           }
           
           menuData[category].forEach(function(item) {
@@ -1576,8 +1671,14 @@
             
             itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price" data-item-id="' + item.id + '">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
             
-            categoryDiv.appendChild(itemDiv);
+            itemsDiv.appendChild(itemDiv);
           });
+          
+          categoryDiv.appendChild(headerDiv);
+          categoryDiv.appendChild(itemsDiv);
+          
+          // Setup collapse functionality
+          setupCategoryToggle(categoryDiv, category);
           
           dayMenu.appendChild(categoryDiv);
         });
@@ -2001,6 +2102,7 @@
         if (item) {
           let finalPrice = item.price || item.basePrice;
           let isDiscounted = false;
+          let discountAmount = 0;
           
           if (category === 'drinks') {
             const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
@@ -2012,9 +2114,11 @@
             
             if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
               if (item.category === 'regular') {
+                discountAmount = item.basePrice;
                 finalPrice = 0;
                 isDiscounted = true;
               } else if (item.category === 'premium') {
+                discountAmount = item.basePrice - 1.50;
                 finalPrice = 1.50;
                 isDiscounted = true;
               }
@@ -2025,6 +2129,7 @@
           }
           
           const orderItem = {
+            itemId: itemId,  // Add itemId to the order item
             childId: childId,
             childName: childFirstName + ' ' + childLastName,
             firstName: childFirstName,
@@ -2035,7 +2140,8 @@
             originalPrice: item.price || item.basePrice,
             day: day.charAt(0).toUpperCase() + day.slice(1),
             category: category,
-            isDiscounted: isDiscounted
+            isDiscounted: isDiscounted,
+            discountAmount: discountAmount
           };
           
           orderItems.push(orderItem);
@@ -2109,20 +2215,32 @@
         html += '<div class="child-cart-header">' + child.name + '</div>';
         
         child.items.forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
           let extraClass = '';
+          let priceDisplay = '$' + item.price.toFixed(2);
+          let discountDisplay = '';
           
           if (item.category === 'drinks' && item.isDiscounted) {
             if (item.price === 0) {
-              priceDisplay = 'FREE';
               extraClass = 'free-item';
+              priceDisplay = 'FREE';
+              discountDisplay = '<div class="discount-line">Was $' + item.originalPrice.toFixed(2) + ' - Combo discount -$' + item.discountAmount.toFixed(2) + '</div>';
             } else {
-              priceDisplay = '$' + item.price.toFixed(2);
               extraClass = 'discounted-item';
+              priceDisplay = '$' + item.price.toFixed(2);
+              discountDisplay = '<div class="discount-line">Was $' + item.originalPrice.toFixed(2) + ' - Combo discount -$' + item.discountAmount.toFixed(2) + '</div>';
             }
           }
           
-          html += '<div class="cart-item ' + extraClass + '"><div class="cart-item-name">' + item.name + ' (' + item.day + ')</div><div class="cart-item-price">' + priceDisplay + '</div></div>';
+          html += '<div class="cart-item ' + extraClass + '">';
+          html += '<div class="cart-item-content">';
+          html += '<div class="cart-item-name">' + item.name + ' (' + item.day + ')</div>';
+          html += discountDisplay;
+          html += '<div class="cart-item-price">' + priceDisplay + '</div>';
+          html += '</div>';
+          html += '<button class="remove-item-btn" onclick="removeItemFromCart(\'' + 
+                 item.itemId + '\', \'' + item.childId + '\', \'' + 
+                 item.day.toLowerCase() + '\')" title="Remove this item">✕</button>';
+          html += '</div>';
         });
         html += '</div>';
       });
@@ -2534,6 +2652,8 @@
       }, 5000);
     }
 
+    // Make removeItemFromCart available globally
+    window.removeItemFromCart = removeItemFromCart;
     window.removeChild = removeChild;
   </script>
 </body>
