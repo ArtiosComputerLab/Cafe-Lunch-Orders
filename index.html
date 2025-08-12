@@ -266,8 +266,6 @@
       font-size: 1.3em;
     }
 
-
-
     .day-tabs {
       display: flex;
       margin-bottom: 20px;
@@ -275,34 +273,6 @@
       overflow-x: auto;
       align-items: center;
       flex-wrap: wrap;
-    }
-
-    .copy-days-btn {
-      background: #ff9800;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      margin-left: 15px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .copy-days-btn:hover:not(:disabled) {
-      background: #f57c00;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
-    }
-
-    .copy-days-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
     }
 
     .day-tab {
@@ -990,12 +960,6 @@
       to { opacity: 0; }
     }
 
-    /* Copy confirmation animation */
-    .copy-success {
-      background: #4caf50 !important;
-      transform: scale(1.1);
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
       .main-content {
@@ -1355,18 +1319,17 @@
     };
 
     // ============================================
-    // ENHANCED STORE HOURS WITH FRIDAY LOGIC
+    // STORE HOURS LOGIC
     // ============================================
     function checkStoreHours() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-      const dayOfWeek = now.getDay(); // 0 = Sunday, 5 = Friday
+      const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, 5 = Friday, 6 = Saturday
       const storeStatus = document.getElementById('store-status');
       
-      const isTestingMode = window.location.hostname === 'artioscomputerlab.github.io' || 
-                           window.location.search.includes('debug=true') ||
-                           window.location.hostname === 'localhost';
+      // Check if it's a weekday (Monday = 1, Friday = 5)
+      const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
       
       // Check if it's 8:15 AM or later (closing time with grace period)
       const isPastCutoff = (hours > 8) || (hours === 8 && minutes >= 15);
@@ -1374,8 +1337,8 @@
       // Check if it's Friday after noon (next week opens)
       const isFridayAfterNoon = (dayOfWeek === 5 && hours >= 12);
       
-      // Store closure logic
-      if (!isTestingMode && isPastCutoff && hours < 13 && !isFridayAfterNoon) {
+      // Store closure logic: Close between 8:15 AM - 1:00 PM on weekdays ONLY
+      if (isWeekday && isPastCutoff && hours < 13 && !isFridayAfterNoon) {
         storeIsOpen = false;
         storeStatus.textContent = '🔒 Store Closed (8:00 AM - 1:00 PM)';
         storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
@@ -1396,9 +1359,10 @@
         isNextWeek = false;
       }
       
-      // Normal store open
+      // Store is open (including all weekend hours)
       storeIsOpen = true;
-      storeStatus.textContent = isTestingMode ? '🧪 Testing Mode - Store Open' : '✅ Store Open - Orders Accepted';
+      const statusText = isWeekday ? '✅ Store Open - Orders Accepted' : '✅ Weekend Ordering Open';
+      storeStatus.textContent = statusText;
       storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
     }
 
@@ -1447,93 +1411,6 @@
     }
 
     // ============================================
-    // COPY FUNCTIONALITY
-    // ============================================
-    function copyCurrentDayToRemainingDays() {
-      console.log(`Copying ${currentDay} selections to remaining days...`);
-      
-      // Get all checkboxes for current day that are checked
-      const currentDayCheckboxes = document.querySelectorAll(`input[type="checkbox"][data-day="${currentDay}"]:checked`);
-      
-      if (currentDayCheckboxes.length === 0) {
-        const dayName = dayNames[days.indexOf(currentDay)];
-        showNotification(`No ${dayName} selections to copy!`, 'warning');
-        return;
-      }
-      
-      let copiedCount = 0;
-      const currentDayIndex = days.indexOf(currentDay);
-      const remainingDays = days.slice(currentDayIndex + 1); // Get days after current day
-      
-      if (remainingDays.length === 0) {
-        showNotification('No remaining days to copy to!', 'warning');
-        return;
-      }
-      
-      // Copy to remaining days
-      remainingDays.forEach(targetDay => {
-        currentDayCheckboxes.forEach(currentCheckbox => {
-          const itemId = currentCheckbox.dataset.item;
-          const childId = currentCheckbox.dataset.childId;
-          
-          // Find the corresponding checkbox for this day
-          const targetCheckbox = document.querySelector(
-            `input[type="checkbox"][data-day="${targetDay}"][data-item="${itemId}"][data-child-id="${childId}"]`
-          );
-          
-          if (targetCheckbox && !targetCheckbox.checked) {
-            targetCheckbox.checked = true;
-            copiedCount++;
-          }
-        });
-      });
-      
-      // Update the cart
-      setTimeout(() => {
-        updateCart();
-      }, 100);
-      
-      // Show success message
-      if (copiedCount > 0) {
-        const dayName = dayNames[days.indexOf(currentDay)];
-        const remainingDayNames = remainingDays.map(day => dayNames[days.indexOf(day)]).join(', ');
-        showNotification(`✅ Copied ${currentDayCheckboxes.length} ${dayName} selections to ${remainingDayNames} (${copiedCount} items added)`, 'success');
-        
-        // Animate the copy button
-        const copyBtn = document.querySelector('.copy-days-btn');
-        if (copyBtn) {
-          copyBtn.classList.add('copy-success');
-          setTimeout(() => {
-            copyBtn.classList.remove('copy-success');
-          }, 1000);
-        }
-      } else {
-        showNotification('All selections were already copied to remaining days', 'info');
-      }
-    }
-
-    function updateCopyButton() {
-      const copyBtn = document.querySelector('.copy-days-btn');
-      if (!copyBtn) return;
-      
-      const currentDayIndex = days.indexOf(currentDay);
-      const dayName = dayNames[currentDayIndex];
-      const remainingDays = days.slice(currentDayIndex + 1);
-      
-      if (remainingDays.length === 0) {
-        copyBtn.textContent = 'No Days to Copy To';
-        copyBtn.disabled = true;
-        copyBtn.title = 'Already on the last day of the week';
-      } else {
-        const remainingDayNames = remainingDays.map(day => dayNames[days.indexOf(day)]);
-        const targetText = remainingDayNames.length === 1 ? remainingDayNames[0] : 'Rest of Week';
-        copyBtn.textContent = `Copy ${dayName} → ${targetText}`;
-        copyBtn.disabled = false;
-        copyBtn.title = `Copy all ${dayName} selections to ${remainingDayNames.join(', ')}`;
-      }
-    }
-
-    // ============================================
     // INITIALIZATION
     // ============================================
     document.addEventListener('DOMContentLoaded', function() {
@@ -1577,7 +1454,7 @@
         const isToday = dateOnly.getTime() === todayOnly.getTime();
         const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
         
-        // For current week, check 8:15 AM cutoff
+        // For current week, check 8:15 AM cutoff for all days
         const isPast = !isNextWeek && (isBeforeToday || (isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15))));
 
         const tab = document.createElement('div');
@@ -1599,13 +1476,6 @@
         tabsContainer.appendChild(tab);
       });
 
-      // Add copy button
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'copy-days-btn';
-      copyBtn.addEventListener('click', copyCurrentDayToRemainingDays);
-      
-      tabsContainer.appendChild(copyBtn);
-
       const dayToActivate = firstAvailableDay || 'monday';
       currentDay = dayToActivate;
       
@@ -1613,9 +1483,6 @@
       if (tabToActivate) {
         tabToActivate.classList.add('active');
       }
-
-      // Update copy button text
-      updateCopyButton();
     }
 
     function generateMenus() {
@@ -1705,7 +1572,6 @@
       });
 
       currentDay = day;
-      updateCopyButton(); // Update copy button text when day changes
     }
 
     function setupEventListeners() {
