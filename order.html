@@ -1048,19 +1048,24 @@
     // ============================================
     // ORDER SYSTEM INITIALIZATION
     // ============================================
-    function initializeOrderSystem() {
-      console.log('Initializing order system...');
-      
-      checkStoreHours();
-      addChild(); // Add first child BEFORE generating menus
-      generateDayTabs();
-      generateMenus();
-      setupEventListeners();
-      updateCart();
-      validateForm();
-      
-      console.log('Order system initialization complete');
-    }
+ function initializeOrderSystem() {
+  console.log('Initializing order system...');
+  
+  checkStoreHours();
+  generateDayTabs();
+  generateMenus();
+  setupEventListeners();
+  
+  // Add first child AFTER the DOM elements are ready
+  if (document.getElementById('children-container')) {
+    addChild();
+  }
+  
+  updateCart();
+  validateForm();
+  
+  console.log('Order system initialization complete');
+}
 
     function checkStoreHours() {
       const now = new Date();
