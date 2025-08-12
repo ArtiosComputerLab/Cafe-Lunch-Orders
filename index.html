@@ -1188,6 +1188,26 @@
         margin: 20px 10px;
       }
     }
+  
+    /* Item images */
+    .item-media {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+    .item-img {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      background: #fff;
+    }
+    @media (max-width: 768px) {
+      .item-media { justify-content: center; }
+    }
+
   </style>
 </head>
 <body>
@@ -1500,6 +1520,61 @@
       ]
     };
 
+    
+    // ============================================
+    // IMAGE RESOLVER FOR MENU ITEMS
+    // ============================================
+    const IMAGE_BASE = 'assets/';
+    // Map item IDs to actual asset filenames (without extension required)
+    const imageMap = {
+      'chicken-sandwich': 'chickensandwich',
+      'spicy-chicken': 'spicysandwich',
+      'nuggets-8': 'nuggets',
+      'grilled-nuggets': 'grillednuggets',
+      'grilled-sandwich': 'grilledsandwich',
+      'grilled-gf': 'grilledsandwich', // placeholder
+      'chicken-wrap': 'chickenwrap',
+      'veggie-wrap': 'veggiewrap',
+      'chicken-strips': 'chickenstrips',
+      'cobb-salad': 'cobbsalad',
+      'southwest-salad': 'southwestsalad',
+      'market-salad': 'marketsalad',
+      'fries-only': 'fries',
+      'fruit-only': 'fruitcup',
+      'mac-only': 'MacnCheese_5oz_pdp',
+      'salad-only': 'sidesalad',
+      'parfait-only': 'berryparfaitcookiecrumble',
+      'chips-only': 'chips'
+    };
+
+    function buildImageCandidates(itemId) {
+      const base = imageMap[itemId] || itemId;
+      const bases = [base];
+      if (base.endsWith('-only')) bases.push(base.replace(/-only$/, ''));
+      const candidates = [];
+      for (const b of bases) {
+        candidates.push(`${b}.webp`, `${b}.png`, `${b}.jpg`, `${b}.jpeg`, `${b}.avif`);
+      }
+      return candidates.map(c => IMAGE_BASE + c);
+    }
+
+    function createSmartImage(itemId, altText) {
+      const img = document.createElement('img');
+      img.className = 'item-img';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = altText || '';
+      const candidates = buildImageCandidates(itemId);
+      let i = 0;
+      function tryNext() {
+        if (i >= candidates.length) { img.style.display = 'none'; return; }
+        img.src = candidates[i++];
+      }
+      img.addEventListener('error', tryNext);
+      tryNext();
+      return img;
+    }
+
     // ============================================
     // NEW: ORDER MANAGEMENT FUNCTIONS
     // ============================================
@@ -1771,7 +1846,12 @@
               priceDisplay = '$' + item.price.toFixed(2);
             }
             
-            itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price" data-item-id="' + item.id + '">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
+            itemDiv.innerHTML = `<div class="item-header">  <div class="item-name">${item.name}</div>  <div class="item-price" data-item-id="${item.id}">${priceDisplay}</div></div><div class="item-media"></div><div class="item-desc">${item.desc}</div><div class="child-checkboxes" id="${item.id}-${day}-checkboxes"></div>`;
+            if (category !== 'drinks') {
+              const media = itemDiv.querySelector('.item-media');
+              media.appendChild(createSmartImage(item.id, item.name));
+            }
+
             
             itemsDiv.appendChild(itemDiv);
           });
