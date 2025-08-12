@@ -1484,7 +1484,7 @@
     const GOOGLE_SHEETS_CONFIG = {
       webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
       useGoogleSheets: true,
-      fallbackToLocalStorage: true
+      fallbackToLocalStorage: false  // Disable fallback to force cloud sync
     };
 
     // ============================================
@@ -1504,37 +1504,7 @@
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
     const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-    // ============================================
-    // MENU DATA WITH IMAGES
-    // ============================================
-    const menuData = {
-      entrees: [
-        { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken', image: 'assets/chickensandwich.png' },
-        { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning', image: 'assets/spicysandwich.png' },
-        { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces', image: 'assets/nuggets.png' },
-        { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces', image: 'assets/grilllednuggets.png' },
-        { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich', image: 'assets/grilledsandwich.png' },
-        { id: 'grilled-gf', name: 'Grilled Sandwich (GF Bun)', price: 9.50, desc: 'Grilled chicken with gluten-free bun', image: 'assets/grilledsandwich.png' },
-        { id: 'chicken-wrap', name: 'Chicken Wrap', price: 9.75, desc: 'Grilled chicken in tortilla wrap', image: 'assets/chickenwrap.png' },
-        { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Vegetarian wrap with southwest flavors', image: 'assets/veggiewrap.png' },
-        { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips', image: 'assets/chickenstrips.png' }
-      ],
-      salads: [
-        { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more', image: 'assets/cobbsalad.png' },
-        { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers', image: 'assets/southwestsalad.png' },
-        { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Mixed greens with chicken and seasonal toppings', image: 'assets/marketsalad.png' }
-      ],
-      sides: [
-        { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries', image: 'assets/fries.png' },
-        { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit', image: 'assets/fruitcup.png' },
-        { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese', image: 'assets/MacnCheese_5oz_pdp.png' },
-        { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings', image: 'assets/sidesalad.png' },
-        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream', image: 'assets/berryparfaitcookiecrumble.png' },
-        { id: 'chips-only', name: 'Chips', price: 1.50, desc: 'Variety of chips (provided by Artios)', image: 'assets/chips.jpg' }
-      ],
-      drinks: [
-        { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
-        { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
+d: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
       ]
     };
 
@@ -2668,44 +2638,68 @@
         });
       });
       
+      console.log('Submitting order data:', orderData);
+      console.log('Using URL:', GOOGLE_SHEETS_CONFIG.webAppUrl);
+      
       showNotification('Submitting order to cloud...', 'info');
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
-        })
-        .then(function(response) {
-          if (!response.ok) {
-            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
-          }
-          return response.json();
-        })
-        .then(function(result) {
-          if (result.success) {
-            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-              saveToLocalStorage(orderData);
+        // Test the connection first
+        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl + '?test=true')
+          .then(function(response) {
+            console.log('Test response status:', response.status);
+            if (!response.ok) {
+              throw new Error('Apps Script not responding: ' + response.status);
             }
-            closePaymentModal();
-            showDetailedOrderConfirmation(orderData);
-            showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
-            resetForm();
-          } else {
-            throw new Error(result.error || 'Unknown error from Google Sheets');
-          }
-        })
-        .catch(function(error) {
-          handleSubmissionFailure(orderData, orderId, error.message);
-        });
+            return response.json();
+          })
+          .then(function(testResult) {
+            console.log('Test result:', testResult);
+            
+            // Now submit the actual order
+            return fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
+            });
+          })
+          .then(function(response) {
+            console.log('Order submission response status:', response.status);
+            if (!response.ok) {
+              throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(function(result) {
+            console.log('Order submission result:', result);
+            if (result.success) {
+              closePaymentModal();
+              showDetailedOrderConfirmation(orderData);
+              showNotification('Order ' + orderId + ' submitted successfully!', 'success');
+              resetForm();
+            } else {
+              throw new Error(result.error || 'Unknown error from Google Sheets');
+            }
+          })
+          .catch(function(error) {
+            console.error('Google Sheets submission failed:', error);
+            showNotification('Failed to submit to Google Sheets: ' + error.message, 'error');
+            
+            const confirmBtn = document.getElementById('confirm-payment-btn');
+            if (confirmBtn) {
+              confirmBtn.disabled = false;
+              confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+            }
+          });
       } else {
-        saveToLocalStorage(orderData);
-        closePaymentModal();
-        showDetailedOrderConfirmation(orderData);
-        showNotification('Order ' + orderId + ' saved locally!', 'success');
-        resetForm();
+        showNotification('Google Sheets not configured', 'error');
+        const confirmBtn = document.getElementById('confirm-payment-btn');
+        if (confirmBtn) {
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+        }
       }
     }
 
