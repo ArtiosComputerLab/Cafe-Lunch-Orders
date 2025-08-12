@@ -256,12 +256,12 @@
 <body>
   <div class="admin-container">
     <div class="admin-header">
-      <h1 class="admin-title">📊 Artios Academies Admin Portal</h1>
-      <p class="admin-subtitle">Financial Reports & Analysis</p>
+      <h1 class="admin-title">Artios Academies Admin Portal</h1>
+      <p class="admin-subtitle">Financial Reports &amp; Analysis</p>
     </div>
 
     <div class="info-box">
-      <h3>📈 Comprehensive Financial Report</h3>
+      <h3>Financial Report</h3>
       <p>Generate detailed financial analysis including revenue, orders, popular items, families, and discounts for any date range</p>
     </div>
 
@@ -285,7 +285,7 @@
 
       <!-- Admin Recipients Section -->
       <div class="email-recipients">
-        <h4>👨‍💼 Report Recipients</h4>
+        <h4>Report Recipients</h4>
         <div class="email-checkbox-group">
           <div class="email-checkbox checked" id="admin-checkbox">
             <input type="checkbox" id="email-admin" checked>
@@ -305,7 +305,7 @@
       </div>
 
       <button type="submit" class="generate-btn" id="generate-btn">
-        📊 Generate Financial Report
+        Generate Financial Report
       </button>
 
       <div class="status-message" id="status-message"></div>
@@ -377,9 +377,9 @@
           const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
           
           if (daysDiff === 1) {
-            preview.textContent = `📊 Single day report: ${startStr}`;
+            preview.textContent = `Single day report: ${startStr}`;
           } else {
-            preview.textContent = `📊 ${daysDiff} days: ${startStr} to ${endStr}`;
+            preview.textContent = `${daysDiff} days: ${startStr} to ${endStr}`;
           }
           
           preview.style.background = 'linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%)';
@@ -437,7 +437,7 @@
       }
 
       generateBtn.disabled = true;
-      generateBtn.textContent = '⏳ Generating Report...';
+      generateBtn.textContent = 'Generating Report...';
       
       const daysDiff = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
       const reportDescription = `financial report for ${daysDiff} day${daysDiff > 1 ? 's' : ''} (${startDate} to ${endDate})`;
@@ -458,11 +458,11 @@
           console.log('Report response:', data);
           
           if (data.success) {
-            let message = `✅ Financial Report Generated Successfully!\n\n`;
-            message += `📈 Date Range: ${startDate} to ${endDate}\n`;
-            message += `💰 Total Revenue: $${(data.totalRevenue || 0).toFixed(2)}\n`;
-            message += `📊 Total Orders: ${data.totalOrders || 0}\n`;
-            message += `📧 Detailed report sent to:\n`;
+            let message = `Financial Report Generated Successfully!\n\n`;
+            message += `Date Range: ${startDate} to ${endDate}\n`;
+            message += `Total Revenue: ${(data.totalRevenue || 0).toFixed(2)}\n`;
+            message += `Total Orders: ${data.totalOrders || 0}\n`;
+            message += `Detailed report sent to:\n`;
             
             adminRecipients.forEach(email => {
               if (email === 'jedaws@gmail.com') message += `  • Jeremiah Daws (${email})\n`;
@@ -485,7 +485,7 @@
         })
         .finally(() => {
           generateBtn.disabled = false;
-          generateBtn.textContent = '📊 Generate Financial Report';
+          generateBtn.textContent = 'Generate Financial Report';
         });
     }
 
