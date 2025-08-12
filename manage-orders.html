@@ -598,12 +598,61 @@
       // Calculate stats
       const activeItems = order.items.filter(item => item.status === 'active').length;
       const cancelledItems = order.items.filter(item => item.status === 'cancelled').length;
-      const orderDate = new Date(order.timestamp).toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
+      
+      // Fix date parsing - handle different formats
+      let orderDate = 'Unknown Date';
+      try {
+        let dateObj;
+        
+        console.log('Order timestamp:', order.timestamp, typeof order.timestamp);
+        
+        if (order.timestamp instanceof Date) {
+          dateObj = order.timestamp;
+        } else if (typeof order.timestamp === 'string') {
+          // Handle ISO string format
+          if (order.timestamp.includes('T')) {
+            dateObj = new Date(order.timestamp);
+          } else if (order.timestamp.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            // YYYY-MM-DD format
+            dateObj = new Date(order.timestamp + 'T00:00:00');
+          } else if (order.timestamp.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) {
+            // MM/DD/YYYY format
+            dateObj = new Date(order.timestamp);
+          } else {
+            dateObj = new Date(order.timestamp);
+          }
+        } else if (typeof order.timestamp === 'number') {
+          // Unix timestamp
+          dateObj = new Date(order.timestamp);
+        } else {
+          // Try to use order ID to extract date (format: LASTNAME-MMDD-HHMM)
+          const orderIdParts = order.orderId.split('-');
+          if (orderIdParts.length >= 2) {
+            const datePart = orderIdParts[1]; // MMDD
+            const currentYear = new Date().getFullYear();
+            if (datePart && datePart.length === 4) {
+              const month = parseInt(datePart.substring(0, 2)) - 1; // JS months are 0-based
+              const day = parseInt(datePart.substring(2, 4));
+              dateObj = new Date(currentYear, month, day);
+            }
+          }
+        }
+        
+        if (dateObj && !isNaN(dateObj.getTime())) {
+          orderDate = dateObj.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } else {
+          // Fallback to order ID info
+          orderDate = `Order #${order.orderId}`;
+        }
+      } catch (e) {
+        console.error('Error parsing order date:', order.timestamp, e);
+        orderDate = `Order #${order.orderId}`;
+      }
 
       // Header (always visible)
       const header = document.createElement('div');
