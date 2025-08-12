@@ -1691,3 +1691,135 @@
       } else {
         if (!storeIsOpen) {
           checkoutBtn.textContent = 'Store Closed';
+   const venmoLink = document.getElementById('venmo-payment-link');
+    const orderId = generateOrderId();
+    
+    const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent('Artios Order ' + orderId)}`;
+    venmoLink.href = venmoUrl;
+  }
+
+  function generateOrderId() {
+    const now = new Date();
+    const firstChild = document.querySelector('.child-section');
+    const lastName = firstChild ? 
+      firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 
+      'FAMILY';
+    
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    
+    return `${lastName}-${month}${day}-${hour}${minute}`;
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      z-index: 10000;
+      background: ${type === 'error' ? '#f8d7da' : type === 'success' ? '#d4edda' : '#e3f2fd'};
+      color: ${type === 'error' ? '#721c24' : type === 'success' ? '#155724' : '#1976d2'};
+      border: 1px solid ${type === 'error' ? '#f5c6cb' : type === 'success' ? '#c3e6cb' : '#bbdefb'};
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 5000);
+  }
+
+  // Payment modal event handlers
+  document.getElementById('cancel-payment-btn').addEventListener('click', function() {
+    document.getElementById('payment-modal').style.display = 'none';
+  });
+
+  document.getElementById('confirm-payment-btn').addEventListener('click', function() {
+    this.disabled = true;
+    this.textContent = 'Submitting...';
+    
+    // Prepare order data
+    const orderId = generateOrderId();
+    const orderData = {
+      orderId: orderId,
+      parentEmail: authenticatedEmail,
+      timestamp: new Date().toISOString(),
+      children: [],
+      items: [],
+      subtotal: currentSubtotal,
+      discount: currentDiscount,
+      total: currentTotal,
+      promoCode: document.getElementById('promo-code').value.trim().toUpperCase()
+    };
+    
+    // Collect children data
+    document.querySelectorAll('.child-section').forEach(child => {
+      orderData.children.push({
+        id: child.dataset.child,
+        firstName: child.querySelector('.child-first-name').value.trim(),
+        lastName: child.querySelector('.child-last-name').value.trim(),
+        grade: child.querySelector('.child-grade').value
+      });
+    });
+    
+    // Add dates to items
+    orderItems.forEach(item => {
+      const dayIndex = days.indexOf(item.day.toLowerCase());
+      const itemDate = new Date(currentWeekMonday);
+      itemDate.setDate(currentWeekMonday.getDate() + dayIndex);
+      
+      orderData.items.push({
+        ...item,
+        date: itemDate.toISOString().split('T')[0] // YYYY-MM-DD format
+      });
+    });
+    
+    // Submit to Google Sheets
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        document.getElementById('payment-modal').style.display = 'none';
+        showNotification(`Order ${orderId} submitted successfully!`, 'success');
+        
+        // Reset form
+        document.getElementById('family-email').value = authenticatedEmail; // Keep email
+        document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => cb.checked = false);
+        orderItems = [];
+        currentTotal = 0;
+        currentSubtotal = 0;
+        currentDiscount = 0;
+        updateCart();
+        
+        // Show simple confirmation
+        alert(`Order Confirmed!\n\nOrder ID: ${orderId}\nTotal: $${orderData.total.toFixed(2)}\n\nA confirmation email will be sent to ${authenticatedEmail}`);
+        
+      } else {
+        throw new Error(result.error || 'Submission failed');
+      }
+    })
+    .catch(error => {
+      console.error('Submission error:', error);
+      showNotification('Error submitting order. Please try again.', 'error');
+      this.disabled = false;
+      this.textContent = '✅ I\'ve Paid - Submit Order';
+    });
+  });
+  </script>
+</body>
+</html>
+
+
+          
