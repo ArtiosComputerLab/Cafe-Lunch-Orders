@@ -943,30 +943,31 @@
     const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
     const menuData = {
-      'entrees': [
-        { id: 'chicken-sandwich', name: 'Grilled Chicken Sandwich', price: 6.50, desc: 'Tender grilled chicken breast on a brioche bun with lettuce and tomato', image: 'menu-images/chicken-sandwich.jpg' },
-        { id: 'turkey-wrap', name: 'Turkey & Cheese Wrap', price: 6.00, desc: 'Sliced turkey, cheese, lettuce, and tomato in a soft tortilla wrap', image: 'menu-images/turkey-wrap.jpg' },
-        { id: 'pizza-slice', name: 'Personal Pizza', price: 5.50, desc: 'Individual cheese pizza made fresh daily', image: 'menu-images/pizza.jpg' },
-        { id: 'chicken-tenders', name: 'Chicken Tenders', price: 6.00, desc: 'Crispy chicken tenders (3 pieces) with choice of sauce', image: 'menu-images/chicken-tenders.jpg' },
-        { id: 'quesadilla', name: 'Cheese Quesadilla', price: 5.00, desc: 'Grilled tortilla filled with melted cheese, served with salsa', image: 'menu-images/quesadilla.jpg' },
-        { id: 'mac-cheese', name: 'Mac & Cheese Bowl', price: 4.50, desc: 'Creamy homemade macaroni and cheese', image: 'menu-images/mac-cheese.jpg' },
-        { id: 'cheeseburger', name: 'Classic Cheeseburger', price: 6.50, desc: 'Beef patty with cheese, lettuce, and tomato on a sesame bun', image: 'menu-images/cheeseburger.jpg' },
-        { id: 'hot-dog', name: 'All-Beef Hot Dog', price: 4.00, desc: 'Premium all-beef hot dog on a toasted bun', image: 'menu-images/hot-dog.jpg' }
+      entrees: [
+        { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken', image: 'assets/chickensandwich.png' },
+        { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning', image: 'assets/spicysandwich.png' },
+        { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces', image: 'assets/nuggets.png' },
+        { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces', image: 'assets/grillednuggets.png' },
+        { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich', image: 'assets/grilledsandwich.png' },
+        { id: 'grilled-gf', name: 'Grilled Sandwich (GF Bun)', price: 9.50, desc: 'Grilled chicken with gluten-free bun', image: 'assets/grilledsandwich.png' },
+        { id: 'chicken-wrap', name: 'Chicken Wrap', price: 9.75, desc: 'Grilled chicken in tortilla wrap', image: 'assets/chickenwrap.png' },
+        { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Vegetarian wrap with southwest flavors', image: 'assets/veggiewrap.png' },
+        { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips', image: 'assets/chickenstrips.png' }
       ],
-      'salads': [
-        { id: 'garden-salad', name: 'Garden Salad', price: 5.50, desc: 'Fresh mixed greens, tomatoes, cucumbers, carrots with ranch dressing', image: 'menu-images/garden-salad.jpg' },
-        { id: 'chicken-caesar', name: 'Chicken Caesar Salad', price: 7.00, desc: 'Grilled chicken over romaine lettuce with parmesan and caesar dressing', image: 'menu-images/caesar-salad.jpg' },
-        { id: 'fruit-salad', name: 'Fresh Fruit Bowl', price: 4.50, desc: 'Seasonal fresh fruit medley', image: 'menu-images/fruit-salad.jpg' }
+      salads: [
+        { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more', image: 'assets/cobbsalad.png' },
+        { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers', image: 'assets/southwestsalad.png' },
+        { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Mixed greens with chicken and seasonal toppings', image: 'assets/marketsalad.png' }
       ],
-      'sides': [
-        { id: 'chips', name: 'Baked Chips', price: 1.50, desc: 'Choice of flavors: BBQ, Original, or Sour Cream', image: 'menu-images/chips.jpg' },
-        { id: 'apple-slices', name: 'Fresh Apple Slices', price: 1.00, desc: 'Crisp apple slices with caramel dip', image: 'menu-images/apple-slices.jpg' },
-        { id: 'carrots', name: 'Baby Carrots', price: 1.00, desc: 'Fresh baby carrots with ranch dip', image: 'menu-images/carrots.jpg' },
-        { id: 'pretzels', name: 'Soft Pretzel Bites', price: 2.00, desc: 'Warm pretzel bites with cheese sauce', image: 'menu-images/pretzels.jpg' },
-        { id: 'yogurt', name: 'Greek Yogurt Cup', price: 2.50, desc: 'Vanilla Greek yogurt with granola topping', image: 'menu-images/yogurt.jpg' },
-        { id: 'string-cheese', name: 'String Cheese', price: 1.25, desc: 'Mozzarella string cheese stick', image: 'menu-images/string-cheese.jpg' }
+      sides: [
+        { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries', image: 'assets/fries.png' },
+        { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit', image: 'assets/fruitcup.png' },
+        { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese', image: 'assets/MacnCheese_5oz_pdp.png' },
+        { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings', image: 'assets/sidesalad.png' },
+        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream', image: 'assets/berryparfaitcookiecrumble.png' },
+        { id: 'chips-only', name: 'Chips', price: 1.50, desc: 'Variety of chips (provided by Artios)', image: 'assets/chips.jpg' }
       ],
-      'drinks': [
+      drinks: [
         { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
         { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
       ]
