@@ -461,6 +461,231 @@
       border: 1px solid #bbdefb;
     }
 
+    /* Confirmation Modal */
+    .confirmation-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .confirmation-modal.show {
+      display: flex !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .confirmation-content {
+      background: white;
+      border-radius: 16px;
+      padding: 0;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    @keyframes slideUp {
+      from { 
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to { 
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .confirmation-header {
+      background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+      color: white;
+      padding: 25px;
+      text-align: center;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .confirmation-header h2 {
+      margin: 0;
+      font-size: 1.5em;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .confirmation-body {
+      padding: 25px;
+    }
+
+    .confirmation-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #4caf50;
+    }
+
+    .confirmation-section h4 {
+      color: #2e7d32;
+      margin: 0 0 10px 0;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cancelled-items-list {
+      margin: 10px 0;
+    }
+
+    .cancelled-item {
+      background: white;
+      padding: 10px 15px;
+      margin: 5px 0;
+      border-radius: 6px;
+      border-left: 3px solid #4caf50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-name-conf {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .child-name-conf {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    .item-refund {
+      font-weight: 700;
+      color: #4caf50;
+    }
+
+    .total-refund {
+      background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+      border: 2px solid #4caf50;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .total-refund-amount {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #2e7d32;
+      margin-bottom: 5px;
+    }
+
+    .refund-timeline {
+      background: #e3f2fd;
+      border: 1px solid #2196f3;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    .refund-timeline h4 {
+      color: #1976d2;
+      margin: 0 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .timeline-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .timeline-step {
+      padding: 5px 0;
+      color: #333;
+      font-size: 0.9em;
+    }
+
+    .confirmation-close-btn {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .confirmation-close-btn:hover {
+      background: #45a049;
+      transform: translateY(-1px);
+    }
+
+    /* Enhanced Notification Toast */
+    .notification-toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-left: 5px solid #4caf50;
+      z-index: 10001;
+      max-width: 400px;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .toast-icon {
+      font-size: 1.5em;
+    }
+
+    .toast-title {
+      font-weight: 700;
+      color: #2e7d32;
+      font-size: 1.1em;
+    }
+
+    .toast-message {
+      color: #333;
+      margin: 0;
+      line-height: 1.4;
+    }
+
     /* Loading State */
     .loading {
       text-align: center;
@@ -563,6 +788,52 @@
 
       <div class="status-message" id="status-message" style="display: none;"></div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirmation-modal" id="confirmation-modal">
+      <div class="confirmation-content">
+        <div class="confirmation-header">
+          <h2>✅ Cancellations Confirmed</h2>
+        </div>
+        
+        <div class="confirmation-body">
+          <div class="confirmation-section">
+            <h4>📋 Cancelled Items</h4>
+            <div class="cancelled-items-list" id="cancelled-items-list">
+              <!-- Items will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <div class="total-refund">
+            <div class="total-refund-amount" id="total-refund-display">$0.00</div>
+            <div>Total Refund Amount</div>
+          </div>
+
+          <div class="refund-timeline">
+            <h4>📧 Email Confirmations</h4>
+            <ul class="timeline-steps">
+              <li>✅ <strong>Sent now:</strong> Cancellation confirmation email to your inbox</li>
+              <li>✅ <strong>Sent now:</strong> Refund notification to admin for processing</li>
+              <li>📱 <strong>Within 24 hours:</strong> Venmo refund notification when payment is sent</li>
+            </ul>
+          </div>
+
+          <div class="refund-timeline">
+            <h4>💳 What Happens Next</h4>
+            <ul class="timeline-steps">
+              <li>✅ <strong>Immediately:</strong> Items removed from daily food orders</li>
+              <li>⏰ <strong>Within 24 hours:</strong> Venmo refund sent to your payment account</li>
+              <li>📧 <strong>Keep this confirmation:</strong> Save this info for your records</li>
+              <li>❓ <strong>Questions?</strong> Contact CRivers@artiosacademies.com</li>
+            </ul>
+          </div>
+
+          <button class="confirmation-close-btn" onclick="closeConfirmationModal()">
+            Got It!
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -628,6 +899,14 @@
           console.log('API Response:', data);
           
           if (data.success && data.orders && data.orders.length > 0) {
+            console.log('Orders found:', data.orders.length);
+            data.orders.forEach((order, i) => {
+              console.log(`Order ${i}:`, order.orderId, 'Items:', order.items.length);
+              order.items.forEach((item, j) => {
+                console.log(`  Item ${j}:`, item.name, 'Row Index:', item.rowIndex, 'Status:', item.status);
+              });
+            });
+            
             currentOrders = data.orders;
             displayOrders(data.orders);
             hideMessage();
@@ -838,12 +1117,25 @@
       const checkbox = document.getElementById(`checkbox-${itemId}`);
       const itemElement = document.getElementById(itemId);
       
+      console.log('Toggle item selection:', itemId, 'Price:', price, 'Checkbox:', checkbox);
+      console.log('Row index from checkbox:', checkbox ? checkbox.dataset.itemRow : 'NO CHECKBOX');
+      
       if (checkbox.checked) {
-        selectedItems.add(`${itemId}:${price}:${checkbox.dataset.itemRow}`);
+        const rowIndex = checkbox.dataset.itemRow;
+        if (!rowIndex) {
+          console.error('ERROR: No row index found for item', itemId);
+          showMessage('Error: Cannot find item row index. Please refresh and try again.', 'error');
+          checkbox.checked = false;
+          return;
+        }
+        selectedItems.add(`${itemId}:${price}:${rowIndex}`);
         itemElement.classList.add('selected');
+        console.log('Added to selection:', `${itemId}:${price}:${rowIndex}`);
       } else {
-        selectedItems.delete(`${itemId}:${price}:${checkbox.dataset.itemRow}`);
+        const rowIndex = checkbox.dataset.itemRow;
+        selectedItems.delete(`${itemId}:${price}:${rowIndex}`);
         itemElement.classList.remove('selected');
+        console.log('Removed from selection:', `${itemId}:${price}:${rowIndex}`);
       }
       
       updateSelectionInfo(orderId);
@@ -1034,6 +1326,7 @@
     window.toggleItemSelection = toggleItemSelection;
     window.toggleSelectAll = toggleSelectAll;
     window.requestRefunds = requestRefunds;
+    window.closeConfirmationModal = closeConfirmationModal;
   </script>
 </body>
 </html>
