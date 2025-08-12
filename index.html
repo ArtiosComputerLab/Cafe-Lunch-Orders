@@ -1484,8 +1484,20 @@
     const GOOGLE_SHEETS_CONFIG = {
       webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
       useGoogleSheets: true,
-      fallbackToLocalStorage: true
+      fallbackToLocalStorage: false
     };
+
+async function checkBackend() {
+  try {
+    const res = await fetch(GOOGLE_SHEETS_CONFIG.webAppUrl + '?action=test');
+    if (!res.ok) return false;
+    const json = await res.json();
+    return json && json.success === true;
+  } catch (e) {
+    return false;
+  }
+}
+
 
     // ============================================
     // STATE MANAGEMENT
@@ -2686,9 +2698,6 @@
         })
         .then(function(result) {
           if (result.success) {
-            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
-              saveToLocalStorage(orderData);
-            }
             closePaymentModal();
             showDetailedOrderConfirmation(orderData);
             showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
@@ -2710,11 +2719,13 @@
     }
 
     function handleSubmissionFailure(orderData, orderId, errorMessage) {
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
+  const confirmBtn = document.getElementById('confirm-payment-btn');
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+  }
+  showNotification('❌ Error submitting order to the cloud. Nothing was saved. Please try again.', 'error');
+}
       
       if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
         saveToLocalStorage(orderData);
@@ -2727,12 +2738,7 @@
       }
     }
 
-    function saveToLocalStorage(orderData) {
-      try {
-        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
-        orders.push(orderData);
-        localStorage.setItem('cafeOrders', JSON.stringify(orders));
-      } catch (e) {
+    /* saveToLocalStorage removed to enforce cloud-only submissions */ catch (e) {
         console.error('Error saving to localStorage:', e);
       }
     }
