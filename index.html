@@ -98,7 +98,7 @@
       font-size: 0.8em;
     }
 
-    /* Order Management Integration Styles */
+    /* NEW: Order Management Integration Styles */
     .quick-actions-section {
       background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
       border: 2px solid #2196f3;
@@ -223,6 +223,7 @@
       from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+    /* END NEW STYLES */
 
     .main-content {
       display: flex;
@@ -504,11 +505,34 @@
       padding: 15px;
       margin-bottom: 10px;
       transition: all 0.3s ease;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
     }
 
     .menu-item:hover {
       border-color: #4285f4;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* NEW: Menu item image styles */
+    .menu-item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s ease;
+    }
+
+    .menu-item:hover .menu-item-image {
+      border-color: #4285f4;
+      transform: scale(1.05);
+    }
+
+    .menu-item-content {
+      flex: 1;
     }
 
     .item-header {
@@ -1169,7 +1193,7 @@
         margin-top: 5px;
       }
 
-      /* Mobile responsive for order management */
+      /* NEW: Mobile responsive for order management */
       .quick-actions-content {
         flex-direction: column;
       }
@@ -1185,6 +1209,18 @@
       }
       .returning-user-banner {
         margin: 20px 10px;
+      }
+
+      /* Mobile menu item layout */
+      .menu-item {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .menu-item-image {
+        width: 100%;
+        height: 150px;
+        align-self: center;
       }
     }
   </style>
@@ -1215,7 +1251,7 @@
       </div>
     </div>
 
-    <!-- Returning user banner (shown dynamically) -->
+    <!-- NEW: Returning user banner (shown dynamically) -->
     <div class="returning-user-banner" id="returning-user-banner" style="display: none;">
       <div class="welcome-back">
         👋 <span id="welcome-message">Welcome back!</span>
@@ -1223,7 +1259,7 @@
       </div>
     </div>
 
-    <!-- Main quick actions section -->
+    <!-- NEW: Main quick actions section -->
     <div class="quick-actions-section">
       <div class="quick-actions-header">
         <h3>🍽️ Artios Cafe Lunch Orders</h3>
@@ -1443,7 +1479,67 @@
 
   <script>
     // ============================================
-    // ORDER MANAGEMENT FUNCTIONS
+    // CONFIGURATION
+    // ============================================
+    const GOOGLE_SHEETS_CONFIG = {
+      webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
+      useGoogleSheets: true,
+      fallbackToLocalStorage: true
+    };
+
+    // ============================================
+    // STATE MANAGEMENT
+    // ============================================
+    let currentTotal = 0;
+    let currentSubtotal = 0;
+    let currentDiscount = 0;
+    let orderItems = [];
+    let currentDay = 'monday';
+    let storeIsOpen = true;
+    let childCount = 1;
+    let discountType = 'none';
+    let currentWeekMonday = null;
+    let isNextWeek = false;
+
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+    // ============================================
+    // MENU DATA WITH IMAGES
+    // ============================================
+    const menuData = {
+      entrees: [
+        { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken', image: 'assets/chickensandwich.png' },
+        { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning', image: 'assets/spicysandwich.png' },
+        { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces', image: 'assets/nuggets.png' },
+        { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces', image: 'assets/grilllednuggets.png' },
+        { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich', image: 'assets/grilledsandwich.png' },
+        { id: 'grilled-gf', name: 'Grilled Sandwich (GF Bun)', price: 9.50, desc: 'Grilled chicken with gluten-free bun', image: 'assets/grilledsandwich.png' },
+        { id: 'chicken-wrap', name: 'Chicken Wrap', price: 9.75, desc: 'Grilled chicken in tortilla wrap', image: 'assets/chickenwrap.png' },
+        { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Vegetarian wrap with southwest flavors', image: 'assets/veggiewrap.png' },
+        { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips', image: 'assets/chickenstrips.png' }
+      ],
+      salads: [
+        { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more', image: 'assets/cobbsalad.png' },
+        { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers', image: 'assets/southwestsalad.png' },
+        { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Mixed greens with chicken and seasonal toppings', image: 'assets/marketsalad.png' }
+      ],
+      sides: [
+        { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries', image: 'assets/fries.png' },
+        { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit', image: 'assets/fruitcup.png' },
+        { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese', image: 'assets/MacnCheese_5oz_pdp.png' },
+        { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings', image: 'assets/sidesalad.png' },
+        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream', image: 'assets/berryparfaitcookiecrumble.png' },
+        { id: 'chips-only', name: 'Chips', price: 1.50, desc: 'Variety of chips (provided by Artios)', image: 'assets/chips.jpg' }
+      ],
+      drinks: [
+        { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
+        { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
+      ]
+    };
+
+    // ============================================
+    // NEW: ORDER MANAGEMENT FUNCTIONS
     // ============================================
     function scrollToOrderForm() {
       const formSection = document.querySelector('.form-section');
@@ -1491,63 +1587,6 @@
       viewOrdersLink.href = `manage-orders.html?email=${encodeURIComponent(email)}`;
       banner.style.display = 'block';
     }
-
-    // ============================================
-    // CONFIGURATION
-    // ============================================
-    const GOOGLE_SHEETS_CONFIG = {
-      webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
-      useGoogleSheets: true,
-      fallbackToLocalStorage: true
-    };
-
-    // ============================================
-    // STATE MANAGEMENT
-    // ============================================
-    let currentTotal = 0;
-    let currentSubtotal = 0;
-    let currentDiscount = 0;
-    let orderItems = [];
-    let currentDay = 'monday';
-    let storeIsOpen = true;
-    let childCount = 1;
-    let discountType = 'none';
-    let currentWeekMonday = null;
-    let isNextWeek = false;
-
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-    const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-    const menuData = {
-      entrees: [
-        { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken' },
-        { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning' },
-        { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces' },
-        { id: 'grilled-nuggets', name: 'Grilled Nuggets (8ct)', price: 7.50, desc: 'Grilled boneless chicken pieces' },
-        { id: 'grilled-sandwich', name: 'Grilled Sandwich', price: 8.25, desc: 'Grilled chicken breast sandwich' },
-        { id: 'grilled-gf', name: 'Grilled Sandwich (GF Bun)', price: 9.50, desc: 'Grilled chicken with gluten-free bun' },
-        { id: 'chicken-wrap', name: 'Chicken Wrap', price: 9.75, desc: 'Grilled chicken in tortilla wrap' },
-        { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Vegetarian wrap with southwest flavors' },
-        { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips' }
-      ],
-      salads: [
-        { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more' },
-        { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers' },
-        { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Mixed greens with chicken and seasonal toppings' }
-      ],
-      sides: [
-        { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries' },
-        { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit' },
-        { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese' },
-        { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings' },
-        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream' },
-        { id: 'chips-only', name: 'Chips', price: 1.50, desc: 'Variety of chips (provided by Artios)' }
-      ],
-      drinks: [
-        { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
-        { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
-      ]
-    };
 
     // ============================================
     // STORE HOURS LOGIC
@@ -1656,7 +1695,7 @@
       updateCart();
       validateForm();
       
-      // Check for returning user
+      // NEW: Check for returning user
       setTimeout(checkForReturningUser, 500);
       
       console.log('Initialization complete');
@@ -1770,7 +1809,23 @@
               priceDisplay = '$' + item.price.toFixed(2);
             }
             
-            itemDiv.innerHTML = '<div class="item-header"><div class="item-name">' + item.name + '</div><div class="item-price" data-item-id="' + item.id + '">' + priceDisplay + '</div></div><div class="item-desc">' + item.desc + '</div><div class="child-checkboxes" id="' + item.id + '-' + day + '-checkboxes"></div>';
+            // Create menu item with image (skip drinks)
+            let imageHtml = '';
+            if (category !== 'drinks' && item.image) {
+              imageHtml = `<img src="${item.image}" alt="${item.name}" class="menu-item-image" onerror="this.style.display='none'">`;
+            }
+            
+            itemDiv.innerHTML = `
+              ${imageHtml}
+              <div class="menu-item-content">
+                <div class="item-header">
+                  <div class="item-name">${item.name}</div>
+                  <div class="item-price" data-item-id="${item.id}">${priceDisplay}</div>
+                </div>
+                <div class="item-desc">${item.desc}</div>
+                <div class="child-checkboxes" id="${item.id}-${day}-checkboxes"></div>
+              </div>
+            `;
             
             itemsDiv.appendChild(itemDiv);
           });
@@ -2752,10 +2807,9 @@
       }, 5000);
     }
 
-    // Make functions available globally
+    // Make removeItemFromCart available globally
     window.removeItemFromCart = removeItemFromCart;
     window.removeChild = removeChild;
-    window.scrollToOrderForm = scrollToOrderForm;
   </script>
 </body>
 </html>
