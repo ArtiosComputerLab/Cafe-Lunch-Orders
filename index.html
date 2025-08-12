@@ -1484,7 +1484,7 @@
     const GOOGLE_SHEETS_CONFIG = {
       webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
       useGoogleSheets: true,
-      fallbackToLocalStorage: false  // Disable fallback to force cloud sync
+      fallbackToLocalStorage: true
     };
 
     // ============================================
@@ -2638,68 +2638,63 @@ d: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees,
         });
       });
       
-      console.log('Submitting order data:', orderData);
-      console.log('Using URL:', GOOGLE_SHEETS_CONFIG.webAppUrl);
-      
       showNotification('Submitting order to cloud...', 'info');
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        // Test the connection first
-        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl + '?test=true')
-          .then(function(response) {
-            console.log('Test response status:', response.status);
-            if (!response.ok) {
-              throw new Error('Apps Script not responding: ' + response.status);
+        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
+        })
+        .then(function(response) {
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(function(result) {
+          if (result.success) {
+            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+              saveToLocalStorage(orderData);
             }
-            return response.json();
-          })
-          .then(function(testResult) {
-            console.log('Test result:', testResult);
-            
-            // Now submit the actual order
-            return fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
-            });
-          })
-          .then(function(response) {
-            console.log('Order submission response status:', response.status);
-            if (!response.ok) {
-              throw new Error('HTTP ' + response.status + ': ' + response.statusText);
-            }
-            return response.json();
-          })
-          .then(function(result) {
-            console.log('Order submission result:', result);
-            if (result.success) {
-              closePaymentModal();
-              showDetailedOrderConfirmation(orderData);
-              showNotification('Order ' + orderId + ' submitted successfully!', 'success');
-              resetForm();
-            } else {
-              throw new Error(result.error || 'Unknown error from Google Sheets');
-            }
-          })
-          .catch(function(error) {
-            console.error('Google Sheets submission failed:', error);
-            showNotification('Failed to submit to Google Sheets: ' + error.message, 'error');
-            
-            const confirmBtn = document.getElementById('confirm-payment-btn');
-            if (confirmBtn) {
-              confirmBtn.disabled = false;
-              confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-            }
-          });
+            closePaymentModal();
+            showDetailedOrderConfirmation(orderData);
+            showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
+            resetForm();
+          } else {
+            throw new Error(result.error || 'Unknown error from Google Sheets');
+          }
+        })
+        .catch(function(error) {
+          console.error('Google Sheets submission failed:', error);
+          handleSubmissionFailure(orderData, orderId, error.message);
+        });
       } else {
-        showNotification('Google Sheets not configured', 'error');
-        const confirmBtn = document.getElementById('confirm-payment-btn');
-        if (confirmBtn) {
-          confirmBtn.disabled = false;
-          confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-        }
+        saveToLocalStorage(orderData);
+        closePaymentModal();
+        showDetailedOrderConfirmation(orderData);
+        showNotification('Order ' + orderId + ' saved locally!', 'success');
+        resetForm();
+      }
+    }
+
+    function handleSubmissionFailure(orderData, orderId, errorMessage) {
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+      }
+      
+      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+        saveToLocalStorage(orderData);
+        closePaymentModal();
+        showDetailedOrderConfirmation(orderData);
+        showNotification('Order saved locally (cloud sync failed)', 'warning');
+        resetForm();
+      } else {
+        showNotification('Error submitting order. Please try again.', 'error');
       }
     }
 
