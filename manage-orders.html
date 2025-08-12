@@ -1,390 +1,1039 @@
-// ============================================
-// ENHANCED ARTIOS CAFE ORDER SYSTEM WITH FIXED CANCELLATIONS
-// ============================================
-const SHEET_ID = '1vBlYUsY7lt0k4x7I_OxvjYbHvQn0hbR6HwHh_aCsHxA';
-const ORDERS_SHEET = 'Orders';
-const CANCELLATIONS_SHEET = 'Cancellations';
-const NOTIFICATION_EMAIL = 'jedaws@gmail.com';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Orders - Artios Academies Cafe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-// ============================================
-// ORDER LOOKUP AND CANCELLATION FUNCTIONS
-// ============================================
+    body {
+      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f8f9fa;
+      color: #202124;
+      line-height: 1.6;
+    }
 
-/**
- * Look up orders by email and optional order ID
- */
-function lookupOrders(email, orderId = null) {
-  try {
-    console.log(`Looking up orders for email: ${email}, orderId: ${orderId}`);
-    
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(ORDERS_SHEET);
-    const data = sheet.getDataRange().getValues();
-    
-    const orderMap = {};
-    
-    for (let i = 1; i < data.length; i++) {
-      const row = data[i];
-      if (row[1] === email) { // Email column
-        if (!orderId || row[7] === orderId) { // Order ID column
-          const currentOrderId = row[7];
-          
-          if (!orderMap[currentOrderId]) {
-            orderMap[currentOrderId] = {
-              orderId: currentOrderId,
-              timestamp: row[0],
-              email: row[1],
-              items: [],
-              children: [],
-              subtotal: row[13] || 0,
-              discount: row[14] || 0,
-              total: row[15] || 0,
-              promoCode: row[16] || ''
-            };
-          }
-          
-          // Parse item data
-          const itemData = JSON.parse(row[5])[0]; // First item in array
-          const itemStatus = row[17] || 'active'; // Status column
-          
-          // FIXED: Ensure date is properly formatted as YYYY-MM-DD string
-          let itemDateStr = '';
-          if (row[11] instanceof Date) {
-            itemDateStr = row[11].toISOString().split('T')[0];
-          } else if (typeof row[11] === 'string') {
-            // Handle various string formats
-            if (row[11].includes('T')) {
-              itemDateStr = row[11].split('T')[0];
-            } else {
-              itemDateStr = row[11];
-            }
-          } else {
-            console.log(`Row ${i}: Unexpected itemDate format:`, row[11], typeof row[11]);
-            continue;
-          }
-          
-          orderMap[currentOrderId].items.push({
-            id: `${currentOrderId}-${i}`, // Unique item ID
-            rowIndex: i,
-            name: itemData.name,
-            price: parseFloat(row[6]) || 0,
-            day: itemData.day,
-            childId: row[10] || '1',
-            childName: `${row[2]} ${row[3]}`, // First + Last name
-            grade: row[4],
-            date: itemDateStr, // FIXED: Always return as YYYY-MM-DD string
-            status: itemStatus,
-            cancellationDate: row[18] || null,
-            refundAmount: parseFloat(row[19]) || 0
-          });
-          
-          // Track unique children
-          const childKey = `${row[2]} ${row[3]}`;
-          if (!orderMap[currentOrderId].children.find(c => c.name === childKey)) {
-            orderMap[currentOrderId].children.push({
-              id: row[10] || '1',
-              firstName: row[2],
-              lastName: row[3],
-              name: childKey,
-              grade: row[4]
-            });
-          }
-        }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2em;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .header .subtitle {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    .main-content {
+      padding: 30px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Order Lookup Form */
+    .lookup-section {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .lookup-section h3 {
+      color: #1976d2;
+      margin-bottom: 20px;
+      font-size: 1.3em;
+    }
+
+    .lookup-form {
+      display: flex;
+      gap: 15px;
+      max-width: 600px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+      text-align: left;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #2196f3;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+
+    .lookup-btn {
+      background: #2196f3;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      align-self: end;
+    }
+
+    .lookup-btn:hover {
+      background: #1976d2;
+      transform: translateY(-1px);
+    }
+
+    .lookup-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Order Display */
+    .order-section {
+      display: none;
+    }
+
+    /* Order Cards */
+    .order-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+      border-color: #2196f3;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+    }
+
+    .order-header {
+      background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+      border-bottom: 2px solid #4caf50;
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .order-header:hover {
+      background: linear-gradient(135deg, #dcedc8 0%, #e8f5e8 100%);
+    }
+
+    .order-header.expanded {
+      background: linear-gradient(135deg, #c8e6c9 0%, #dcedc8 100%);
+    }
+
+    .order-summary {
+      flex: 1;
+    }
+
+    .order-id {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #2e7d32;
+      margin-bottom: 5px;
+    }
+
+    .order-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: #333;
+      font-size: 0.9em;
+    }
+
+    .order-meta span {
+      background: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .expand-icon {
+      color: #4caf50;
+      font-size: 1.5em;
+      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+
+    .order-header.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Order Details (Collapsed by default) */
+    .order-details {
+      display: none;
+      padding: 0;
+    }
+
+    .order-details.expanded {
+      display: block;
+    }
+
+    /* Selection Controls */
+    .selection-controls {
+      background: #f0f7ff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .select-all-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .select-all-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+
+    .selection-info {
+      color: #1976d2;
+      font-weight: 600;
+    }
+
+    .request-refund-btn {
+      background: #ff5722;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .request-refund-btn:hover:not(:disabled) {
+      background: #d32f2f;
+      transform: scale(1.05);
+    }
+
+    .request-refund-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Day Sections */
+    .day-section {
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .day-section:last-child {
+      border-bottom: none;
+    }
+
+    .day-header {
+      background: #2196f3;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .day-title {
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+
+    .day-status {
+      font-size: 0.85em;
+      background: rgba(255,255,255,0.2);
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+
+    .day-status.can-cancel {
+      background: #4caf50;
+    }
+
+    .day-status.locked {
+      background: #ff5722;
+    }
+
+    .children-container {
+      padding: 15px 20px;
+    }
+
+    .child-section {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .child-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .child-name {
+      font-size: 1em;
+      font-weight: 600;
+      color: #1976d2;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .child-icon {
+      background: #1976d2;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75em;
+      font-weight: bold;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border-left: 4px solid #4caf50;
+      transition: all 0.3s ease;
+    }
+
+    .order-item.cancelled {
+      background: #ffebee;
+      border-left-color: #f44336;
+      opacity: 0.7;
+    }
+
+    .order-item.selected {
+      background: #e3f2fd;
+      border-left-color: #2196f3;
+    }
+
+    .item-checkbox {
+      margin-right: 10px;
+    }
+
+    .item-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9em;
+    }
+
+    .item-price {
+      color: #4caf50;
+      font-weight: 600;
+      font-size: 0.85em;
+    }
+
+    .item-status {
+      font-size: 0.8em;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .item-status.active {
+      background: #e8f5e8;
+      color: #2e7d32;
+    }
+
+    .item-status.cancelled {
+      background: #ffebee;
+      color: #d32f2f;
+    }
+
+    /* Refund Summary */
+    .refund-summary {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      border: 2px solid #ff9800;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .refund-amount {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: #f57c00;
+      margin-bottom: 10px;
+    }
+
+    /* Status Messages */
+    .status-message {
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-weight: 500;
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-message.info {
+      background: #e3f2fd;
+      color: #1976d2;
+      border: 1px solid #bbdefb;
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #e0e0e0;
+      border-top: 3px solid #2196f3;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .lookup-form {
+        flex-direction: column;
+      }
+
+      .form-group {
+        min-width: auto;
+      }
+
+      .order-meta {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .selection-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .order-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .expand-icon {
+        align-self: center;
       }
     }
-    
-    const orders = Object.values(orderMap);
-    console.log(`Found ${orders.length} orders for ${email}`);
-    
-    return {
-      success: true,
-      orders: orders,
-      count: orders.length
-    };
-    
-  } catch (error) {
-    console.error('Error in lookupOrders:', error);
-    throw error;
-  }
-}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📋 Manage Your Orders</h1>
+      <div class="subtitle">Cancel items, request refunds, or view order history</div>
+    </div>
 
-/**
- * Process item cancellation with FIXED time-based validation
- */
-function processCancellation(itemId, reason) {
-  try {
-    console.log(`Processing cancellation for item: ${itemId}, reason: ${reason}`);
-    
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(ORDERS_SHEET);
-    const data = sheet.getDataRange().getValues();
-    
-    // Find the item by ID (format: ORDERID-ROWINDEX)
-    const [orderId, rowIndexStr] = itemId.split('-');
-    const rowIndex = parseInt(rowIndexStr);
-    
-    if (!rowIndex || rowIndex >= data.length) {
-      throw new Error('Invalid item ID');
-    }
-    
-    const row = data[rowIndex];
-    
-    // FIXED: Better date handling for cancellation deadline
-    let itemDate;
-    if (row[11] instanceof Date) {
-      itemDate = new Date(row[11]);
-    } else if (typeof row[11] === 'string') {
-      if (row[11].includes('T')) {
-        itemDate = new Date(row[11].split('T')[0] + 'T00:00:00');
-      } else {
-        itemDate = new Date(row[11] + 'T00:00:00');
+    <div class="main-content">
+      <a href="index.html" class="back-link">← Back to Order Form</a>
+
+      <!-- Order Lookup Section -->
+      <div class="lookup-section" id="lookup-section">
+        <h3>🔍 Find Your Order</h3>
+        <p style="color: #666; margin-bottom: 20px;">Enter your email to view and manage your orders</p>
+        <form class="lookup-form" id="lookup-form">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="parent@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="order-id">Order ID (Optional)</label>
+            <input type="text" id="order-id" placeholder="SMITH-0815-0730">
+          </div>
+          <button type="submit" class="lookup-btn" id="lookup-btn">Find Orders</button>
+        </form>
+      </div>
+
+      <!-- Order Display Section -->
+      <div class="order-section" id="order-section">
+        <div id="orders-container">
+          <!-- Orders will be populated by JavaScript -->
+        </div>
+
+        <!-- Refund Summary -->
+        <div class="refund-summary" id="refund-summary" style="display: none;">
+          <div class="refund-amount">Total Pending Refunds: $<span id="total-refunds">0.00</span></div>
+          <p>Refunds will be processed via Venmo within 24 hours</p>
+        </div>
+      </div>
+
+      <div class="status-message" id="status-message" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const GOOGLE_SHEETS_CONFIG = {
+      webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec'
+    };
+
+    let currentOrders = [];
+    let selectedItems = new Set();
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check URL parameters for direct access
+      const urlParams = new URLSearchParams(window.location.search);
+      const emailParam = urlParams.get('email');
+      const orderParam = urlParams.get('order');
+
+      if (emailParam) {
+        document.getElementById('email').value = decodeURIComponent(emailParam);
       }
-    } else {
-      throw new Error('Invalid item date format');
-    }
-    
-    // Set cutoff to 8:15 AM on the item's day
-    const cutoffTime = new Date(itemDate);
-    cutoffTime.setHours(8, 15, 0, 0);
-    
-    const now = new Date();
-    
-    console.log(`Item date: ${itemDate.toISOString()}`);
-    console.log(`Cutoff time: ${cutoffTime.toISOString()}`);
-    console.log(`Current time: ${now.toISOString()}`);
-    console.log(`Can cancel: ${now < cutoffTime}`);
-    
-    if (now >= cutoffTime) {
-      return {
-        success: false,
-        message: `Cannot cancel - past 8:15 AM deadline for ${itemDate.toDateString()}`,
-        deadline: cutoffTime.toISOString(),
-        currentTime: now.toISOString()
-      };
-    }
-    
-    // Item can be cancelled - update database
-    const itemData = JSON.parse(row[5])[0];
-    const refundAmount = parseFloat(row[6]) || 0;
-    
-    // Update the row with cancellation info
-    const range = sheet.getRange(rowIndex + 1, 1, 1, sheet.getLastColumn());
-    const updatedRow = [...row];
-    
-    // Add new columns if they don't exist
-    while (updatedRow.length < 21) {
-      updatedRow.push('');
-    }
-    
-    updatedRow[17] = 'cancelled'; // Status column
-    updatedRow[18] = new Date().toISOString(); // Cancellation date
-    updatedRow[19] = refundAmount; // Refund amount
-    updatedRow[20] = reason; // Cancellation reason
-    
-    range.setValues([updatedRow]);
-    
-    // Log the cancellation
-    logCancellation(orderId, itemData, refundAmount, reason, row[1]); // row[1] is email
-    
-    // Send notifications
-    const orderInfo = {
-      orderId: orderId,
-      email: row[1],
-      childName: `${row[2]} ${row[3]}`,
-      itemName: itemData.name,
-      itemDay: itemData.day,
-      itemDate: itemDate,
-      refundAmount: refundAmount,
-      reason: reason
-    };
-    
-    sendParentCancellationConfirmation(orderInfo);
-    sendAdminRefundNotification(orderInfo);
-    
-    console.log(`Successfully cancelled item: ${itemData.name} for ${orderInfo.childName}`);
-    
-    return {
-      success: true,
-      message: `${itemData.name} cancelled successfully. Refund of $${refundAmount.toFixed(2)} will be processed within 24 hours.`,
-      refundAmount: refundAmount,
-      cancellationDate: new Date().toISOString()
-    };
-    
-  } catch (error) {
-    console.error('Error in processCancellation:', error);
-    throw error;
-  }
-}
+      if (orderParam) {
+        document.getElementById('order-id').value = orderParam;
+      }
 
-// ============================================
-// MAIN FUNCTIONS (keeping the same doGet and doPost)
-// ============================================
+      // Auto-submit if both parameters provided
+      if (emailParam) {
+        setTimeout(() => {
+          findOrders();
+        }, 500);
+      }
 
-function doGet(e) {
-  try {
-    const action = e.parameter.action;
-    console.log('doGet called with action:', action);
-    
-    if (action === 'test' || e.parameter.test === 'true') {
-      return ContentService
-        .createTextOutput(JSON.stringify({
-          success: true,
-          message: 'Google Apps Script is working correctly!',
-          timestamp: new Date().toISOString(),
-          sheetId: SHEET_ID,
-          features: ['orders', 'cancellations', 'email_reports', 'refunds']
-        }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // Handle order lookup for management portal
-    if (action === 'lookup_orders') {
-      const email = e.parameter.email;
-      const orderId = e.parameter.order_id;
-      
+      // Setup form submission
+      document.getElementById('lookup-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        findOrders();
+      });
+    });
+
+    function findOrders() {
+      const email = document.getElementById('email').value.trim();
+      const orderId = document.getElementById('order-id').value.trim();
+      const lookupBtn = document.getElementById('lookup-btn');
+
       if (!email) {
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: 'Email parameter required'
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
+        showMessage('Please enter your email address', 'error');
+        return;
       }
+
+      lookupBtn.disabled = true;
+      lookupBtn.textContent = '🔍 Searching...';
+      showMessage('🔍 Searching for your orders...', 'info');
       
-      try {
-        const result = lookupOrders(email, orderId);
-        return ContentService
-          .createTextOutput(JSON.stringify(result))
-          .setMimeType(ContentService.MimeType.JSON);
-      } catch (lookupError) {
-        console.error('Order lookup error:', lookupError);
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: `Order lookup failed: ${lookupError.toString()}`
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
+      let apiUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=lookup_orders&email=${encodeURIComponent(email)}`;
+      if (orderId) {
+        apiUrl += `&order_id=${encodeURIComponent(orderId)}`;
       }
+
+      console.log('Calling API:', apiUrl);
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log('API Response:', data);
+          
+          if (data.success && data.orders && data.orders.length > 0) {
+            currentOrders = data.orders;
+            displayOrders(data.orders);
+            hideMessage();
+          } else if (data.success && data.orders && data.orders.length === 0) {
+            showMessage('No orders found for this email address. Please check your email and try again.', 'error');
+          } else {
+            showMessage(`Error: ${data.error || 'Failed to find orders'}`, 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showMessage('Network error. Please check your connection and try again.', 'error');
+        })
+        .finally(() => {
+          lookupBtn.disabled = false;
+          lookupBtn.textContent = 'Find Orders';
+        });
     }
-    
-    // Handle item cancellation
-    if (action === 'cancel_item') {
-      const itemId = e.parameter.item_id;
-      const reason = e.parameter.reason || 'Parent requested';
-      
-      if (!itemId) {
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: 'Item ID parameter required'
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-      
-      try {
-        const result = processCancellation(itemId, reason);
-        return ContentService
-          .createTextOutput(JSON.stringify(result))
-          .setMimeType(ContentService.MimeType.JSON);
-      } catch (cancellationError) {
-        console.error('Cancellation error:', cancellationError);
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: `Cancellation failed: ${cancellationError.toString()}`
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
+
+    function displayOrders(orders) {
+      document.getElementById('lookup-section').style.display = 'none';
+      document.getElementById('order-section').style.display = 'block';
+
+      const ordersContainer = document.getElementById('orders-container');
+      ordersContainer.innerHTML = '';
+
+      // Sort orders by date (newest first)
+      orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      orders.forEach(order => {
+        const orderCard = createOrderCard(order);
+        ordersContainer.appendChild(orderCard);
+      });
+
+      calculateRefundSummary();
     }
-    
-    // Generate email report
-    if (action === 'generate_report') {
-      const secret = e.parameter.secret;
-      if (secret !== 'cafe2025') {
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: 'Invalid secret key'
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
+
+    function createOrderCard(order) {
+      const orderCard = document.createElement('div');
+      orderCard.className = 'order-card';
+
+      const orderDate = new Date(order.timestamp).toLocaleDateString();
+      const activeItems = order.items.filter(item => item.status === 'active').length;
+      const cancelledItems = order.items.filter(item => item.status === 'cancelled').length;
+      const totalValue = order.items.filter(item => item.status === 'active').reduce((sum, item) => sum + item.price, 0);
+
+      // Create header (always visible)
+      const orderHeader = document.createElement('div');
+      orderHeader.className = 'order-header';
+      orderHeader.innerHTML = `
+        <div class="order-summary">
+          <div class="order-id">Order #${order.orderId}</div>
+          <div class="order-meta">
+            <span>📅 ${orderDate}</span>
+            <span>👥 ${order.children.length} children</span>
+            <span>🍽️ ${activeItems} active items</span>
+            <span>💰 $${totalValue.toFixed(2)} value</span>
+            ${cancelledItems > 0 ? `<span style="color: #f44336;">❌ ${cancelledItems} cancelled</span>` : ''}
+          </div>
+        </div>
+        <div class="expand-icon">▼</div>
+      `;
+
+      // Create details section (hidden by default)
+      const orderDetails = document.createElement('div');
+      orderDetails.className = 'order-details';
+      
+      // Selection controls
+      const selectionControls = document.createElement('div');
+      selectionControls.className = 'selection-controls';
+      selectionControls.innerHTML = `
+        <div class="select-all-container">
+          <input type="checkbox" id="select-all-${order.orderId}" onchange="toggleSelectAll('${order.orderId}')">
+          <label for="select-all-${order.orderId}">Select All Active Items</label>
+        </div>
+        <div class="selection-info" id="selection-info-${order.orderId}">
+          0 items selected ($0.00)
+        </div>
+        <button class="request-refund-btn" onclick="requestRefunds('${order.orderId}')" disabled id="refund-btn-${order.orderId}">
+          Request Refunds
+        </button>
+      `;
+
+      orderDetails.appendChild(selectionControls);
+
+      // Group items by day and create day sections
+      const itemsByDay = {};
+      order.items.forEach(item => {
+        if (!itemsByDay[item.day]) {
+          itemsByDay[item.day] = [];
+        }
+        itemsByDay[item.day].push(item);
+      });
+
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      const sortedDays = Object.keys(itemsByDay).sort((a, b) => {
+        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+      });
+
+      sortedDays.forEach(dayName => {
+        const daySection = createDaySection(dayName, itemsByDay[dayName], order.orderId);
+        orderDetails.appendChild(daySection);
+      });
+
+      // Add click handler for expand/collapse
+      orderHeader.addEventListener('click', function() {
+        const isExpanded = orderDetails.classList.contains('expanded');
+        if (isExpanded) {
+          orderDetails.classList.remove('expanded');
+          orderHeader.classList.remove('expanded');
+        } else {
+          orderDetails.classList.add('expanded');
+          orderHeader.classList.add('expanded');
+        }
+      });
+
+      orderCard.appendChild(orderHeader);
+      orderCard.appendChild(orderDetails);
+
+      return orderCard;
+    }
+
+    function createDaySection(dayName, items, orderId) {
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day-section';
+
+      // Check if day can be cancelled - fix the date logic
+      const itemDate = new Date(items[0].date);
+      const cutoffTime = new Date(itemDate);
+      cutoffTime.setHours(8, 15, 0, 0); // 8:15 AM on item's day
+      
+      const now = new Date();
+      const canCancel = now < cutoffTime;
+
+      const statusClass = canCancel ? 'can-cancel' : 'locked';
+      const statusText = canCancel ? 
+        `Cancel by ${cutoffTime.toLocaleDateString()} 8:15 AM` : 
+        'Cancellation Deadline Passed';
+
+      dayDiv.innerHTML = `
+        <div class="day-header">
+          <div class="day-title">${dayName}, ${itemDate.toLocaleDateString()}</div>
+          <div class="day-status ${statusClass}">${statusText}</div>
+        </div>
+        <div class="children-container">
+          ${createChildrenSections(items, canCancel, orderId)}
+        </div>
+      `;
+
+      return dayDiv;
+    }
+
+    function createChildrenSections(items, canCancel, orderId) {
+      const itemsByChild = {};
+      items.forEach(item => {
+        if (!itemsByChild[item.childName]) {
+          itemsByChild[item.childName] = [];
+        }
+        itemsByChild[item.childName].push(item);
+      });
+
+      let html = '';
+      let childIndex = 1;
+
+      Object.keys(itemsByChild).forEach(childName => {
+        html += `
+          <div class="child-section">
+            <div class="child-name">
+              <div class="child-icon">${childIndex}</div>
+              ${childName}
+            </div>
+            <div class="item-list">
+              ${itemsByChild[childName].map(item => {
+                const isActive = item.status === 'active';
+                const uniqueItemId = `item-${item.rowIndex}`; // Use row index as unique ID
+                
+                return `
+                  <div class="order-item ${item.status === 'cancelled' ? 'cancelled' : ''}" id="${uniqueItemId}">
+                    ${isActive && canCancel ? `
+                      <div class="item-checkbox">
+                        <input type="checkbox" id="checkbox-${uniqueItemId}" 
+                               onchange="toggleItemSelection('${uniqueItemId}', ${item.price}, '${orderId}')"
+                               data-item-row="${item.rowIndex}" 
+                               data-order-id="${orderId}">
+                      </div>
+                    ` : ''}
+                    <div class="item-details">
+                      <div class="item-name">${item.name}</div>
+                      <div class="item-price">${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="item-status ${item.status}">
+                      ${item.status === 'cancelled' ? 'CANCELLED' : 
+                        (canCancel ? 'Can Cancel' : 'Too Late')}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+        childIndex++;
+      });
+
+      return html;
+    }
+
+    function toggleItemSelection(itemId, price, orderId) {
+      const checkbox = document.getElementById(`checkbox-${itemId}`);
+      const itemElement = document.getElementById(itemId);
+      
+      if (checkbox.checked) {
+        selectedItems.add(`${itemId}:${price}:${checkbox.dataset.itemRow}`);
+        itemElement.classList.add('selected');
+      } else {
+        selectedItems.delete(`${itemId}:${price}:${checkbox.dataset.itemRow}`);
+        itemElement.classList.remove('selected');
       }
       
-      try {
-        const dateParam = e.parameter.date;
-        let reportDate;
-        
-        if (dateParam) {
-          reportDate = new Date(dateParam + 'T12:00:00');
-          if (isNaN(reportDate.getTime())) {
-            throw new Error('Invalid date format. Use YYYY-MM-DD');
+      updateSelectionInfo(orderId);
+    }
+
+    function toggleSelectAll(orderId) {
+      const selectAllCheckbox = document.getElementById(`select-all-${orderId}`);
+      const itemCheckboxes = document.querySelectorAll(`input[data-order-id="${orderId}"]`);
+      
+      itemCheckboxes.forEach(checkbox => {
+        if (selectAllCheckbox.checked) {
+          if (!checkbox.checked) {
+            checkbox.click(); // This will trigger the change event
           }
         } else {
-          reportDate = new Date();
+          if (checkbox.checked) {
+            checkbox.click(); // This will trigger the change event
+          }
         }
-        
-        const result = generateEmailOnlyReport(reportDate);
-        
-        const adminRecipientsParam = e.parameter.admin_recipients || '';
-        const workerRecipientsParam = e.parameter.worker_recipients || '';
-        
-        const adminRecipients = adminRecipientsParam.split(',').map(email => email.trim()).filter(email => email);
-        const workerRecipients = workerRecipientsParam.split(',').map(email => email.trim()).filter(email => email);
-        
-        console.log('Admin recipients:', adminRecipients);
-        console.log('Worker recipients:', workerRecipients);
-        
-        if (adminRecipients.length > 0) {
-          console.log('Sending admin reports');
-          adminRecipients.forEach(email => {
-            sendEnhancedReportNotificationEmail(result, reportDate, true, email);
-          });
-        }
-        
-        if (workerRecipients.length > 0) {
-          console.log('Sending worker reports');
-          workerRecipients.forEach(email => {
-            sendComprehensiveCafeWorkerEmail(result, reportDate, email);
-          });
-        }
-        
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: true,
-            message: 'Email report sent successfully',
-            ordersProcessed: result.orderCount,
-            reportDate: reportDate.toISOString().split('T')[0],
-            emailSent: true,
-            adminEmailsSent: adminRecipients.length,
-            workerEmailsSent: workerRecipients.length
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
-        
-      } catch (reportError) {
-        console.error('Report generation error:', reportError);
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: `Report generation failed: ${reportError.toString()}`
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
+      });
+    }
+
+    function updateSelectionInfo(orderId) {
+      const selectedForOrder = Array.from(selectedItems).filter(item => 
+        item.includes(`item-`) && document.getElementById(`checkbox-${item.split(':')[0]}`).dataset.orderId === orderId
+      );
+      
+      const count = selectedForOrder.length;
+      const total = selectedForOrder.reduce((sum, item) => {
+        const price = parseFloat(item.split(':')[1]);
+        return sum + price;
+      }, 0);
+      
+      const selectionInfo = document.getElementById(`selection-info-${orderId}`);
+      const refundBtn = document.getElementById(`refund-btn-${orderId}`);
+      
+      selectionInfo.textContent = `${count} items selected (${total.toFixed(2)})`;
+      refundBtn.disabled = count === 0;
+    }
+
+    function requestRefunds(orderId) {
+      const selectedForOrder = Array.from(selectedItems).filter(item => {
+        const itemId = item.split(':')[0];
+        const checkbox = document.getElementById(`checkbox-${itemId}`);
+        return checkbox && checkbox.dataset.orderId === orderId;
+      });
+      
+      if (selectedForOrder.length === 0) {
+        showMessage('Please select items to cancel', 'error');
+        return;
+      }
+      
+      const totalRefund = selectedForOrder.reduce((sum, item) => {
+        const price = parseFloat(item.split(':')[1]);
+        return sum + price;
+      }, 0);
+      
+      const itemNames = selectedForOrder.map(item => {
+        const itemId = item.split(':')[0];
+        const itemElement = document.getElementById(itemId);
+        const itemName = itemElement.querySelector('.item-name').textContent;
+        return itemName;
+      });
+      
+      const reason = prompt(`Why are you cancelling these ${selectedForOrder.length} items?\n\nItems:\n${itemNames.join('\n')}\n\nRefund amount: ${totalRefund.toFixed(2)}\n\nCommon reasons:\n• Child is sick\n• Child will be absent\n• Changed mind\n• Other`);
+      
+      if (reason === null) {
+        return; // User cancelled
+      }
+
+      const finalReason = reason.trim() || 'Parent requested';
+      
+      if (confirm(`Cancel ${selectedForOrder.length} items?\n\nTotal refund: ${totalRefund.toFixed(2)}\nReason: ${finalReason}\n\nThis action cannot be undone.`)) {
+        processBulkCancellations(selectedForOrder, finalReason);
       }
     }
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: 'Unknown action: ' + action
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-    
-  } catch (error) {
-    console.error('Error in doGet:', error);
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: error.toString()
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
 
-// [Rest of the Apps Script functions remain the same - doPost, email functions, etc.]
-// I'm only showing the key fixes for date handling in lookup and cancellation
+    function processBulkCancellations(selectedItems, reason) {
+      showMessage(`⏳ Processing ${selectedItems.length} cancellations...`, 'info');
+      
+      let processed = 0;
+      let successful = 0;
+      let totalRefund = 0;
+      
+      selectedItems.forEach(item => {
+        const [itemId, priceStr, rowIndex] = item.split(':');
+        const price = parseFloat(priceStr);
+        
+        // Use row index directly as the item identifier
+        const apiUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=cancel_item&item_id=${encodeURIComponent(rowIndex)}&reason=${encodeURIComponent(reason)}`;
+        
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            processed++;
+            
+            if (data.success) {
+              successful++;
+              totalRefund += price;
+              
+              // Update UI
+              const itemElement = document.getElementById(itemId);
+              if (itemElement) {
+                itemElement.classList.add('cancelled');
+                itemElement.classList.remove('selected');
+                
+                // Remove checkbox and update status
+                const checkboxDiv = itemElement.querySelector('.item-checkbox');
+                if (checkboxDiv) checkboxDiv.remove();
+                
+                const statusDiv = itemElement.querySelector('.item-status');
+                statusDiv.textContent = 'CANCELLED';
+                statusDiv.className = 'item-status cancelled';
+              }
+              
+              // Remove from selected items
+              window.selectedItems.delete(item);
+            }
+            
+            // Check if all processed
+            if (processed === selectedItems.length) {
+              if (successful > 0) {
+                showMessage(`✅ ${successful} items cancelled successfully! Total refund of ${totalRefund.toFixed(2)} will be processed within 24 hours.`, 'success');
+                calculateRefundSummary();
+                
+                // Update selection info for all orders
+                currentOrders.forEach(order => {
+                  updateSelectionInfo(order.orderId);
+                });
+              }
+              
+              if (successful < selectedItems.length) {
+                showMessage(`⚠️ ${successful} of ${selectedItems.length} items cancelled. Some items may be past the deadline.`, 'error');
+              }
+            }
+          })
+          .catch(error => {
+            processed++;
+            console.error('Cancellation error:', error);
+            
+            if (processed === selectedItems.length) {
+              showMessage('Some cancellations failed due to network errors. Please try again.', 'error');
+            }
+          });
+      });
+    }
+
+    function calculateRefundSummary() {
+      let totalRefunds = 0;
+      let refundCount = 0;
+
+      currentOrders.forEach(order => {
+        order.items.forEach(item => {
+          if (item.status === 'cancelled') {
+            totalRefunds += item.price;
+            refundCount++;
+          }
+        });
+      });
+
+      const refundSummary = document.getElementById('refund-summary');
+      if (totalRefunds > 0) {
+        document.getElementById('total-refunds').textContent = totalRefunds.toFixed(2);
+        refundSummary.style.display = 'block';
+      } else {
+        refundSummary.style.display = 'none';
+      }
+    }
+
+    function showMessage(message, type) {
+      const messageDiv = document.getElementById('status-message');
+      messageDiv.textContent = message;
+      messageDiv.className = `status-message ${type}`;
+      messageDiv.style.display = 'block';
+      
+      if (type === 'success' || type === 'info') {
+        setTimeout(() => {
+          hideMessage();
+        }, 5000);
+      }
+    }
+
+    function hideMessage() {
+      document.getElementById('status-message').style.display = 'none';
+    }
+
+    // Make functions available globally
+    window.toggleItemSelection = toggleItemSelection;
+    window.toggleSelectAll = toggleSelectAll;
+    window.requestRefunds = requestRefunds;
+  </script>
+</body>
+</html>
