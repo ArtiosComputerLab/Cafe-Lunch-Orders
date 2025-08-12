@@ -1284,7 +1284,7 @@
       
       const childDiv = document.createElement('div');
       childDiv.className = 'child-section';
-      childDiv.dataset.childId = childCount;
+      childDiv.dataset.child = childCount;
       
       childDiv.innerHTML = `
         <div class="child-header">
@@ -1292,36 +1292,26 @@
             <div class="child-icon">${childCount}</div>
             Child ${childCount}
           </div>
-          <button type="button" class="remove-child" onclick="removeChild(${childCount})">×</button>
+          <button type="button" class="remove-child" data-child-id="${childCount}">×</button>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>First Name <span class="required">*</span></label>
-            <input type="text" id="child-${childCount}-first" required data-child-id="${childCount}">
+            <input type="text" class="child-first-name" required>
           </div>
           <div class="form-group">
             <label>Last Name <span class="required">*</span></label>
-            <input type="text" id="child-${childCount}-last" required data-child-id="${childCount}">
+            <input type="text" class="child-last-name" required>
           </div>
           <div class="form-group">
             <label>Grade <span class="required">*</span></label>
-            <select id="child-${childCount}-grade" required data-child-id="${childCount}">
+            <select class="child-grade" required>
               <option value="">Select Grade</option>
-              <option value="PreK">PreK</option>
-              <option value="K">Kindergarten</option>
-              <option value="1">1st Grade</option>
-              <option value="2">2nd Grade</option>
-              <option value="3">3rd Grade</option>
-              <option value="4">4th Grade</option>
-              <option value="5">5th Grade</option>
-              <option value="6">6th Grade</option>
-              <option value="7">7th Grade</option>
-              <option value="8">8th Grade</option>
-              <option value="9">9th Grade</option>
-              <option value="10">10th Grade</option>
-              <option value="11">11th Grade</option>
-              <option value="12">12th Grade</option>
-              <option value="Teacher">Teacher</option>
+              <option value="K-2">K-2</option>
+              <option value="3-4">3-4</option>
+              <option value="5-6">5-6</option>
+              <option value="7-8">7-8</option>
+              <option value="9-12">9-12</option>
               <option value="Staff">Staff</option>
               <option value="Parent">Parent</option>
             </select>
@@ -1329,58 +1319,91 @@
         </div>
       `;
       
+      const removeBtn = childDiv.querySelector('.remove-child');
+      removeBtn.addEventListener('click', function() {
+        const childId = this.dataset.childId;
+        removeChild(parseInt(childId));
+      });
+      
       container.appendChild(childDiv);
       updateChildCheckboxes();
       validateForm();
     }
 
     function removeChild(childId) {
-      if (confirm('Remove this child from the order?')) {
-        const childDiv = document.querySelector(`.child-section[data-child-id="${childId}"]`);
-        if (childDiv) {
-          childDiv.remove();
-        }
+      const childSection = document.querySelector('[data-child="' + childId + '"]');
+      if (childSection && childCount > 1) {
+        orderItems = orderItems.filter(function(item) {
+          return item.childId !== childId.toString();
+        });
         
-        // Remove from order items
-        orderItems = orderItems.filter(item => item.childId !== childId);
-        
+        childSection.remove();
+        renumberChildren();
+        updateChildCheckboxes();
         updateCart();
-        validateForm();
       }
+    }
+
+    function renumberChildren() {
+      const childSections = document.querySelectorAll('.child-section');
+      childCount = childSections.length;
+      
+      childSections.forEach(function(section, index) {
+        const newChildId = index + 1;
+        section.dataset.child = newChildId;
+        section.querySelector('.child-icon').textContent = newChildId;
+        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
+        
+        const removeBtn = section.querySelector('.remove-child');
+        if (removeBtn) {
+          removeBtn.dataset.childId = newChildId;
+          
+          const newRemoveBtn = removeBtn.cloneNode(true);
+          newRemoveBtn.addEventListener('click', function() {
+            const childId = this.dataset.childId;
+            removeChild(parseInt(childId));
+          });
+          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
+        }
+      });
     }
 
     function updateChildCheckboxes() {
       const children = document.querySelectorAll('.child-section');
       
-      days.forEach(function(day) {
-        Object.keys(menuData).forEach(function(category) {
-          menuData[category].forEach(function(item) {
-            const checkboxContainer = document.getElementById(`${item.id}-${day}-checkboxes`);
-            if (checkboxContainer) {
-              checkboxContainer.innerHTML = '';
-              
-              children.forEach(function(childDiv) {
-                const childId = childDiv.dataset.childId;
-                const firstNameField = childDiv.querySelector(`#child-${childId}-first`);
-                const childName = firstNameField ? firstNameField.value || `Child ${childId}` : `Child ${childId}`;
-                
-                const checkboxDiv = document.createElement('div');
-                checkboxDiv.className = 'child-checkbox';
-                
-                checkboxDiv.innerHTML = `
-                  <input type="checkbox" 
-                         id="${item.id}-${day}-${childId}" 
-                         data-item="${item.id}" 
-                         data-child-id="${childId}" 
-                         data-day="${day}"
-                         onchange="updateCart()">
-                  <label for="${item.id}-${day}-${childId}">${childName}</label>
-                `;
-                
-                checkboxContainer.appendChild(checkboxDiv);
-              });
-            }
-          });
+      document.querySelectorAll('.child-checkboxes').forEach(function(container) {
+        const containerIdParts = container.id.split('-');
+        const itemId = containerIdParts[0];
+        const day = containerIdParts[1];
+        
+        container.innerHTML = '';
+        
+        children.forEach(function(child) {
+          const childId = child.dataset.child;
+          const firstName = child.querySelector('.child-first-name').value.trim();
+          const lastName = child.querySelector('.child-last-name').value.trim();
+          
+          const displayName = firstName && lastName ? firstName + ' ' + lastName : 
+                            firstName ? firstName : 
+                            lastName ? lastName : 'Child ' + childId;
+          
+          const checkboxWrapper = document.createElement('div');
+          checkboxWrapper.className = 'child-checkbox';
+          
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.id = itemId + '-' + day + '-child-' + childId;
+          checkbox.dataset.item = itemId;
+          checkbox.dataset.childId = childId;
+          checkbox.dataset.day = day;
+          
+          const label = document.createElement('label');
+          label.htmlFor = checkbox.id;
+          label.textContent = displayName;
+          
+          checkboxWrapper.appendChild(checkbox);
+          checkboxWrapper.appendChild(label);
+          container.appendChild(checkboxWrapper);
         });
       });
     }
@@ -1388,23 +1411,40 @@
     function updateCart() {
       orderItems = [];
       currentSubtotal = 0;
-      currentDiscount = 0;
-      currentTotal = 0;
-
-      days.forEach(function(day) {
-        Object.keys(menuData).forEach(function(category) {
-          menuData[category].forEach(function(item) {
-            document.querySelectorAll(`input[type="checkbox"][data-item="${item.id}"][data-day="${day}"]:checked`).forEach(function(checkbox) {
-              const childId = checkbox.dataset.childId;
-              const childDiv = document.querySelector(`.child-section[data-child-id="${childId}"]`);
-              const childFirstName = childDiv.querySelector(`#child-${childId}-first`).value || `Child ${childId}`;
-              const childLastName = childDiv.querySelector(`#child-${childId}-last`).value || '';
-              const childName = `${childFirstName} ${childLastName}`.trim();
-
-              let finalPrice;
+      
+      const children = document.querySelectorAll('.child-section');
+      
+      children.forEach(function(child) {
+        const childId = child.dataset.child;
+        const childFirstName = child.querySelector('.child-first-name').value.trim();
+        const childLastName = child.querySelector('.child-last-name').value.trim();
+        const childGrade = child.querySelector('.child-grade').value;
+        
+        if (!childFirstName || !childLastName || !childGrade) return;
+        
+        days.forEach(function(day) {
+          const checkboxes = document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked');
+          
+          checkboxes.forEach(function(checkbox) {
+            const itemId = checkbox.dataset.item;
+            let item = null;
+            let category = null;
+            
+            // Find the item in our menu data
+            Object.keys(menuData).forEach(function(cat) {
+              const found = menuData[cat].find(function(i) { return i.id === itemId; });
+              if (found) {
+                item = found;
+                category = cat;
+              }
+            });
+            
+            if (item) {
+              let finalPrice = item.price || item.basePrice;
               let isDiscounted = false;
               let discountAmount = 0;
-
+              
+              // Apply combo discount for drinks
               if (category === 'drinks') {
                 const hasCombo = checkChildHasEntreeOrSaladAndSide(childId, day);
                 if (hasCombo) {
@@ -1412,23 +1452,20 @@
                     finalPrice = 0;
                     isDiscounted = true;
                     discountAmount = item.basePrice;
-                  } else {
+                  } else if (item.category === 'premium') {
                     finalPrice = 1.50;
                     isDiscounted = true;
                     discountAmount = item.basePrice - 1.50;
                   }
-                } else {
-                  finalPrice = item.basePrice;
                 }
-              } else {
-                finalPrice = item.price;
               }
-
+              
               const orderItem = {
-                id: `${item.id}-${childId}-${day}`,
                 childId: childId,
-                childName: childName,
-                itemId: item.id,
+                childName: childFirstName + ' ' + childLastName,
+                firstName: childFirstName,
+                lastName: childLastName,
+                grade: childGrade,
                 name: item.name,
                 price: finalPrice,
                 originalPrice: item.price || item.basePrice,
@@ -1440,11 +1477,12 @@
               
               orderItems.push(orderItem);
               currentSubtotal += finalPrice;
-            });
+            }
           });
         });
       });
       
+      // Apply promo code discounts
       if (discountType === 'staff') {
         currentDiscount = currentSubtotal * 0.10;
       } else if (discountType === 'john') {
@@ -1641,12 +1679,22 @@
       // Add child button
       document.getElementById('add-child-btn').addEventListener('click', addChild);
       
+      // Checkbox change event listener that triggers updateCart()
+      document.addEventListener('change', function(e) {
+        if (e.target.type === 'checkbox' && e.target.dataset.item) {
+          setTimeout(function() {
+            updateCart();
+          }, 50);
+        }
+      });
+      
       // Form inputs for validation
       document.addEventListener('input', function(e) {
-        if (e.target.matches('[data-child-id]')) {
+        if (e.target.classList.contains('child-first-name') || 
+            e.target.classList.contains('child-last-name')) {
           updateChildCheckboxes();
-          validateForm();
         }
+        validateForm();
       });
       
       // Promo code
