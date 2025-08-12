@@ -934,7 +934,7 @@
     // ============================================
     // GLOBAL VARIABLES
     // ============================================
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKdOxh0LnGCE5dKY3nO9iBRPc9Y8i6dU1nfKvQdMPGSMfGfnDRMHJ-VfLcEMZ2zFJF/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec';
     
     let authenticatedEmail = '';
     let storeIsOpen = true;
@@ -1052,10 +1052,10 @@
       console.log('Initializing order system...');
       
       checkStoreHours();
+      addChild(); // Add first child BEFORE generating menus
       generateDayTabs();
       generateMenus();
       setupEventListeners();
-      addChild(); // Add first child automatically
       updateCart();
       validateForm();
       
@@ -1920,6 +1920,13 @@
           }
         }, 300);
       }, 3000);
+    }
+
+    function scrollToOrderForm() {
+      const formSection = document.querySelector('.form-section');
+      if (formSection) {
+        formSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
     // Make functions available globally
