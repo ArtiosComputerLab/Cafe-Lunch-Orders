@@ -437,17 +437,11 @@
     function initializeDashboard() {
       // Set family info in header
       document.getElementById('family-email').textContent = authenticatedEmail;
-      document.getElementById('family-greeting').textContent = `Welcome back, ${getFamilyName(authenticatedEmail)}!`;
+      document.getElementById('family-greeting').textContent = 'Welcome back!';
       
       // Set family avatar initial
       const familyInitial = authenticatedEmail.charAt(0).toUpperCase();
       document.getElementById('family-avatar').textContent = familyInitial;
-    }
-
-    function getFamilyName(email) {
-      // Extract family name from email (simple approach)
-      const name = email.split('@')[0];
-      return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
     function checkStoreHours() {
@@ -473,100 +467,96 @@
         const statusText = isWeekday ? 'Ordering Open - Place Orders Now!' : 'Weekend Ordering Available';
         statusDiv.innerHTML = `
           <h4>✅ ${statusText}</h4>
-          <p>Orders accepted • Payments via Venmo • Questions? Contact CRivers@artiosacademies.com</p>
+          <p>Orders accepted • Payments via Venmo • Questions? <a href="mailto:CRivers@artiosacademies.com" style="color: inherit;">CRivers@artiosacademies.com</a></p>
         `;
       }
     }
 
     function loadRecentOrders() {
-      const loadingDiv = document.getElementById('orders-loading');
-      const summaryDiv = document.getElementById('orders-summary');
-      
-      if (!GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        loadingDiv.textContent = 'Order history temporarily unavailable';
+      if (!GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+        document.getElementById('orders-loading').style.display = 'none';
+        document.getElementById('orders-summary').style.display = 'block';
+        document.getElementById('orders-summary').innerHTML = `
+          <p style="text-align: center; color: #666; padding: 20px;">
+            Recent orders will appear here once orders are placed.
+          </p>
+        `;
         return;
       }
 
-      const apiUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=lookup_orders&email=${encodeURIComponent(authenticatedEmail)}`;
-
-      fetch(apiUrl)
+      fetch(`${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=lookup_orders&email=${encodeURIComponent(authenticatedEmail)}`)
         .then(response => response.json())
         .then(data => {
-          console.log('Recent orders response:', data);
+          document.getElementById('orders-loading').style.display = 'none';
+          document.getElementById('orders-summary').style.display = 'block';
           
           if (data.success && data.orders && data.orders.length > 0) {
-            displayRecentOrders(data.orders.slice(0, 3)); // Show last 3 orders
+            const recentOrders = data.orders.slice(0, 3);
+            let ordersHtml = '';
+            
+            recentOrders.forEach(order => {
+              ordersHtml += `
+                <div class="order-item">
+                  <div class="order-details">
+                    <div class="order-id">Order #${order.orderId}</div>
+                    <div class="order-date">${new Date(order.date).toLocaleDateString()}</div>
+                  </div>
+                  <div class="order-total">$${order.total}</div>
+                </div>
+              `;
+            });
+            
+            document.getElementById('orders-summary').innerHTML = ordersHtml;
           } else {
-            loadingDiv.innerHTML = `
-              <div style="text-align: center; color: #666;">
-                <div style="font-size: 2em; margin-bottom: 10px;">🍽️</div>
-                <p>No orders yet! Ready to place your first order?</p>
-                <button onclick="goToOrdering()" style="background: #4285f4; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-top: 10px;">
-                  Start Ordering
-                </button>
-              </div>
+            document.getElementById('orders-summary').innerHTML = `
+              <p style="text-align: center; color: #666; padding: 20px;">
+                No recent orders found. Ready to place your first order?
+              </p>
             `;
           }
         })
         .catch(error => {
           console.error('Error loading recent orders:', error);
-          loadingDiv.textContent = 'Unable to load order history at this time';
+          document.getElementById('orders-loading').style.display = 'none';
+          document.getElementById('orders-summary').style.display = 'block';
+          document.getElementById('orders-summary').innerHTML = `
+            <p style="text-align: center; color: #f44336; padding: 20px;">
+              Unable to load recent orders. Please try again later.
+            </p>
+          `;
         });
-    }
-
-    function displayRecentOrders(orders) {
-      const loadingDiv = document.getElementById('orders-loading');
-      const summaryDiv = document.getElementById('orders-summary');
-      
-      loadingDiv.style.display = 'none';
-      summaryDiv.style.display = 'block';
-      
-      summaryDiv.innerHTML = orders.map(order => `
-        <div class="order-item">
-          <div class="order-details">
-            <div class="order-id">Order #${order.orderId}</div>
-            <div class="order-date">${new Date(order.timestamp).toLocaleDateString()} • ${order.items.length} items</div>
-          </div>
-          <div class="order-total">$${order.total.toFixed(2)}</div>
-        </div>
-      `).join('');
     }
 
     function updateSessionTimer() {
       const authExpiry = parseInt(sessionStorage.getItem('authExpiry'));
-      const sessionTimeSpan = document.getElementById('session-time');
+      if (!authExpiry) return;
       
       function updateTimer() {
-        const timeLeft = authExpiry - Date.now();
-        if (timeLeft <= 0) {
-          sessionTimeSpan.textContent = 'Session expired';
-          setTimeout(() => {
-            logout();
-          }, 1000);
-          return;
+        const timeLeft = Math.max(0, Math.floor((authExpiry - Date.now()) / (1000 * 60 * 60)));
+        const sessionTimeSpan = document.getElementById('session-time');
+        if (sessionTimeSpan) {
+          sessionTimeSpan.textContent = timeLeft > 0 ? `${timeLeft}h left` : 'Expired';
         }
         
-        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        sessionTimeSpan.textContent = `${hours}h ${minutes}m remaining`;
+        if (timeLeft <= 0) {
+          logout();
+        }
       }
       
       updateTimer();
       setInterval(updateTimer, 60000); // Update every minute
     }
 
-    // Navigation Functions
     function goToOrdering() {
-      // Go to your existing index.html (ordering form) but now it will be protected
-      window.location.href = 'order.html'; 
+      window.location.href = 'order.html';
     }
 
     function viewOrderHistory() {
-      window.location.href = `manage-orders.html?email=${encodeURIComponent(authenticatedEmail)}`;
+      window.location.href = 'manage-orders.html';
     }
 
     function contactSupport() {
-      window.location.href = 'mailto:CRivers@artiosacademies.com?subject=Artios Cafe - Support Request&body=Hi! I need help with my family cafe account (' + authenticatedEmail + ').%0A%0APlease describe your question:%0A';
+      window.open('mailto:CRivers@artiosacademies.com?subject=Cafe Support Request', '_blank');
     }
 
     function logout() {
@@ -576,12 +566,6 @@
         window.location.href = 'login.html';
       }
     }
-
-    // Make functions globally accessible
-    window.goToOrdering = goToOrdering;
-    window.viewOrderHistory = viewOrderHistory;
-    window.contactSupport = contactSupport;
-    window.logout = logout;
   </script>
 </body>
 </html>
