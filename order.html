@@ -12,36 +12,28 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #333;
+      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f8f9fa;
+      color: #202124;
+      line-height: 1.6;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    /* Authentication Header Bar */
+    /* AUTHENTICATION BAR - NEW */
     .auth-bar {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      padding: 15px 25px;
-      margin-bottom: 20px;
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
       color: white;
+      padding: 15px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .auth-bar .user-info {
       display: flex;
       align-items: center;
       gap: 15px;
+      font-weight: 500;
     }
 
     .auth-bar .nav-links {
@@ -81,41 +73,43 @@
       transform: translateY(-1px);
     }
 
-    .header {
+    .locked-email-note {
+      color: #666;
+      font-style: italic;
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+
+    /* MOBILE AUTH BAR */
+    @media (max-width: 768px) {
+      .auth-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .auth-bar .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    /* ALL INDEX.HTML STYLES EXACTLY */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
       background: white;
-      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
       padding: 30px;
       text-align: center;
-      margin-bottom: 30px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
       position: relative;
-    }
-
-    .store-status {
-      position: absolute;
-      top: 15px;
-      left: 20px;
-      background: rgba(76, 175, 80, 0.8);
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-size: 0.9em;
-      font-weight: 600;
-    }
-
-    .store-status.closed {
-      background: rgba(244, 67, 54, 0.8);
-    }
-
-    .sync-status {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      background: rgba(33, 150, 243, 0.8);
-      color: white;
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.8em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .header-brand {
@@ -127,68 +121,91 @@
     }
 
     .artios-logo {
+      width: 60px;
       height: 60px;
-      width: auto;
+      flex-shrink: 0;
+      object-fit: contain;
     }
 
-    .header-text h1 {
+    .header-text {
+      text-align: left;
+    }
+
+    .header h1 {
       font-size: 2.2em;
-      color: #2c3e50;
-      margin-bottom: 5px;
+      font-weight: 600;
+      margin: 0;
+      line-height: 1.2;
     }
 
-    .subtitle {
-      color: #7f8c8d;
+    .header .subtitle {
       font-size: 1.1em;
+      font-weight: 300;
+      margin: 5px 0 0 0;
+      opacity: 0.9;
     }
 
-    .notice {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
+    .header .notice {
+      background: rgba(255,255,255,0.15);
+      padding: 20px;
+      border-radius: 12px;
       font-size: 0.95em;
-      line-height: 1.4;
+      margin-top: 25px;
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .sync-status {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      background: rgba(255,255,255,0.2);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8em;
+    }
+
+    .store-status {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      background: rgba(255,255,255,0.2);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8em;
     }
 
     .main-content {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 30px;
-      align-items: start;
+      display: flex;
+      min-height: calc(100vh - 140px);
     }
 
-    /* Form Section */
     .form-section {
-      background: white;
-      border-radius: 12px;
+      flex: 2;
       padding: 30px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      background: white;
     }
 
+    /* Shared Email Section */
     .shared-email {
-      background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
-      border: 2px solid #2196f3;
-      border-radius: 12px;
+      background: #e8f5e8;
+      border: 2px solid #4caf50;
+      border-radius: 8px;
       padding: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .shared-email h3 {
-      color: #1976d2;
+      color: #2e7d32;
       margin-bottom: 15px;
-      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .locked-email-note {
-      color: #666;
-      font-style: italic;
-      margin-top: 5px;
-      font-size: 0.9em;
-    }
-
-    /* Child Sections */
+    /* Child Section Styles */
     .child-section {
+      background: #f8f9fa;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
       padding: 20px;
@@ -293,6 +310,7 @@
     input[readonly] {
       background: #f0f9ff;
       cursor: not-allowed;
+      color: #666;
     }
 
     .add-child-btn {
@@ -407,22 +425,19 @@
       background: linear-gradient(135deg, rgba(52, 168, 83, 0.25) 0%, rgba(52, 168, 83, 0.15) 100%);
     }
 
-    .category-title {
-      font-weight: 600;
-      color: #2e7d32;
-      font-size: 1.1em;
+    .menu-category-header h4 {
+      color: #34a853;
+      font-size: 1.3em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0;
     }
 
     .collapse-icon {
-      background: #34a853;
-      color: white;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8em;
+      color: #34a853;
+      font-size: 1.2em;
+      font-weight: bold;
       transition: transform 0.3s ease;
     }
 
@@ -431,24 +446,29 @@
     }
 
     .menu-items {
-      background: #fafafa;
+      padding: 20px;
+      background: white;
+    }
+
+    .drink-discount-notice {
+      margin-bottom: 15px;
     }
 
     .menu-item {
-      padding: 20px;
-      border-bottom: 1px solid #e0e0e0;
-      display: flex;
-      gap: 20px;
-      align-items: center;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
       transition: all 0.3s ease;
-    }
-
-    .menu-item:last-child {
-      border-bottom: none;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
     }
 
     .menu-item:hover {
-      background: #f0f0f0;
+      border-color: #4285f4;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .menu-item-image {
@@ -456,6 +476,7 @@
       height: 80px;
       border-radius: 8px;
       object-fit: cover;
+      flex-shrink: 0;
       border: 2px solid #e0e0e0;
       transition: all 0.3s ease;
     }
@@ -529,10 +550,13 @@
 
     /* Sidebar */
     .sidebar {
-      background: white;
-      border-radius: 12px;
+      flex: 1;
+      background: #f8f9fa;
+      border-left: 1px solid #e0e0e0;
       padding: 30px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .cart-summary {
       position: sticky;
       top: 30px;
     }
@@ -610,71 +634,95 @@
       color: #34a853;
     }
 
-    .remove-item-btn {
-      background: #ff5722;
+    .remove-item {
+      background: #ff4444;
       color: white;
       border: none;
       border-radius: 50%;
       width: 20px;
       height: 20px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
     }
 
-    .remove-item-btn:hover {
-      background: #d32f2f;
+    .remove-item:hover {
+      background: #cc0000;
       transform: scale(1.1);
     }
 
     .promo-section {
-      margin-bottom: 20px;
-      padding: 15px;
       background: #f8f9fa;
-      border-radius: 8px;
       border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
     }
 
     .promo-section.valid {
-      border-color: #34a853;
-      background: rgba(76, 175, 80, 0.1);
+      border-color: #4caf50;
+      background: #e8f5e8;
     }
 
     .promo-section.invalid {
       border-color: #f44336;
-      background: rgba(244, 67, 54, 0.1);
+      background: #ffebee;
     }
 
-    .promo-section label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
+    .promo-section h4 {
       color: #666;
+      margin-bottom: 10px;
+      font-size: 1em;
+    }
+
+    .promo-section input {
+      margin-bottom: 10px;
+    }
+
+    .promo-status {
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+
+    .promo-status.valid {
+      color: #4caf50;
+    }
+
+    .promo-status.invalid {
+      color: #f44336;
     }
 
     .order-summary {
-      background: #f8f9fa;
-      padding: 20px;
+      background: white;
+      border: 2px solid #e0e0e0;
       border-radius: 8px;
+      padding: 20px;
       margin-bottom: 20px;
     }
 
     .summary-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      padding: 5px 0;
     }
 
     .summary-row.total {
       border-top: 2px solid #e0e0e0;
-      padding-top: 12px;
-      margin-top: 12px;
+      padding-top: 15px;
+      margin-top: 15px;
       font-weight: 700;
-      font-size: 1.1em;
+      font-size: 1.2em;
       color: #2e7d32;
+    }
+
+    .discount-line {
+      color: #ff9800;
+      font-weight: 600;
     }
 
     .checkout-btn {
@@ -702,6 +750,7 @@
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+      opacity: 0.6;
     }
 
     /* Modal Styles */
@@ -788,6 +837,7 @@
       z-index: 1100;
       transform: translateX(400px);
       transition: all 0.3s ease;
+      border: 2px solid;
     }
 
     .notification.show {
@@ -795,30 +845,47 @@
     }
 
     .notification.success {
-      background: #4CAF50;
+      background: #d4edda;
+      color: #155724;
+      border-color: #c3e6cb;
     }
 
     .notification.error {
-      background: #f44336;
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #f5c6cb;
     }
 
     .notification.info {
-      background: #2196F3;
+      background: #e3f2fd;
+      color: #1976d2;
+      border-color: #bbdefb;
     }
 
     .notification.warning {
-      background: #FF9800;
+      background: #fff3cd;
+      color: #856404;
+      border-color: #ffeaa7;
     }
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
       .container {
-        padding: 10px;
+        margin: 0;
+        box-shadow: none;
       }
 
       .main-content {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        flex-direction: column;
+      }
+
+      .form-section, .sidebar {
+        padding: 20px;
+      }
+
+      .sidebar {
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
       }
 
       .header-brand {
@@ -826,19 +893,12 @@
         gap: 10px;
       }
 
-      .header-text h1 {
-        font-size: 1.8em;
-      }
-
-      .auth-bar {
-        flex-direction: column;
-        gap: 15px;
+      .header-text {
         text-align: center;
       }
 
-      .auth-bar .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
+      .header h1 {
+        font-size: 1.8em;
       }
 
       .form-row {
@@ -861,23 +921,33 @@
         height: 150px;
         align-self: center;
       }
+
+      .day-tabs {
+        flex-wrap: wrap;
+      }
+
+      .day-tab {
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Authentication Header Bar -->
-    <div class="auth-bar" id="auth-bar">
-      <div class="user-info">
-        <span>🔓 Logged in as: <strong id="user-email">Loading...</strong></span>
-      </div>
-      <div class="nav-links">
-        <a href="dashboard.html">🏠 Dashboard</a>
-        <a href="manage-orders.html">📋 Manage Orders</a>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </div>
+  <!-- Authentication Bar -->
+  <div class="auth-bar">
+    <div class="user-info">
+      <span>🔓 Logged in as: <strong id="user-email">Loading...</strong></span>
     </div>
+    <div class="nav-links">
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="manage-orders.html">📋 Manage Orders</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
 
+  <div class="container">
     <div class="header">
       <div class="store-status" id="store-status">
         Checking store hours...
@@ -967,36 +1037,38 @@
       </div>
 
       <div class="sidebar">
-        <div class="cart-title">🛒 Your Order</div>
+        <div class="cart-summary">
+          <div class="cart-title">🛒 Your Order</div>
 
-        <div class="cart-items" id="cart-items">
-          <div class="empty-cart">No items selected</div>
-        </div>
-
-        <div class="promo-section" id="promo-section">
-          <label for="promo-code">Promo Code (Optional)</label>
-          <input type="text" id="promo-code" placeholder="Enter promo code">
-          <div id="promo-message" style="margin-top: 8px; font-size: 0.9em;"></div>
-        </div>
-
-        <div class="order-summary">
-          <div class="summary-row">
-            <span>Subtotal:</span>
-            <span id="subtotal-amount">$0.00</span>
+          <div class="cart-items" id="cart-items">
+            <div class="empty-cart">No items selected</div>
           </div>
-          <div class="summary-row" id="discount-row" style="display: none;">
-            <span id="discount-label">Discount:</span>
-            <span id="discount-amount">-$0.00</span>
-          </div>
-          <div class="summary-row total">
-            <span>Total:</span>
-            <span id="total-amount">$0.00</span>
-          </div>
-        </div>
 
-        <button class="checkout-btn" id="checkout-btn" disabled>
-          🛒 Add Items to Order First
-        </button>
+          <div class="promo-section">
+            <h4>Promo Code (Optional)</h4>
+            <input type="text" id="promo-code" placeholder="Enter promo code">
+            <div class="promo-status" id="promo-status"></div>
+          </div>
+
+          <div class="order-summary">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span id="subtotal">$0.00</span>
+            </div>
+            <div class="summary-row discount-line" id="discount-line" style="display: none;">
+              <span id="discount-label">Discount:</span>
+              <span id="discount-amount">-$0.00</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total:</span>
+              <span id="total">$0.00</span>
+            </div>
+          </div>
+
+          <button class="checkout-btn" id="checkout-btn" disabled>
+            Select Items to Continue
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1006,7 +1078,24 @@
     <div class="modal-content">
       <h3>💳 Complete Your Payment</h3>
       <div id="payment-details">
-        <!-- Payment details will be inserted here -->
+        <div style="text-align: center; margin: 20px 0;">
+          <div style="font-size: 1.5em; color: #4CAF50; margin-bottom: 10px;">
+            💰 Total: $<span id="modal-total">0.00</span>
+          </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <div style="font-weight: 600; margin-bottom: 10px;">📱 Venmo Payment:</div>
+          <div><strong>Send to:</strong> @ChanTa-Rivers</div>
+          <div><strong>Amount:</strong> $<span id="venmo-total">0.00</span></div>
+          <div><strong>Note:</strong> Artios Cafe Order</div>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+          <a href="#" id="venmo-payment-link" target="_blank" style="background: #3D95CE; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block;">
+            📱 Pay with Venmo
+          </a>
+        </div>
       </div>
       <div class="modal-buttons">
         <button class="modal-btn secondary" id="cancel-payment-btn">Cancel</button>
@@ -1036,31 +1125,35 @@
   </div>
 
   <script>
-    // Configuration
+    // ============================================
+    // GOOGLE SHEETS CONFIGURATION
+    // ============================================
     const GOOGLE_SHEETS_CONFIG = {
       webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
       useGoogleSheets: true
     };
 
-    // Global variables
+    // ============================================
+    // GLOBAL VARIABLES
+    // ============================================
     let authenticatedEmail = '';
     let storeIsOpen = true;
     let currentDay = 'monday';
     let orderItems = [];
+    let currentTotal = 0;
     let currentSubtotal = 0;
     let currentDiscount = 0;
-    let currentTotal = 0;
-    let discountType = null;
-    let childCounter = 1;
+    let discountType = 'none';
+    let childCount = 1;
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
     const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
     // ============================================
-    // MENU DATA WITH IMAGES (EXACTLY THE SAME)
+    // MENU DATA (EXACTLY FROM INDEX.HTML)
     // ============================================
     const menuData = {
-      entrees: [
+      'entrees': [
         { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken', image: 'assets/chickensandwich.png' },
         { id: 'spicy-chicken', name: 'Spicy Chicken Sandwich', price: 6.75, desc: 'Boneless breast with spicy seasoning', image: 'assets/spicysandwich.png' },
         { id: 'nuggets-8', name: 'Nuggets (8ct)', price: 6.50, desc: 'Bite-sized boneless chicken pieces', image: 'assets/nuggets.png' },
@@ -1071,12 +1164,12 @@
         { id: 'veggie-wrap', name: 'Southwest Veggie Wrap', price: 9.50, desc: 'Vegetarian wrap with southwest flavors', image: 'assets/veggiewrap.png' },
         { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips', image: 'assets/chickenstrips.png' }
       ],
-      salads: [
+      'salads': [
         { id: 'cobb-salad', name: 'Cobb Salad', price: 10.75, desc: 'Mixed greens, grilled chicken, bacon, egg, cheese', image: 'assets/cobbsalad.png' },
         { id: 'southwest-salad', name: 'Southwest Salad', price: 10.75, desc: 'Mixed greens with southwest chicken and toppings', image: 'assets/southwestsalad.png' },
         { id: 'market-salad', name: 'Market Fresh Salad', price: 10.75, desc: 'Seasonal greens with grilled chicken and fruit', image: 'assets/marketsalad.png' }
       ],
-      sides: [
+      'sides': [
         { id: 'waffle-fries', name: 'Waffle Potato Fries', price: 2.85, desc: 'Signature waffle-cut fries', image: 'assets/fries.png' },
         { id: 'fruit-cup', name: 'Fruit Cup', price: 3.95, desc: 'Fresh seasonal fruit', image: 'assets/fruitcup.png' },
         { id: 'mac-cheese', name: 'Mac & Cheese', price: 3.95, desc: 'Creamy macaroni and cheese', image: 'assets/macandcheese.png' },
@@ -1084,7 +1177,7 @@
         { id: 'greek-yogurt', name: 'Greek Yogurt Parfait', price: 4.95, desc: 'Greek yogurt with berries and granola', image: 'assets/parfait.png' },
         { id: 'chips', name: 'Chips (Artios Provided)', price: 0.00, desc: 'Variety of chips (provided by Artios)', image: 'assets/chips.jpg' }
       ],
-      drinks: [
+      'drinks': [
         { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, desc: 'Water, Sodas (choose at pickup)', category: 'regular' },
         { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, desc: 'Iced Coffees, Vitamin Water (choose at pickup)', category: 'premium' }
       ]
@@ -1179,22 +1272,19 @@
       const storeStatus = document.getElementById('store-status');
       
       const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
-      const isPastCutoff = (hours > 8) || (hours === 8 && minutes >= 15);
-      const isFridayAfterNoon = (dayOfWeek === 5 && hours >= 12);
       
-      if (isWeekday && isPastCutoff && hours < 13 && !isFridayAfterNoon) {
+      // Friday 8:15 AM - Noon blackout period
+      const isFridayBlackout = (dayOfWeek === 5 && hours >= 8 && minutes >= 15 && hours < 12);
+      
+      if (isFridayBlackout) {
         storeIsOpen = false;
-        storeStatus.className = 'store-status closed';
-        storeStatus.textContent = '🔒 Store Closed - Orders resume at 1:00 PM';
-      } else if (isWeekday && dayOfWeek === 5 && hours >= 12) {
-        storeIsOpen = false;
-        storeStatus.className = 'store-status closed';
-        storeStatus.textContent = '🔒 Store Closed - Weekend Break';
+        storeStatus.textContent = '🔒 Orders resume at noon';
+        storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
       } else {
         storeIsOpen = true;
-        storeStatus.className = 'store-status';
         const statusText = isWeekday ? '✅ Store Open - Orders Accepted' : '✅ Weekend Ordering Open';
         storeStatus.textContent = statusText;
+        storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
       }
     }
 
@@ -1224,6 +1314,7 @@
       const dayOfWeek = now.getDay();
       
       let monday;
+      // Roll over to next week: Friday at noon OR weekend
       const isNextWeek = (dayOfWeek === 5 && currentHour >= 12) || dayOfWeek === 6 || dayOfWeek === 0;
       
       if (isNextWeek) {
@@ -1244,7 +1335,13 @@
         const isToday = dateOnly.getTime() === todayOnly.getTime();
         const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
         
-        const isPast = !isNextWeek && (isBeforeToday || (isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15))));
+        // Day is disabled if: 
+        // 1. Past 8:15 AM cutoff for current/past days, OR
+        // 2. Friday 8:15 AM - Noon blackout period (all days disabled)
+        const isPastCutoff = !isNextWeek && (isBeforeToday || (isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15))));
+        const isFridayBlackout = (dayOfWeek === 5 && currentHour >= 8 && currentMinutes >= 15 && currentHour < 12);
+        
+        const isDisabled = isPastCutoff || isFridayBlackout;
 
         const tab = document.createElement('div');
         tab.className = 'day-tab';
@@ -1252,9 +1349,13 @@
 
         tab.innerHTML = '<div>' + dayNames[index] + '</div><div style="font-size: 0.8em; opacity: 0.8;">' + (date.getMonth() + 1) + '/' + date.getDate() + '</div>';
 
-        if (isPast) {
+        if (isDisabled) {
           tab.classList.add('disabled');
-          tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:00 AM cutoff passed)';
+          if (isFridayBlackout) {
+            tab.title = 'Orders resume at noon on Friday';
+          } else {
+            tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:00 AM cutoff passed)';
+          }
         } else {
           tab.addEventListener('click', function() { switchDay(day); });
           if (!firstAvailableDay) {
@@ -1278,185 +1379,169 @@
       const container = document.getElementById('menu-container');
       
       days.forEach(function(day) {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'menu-for-day';
-        dayDiv.dataset.day = day;
+        const dayMenu = document.createElement('div');
+        dayMenu.className = 'menu-for-day';
+        dayMenu.dataset.day = day;
         
         if (day === currentDay) {
-          dayDiv.classList.add('active');
+          dayMenu.classList.add('active');
         }
         
         Object.keys(menuData).forEach(function(category) {
-          if (category === 'drinks') return;
-          
           const categoryDiv = document.createElement('div');
           categoryDiv.className = 'menu-category';
-          categoryDiv.dataset.category = category;
           
-          const header = document.createElement('div');
-          header.className = 'menu-category-header';
-          header.innerHTML = `
-            <div class="category-title">${category.charAt(0).toUpperCase() + category.slice(1)}</div>
+          const headerDiv = document.createElement('div');
+          headerDiv.className = 'menu-category-header';
+          headerDiv.innerHTML = `
+            <h4>${category.charAt(0).toUpperCase() + category.slice(1)}</h4>
             <div class="collapse-icon">▼</div>
           `;
           
           const itemsDiv = document.createElement('div');
           itemsDiv.className = 'menu-items';
           
+          // Add drink discount notice for drinks
+          if (category === 'drinks') {
+            const discountNotice = document.createElement('div');
+            discountNotice.className = 'drink-discount-notice';
+            discountNotice.innerHTML = '<strong>💰 Combo Meal Discount:</strong> Get a regular drink FREE or premium drink for $1.50 when you order an entree/salad + side!<br></div>';
+            itemsDiv.appendChild(discountNotice);
+          }
+          
           menuData[category].forEach(function(item) {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'menu-item';
             
+            let priceDisplay;
+            if (category === 'drinks') {
+              priceDisplay = '$' + item.basePrice.toFixed(2);
+            } else {
+              priceDisplay = '$' + item.price.toFixed(2);
+            }
+            
+            // Create menu item with image (skip drinks)
+            let imageHtml = '';
+            if (category !== 'drinks' && item.image) {
+              imageHtml = `<img src="${item.image}" alt="${item.name}" class="menu-item-image" onerror="this.style.display='none'">`;
+            }
+            
             itemDiv.innerHTML = `
-              <img src="${item.image}" alt="${item.name}" class="menu-item-image" loading="lazy">
+              ${imageHtml}
               <div class="menu-item-content">
                 <div class="item-header">
                   <div class="item-name">${item.name}</div>
-                  <div class="item-price">$${item.price.toFixed(2)}</div>
+                  <div class="item-price" data-item-id="${item.id}">${priceDisplay}</div>
                 </div>
                 <div class="item-desc">${item.desc}</div>
-                <div class="child-checkboxes" id="checkboxes-${item.id}-${day}">
-                  <!-- Child checkboxes will be generated by updateChildCheckboxes -->
-                </div>
+                <div class="child-checkboxes" id="${item.id}-${day}-checkboxes"></div>
               </div>
             `;
             
             itemsDiv.appendChild(itemDiv);
           });
           
-          categoryDiv.appendChild(header);
+          categoryDiv.appendChild(headerDiv);
           categoryDiv.appendChild(itemsDiv);
-          dayDiv.appendChild(categoryDiv);
           
+          // Setup collapse functionality
           setupCategoryToggle(categoryDiv, category);
+          
+          dayMenu.appendChild(categoryDiv);
         });
         
-        // Add drinks section
-        const drinksDiv = document.createElement('div');
-        drinksDiv.className = 'menu-category';
-        drinksDiv.dataset.category = 'drinks';
-        
-        const drinksHeader = document.createElement('div');
-        drinksHeader.className = 'menu-category-header';
-        drinksHeader.innerHTML = `
-          <div class="category-title">Drinks</div>
-          <div class="collapse-icon">▼</div>
-        `;
-        
-        const drinksItems = document.createElement('div');
-        drinksItems.className = 'menu-items';
-        
-        menuData.drinks.forEach(function(drink) {
-          const drinkDiv = document.createElement('div');
-          drinkDiv.className = 'menu-item';
-          
-          drinkDiv.innerHTML = `
-            <div class="menu-item-content" style="width: 100%;">
-              <div class="item-header">
-                <div class="item-name">${drink.name}</div>
-                <div class="item-price">$${drink.basePrice.toFixed(2)} <span style="font-size: 0.8em; color: #666;">(FREE with combo meal)</span></div>
-              </div>
-              <div class="item-desc">${drink.desc}</div>
-              <div class="child-checkboxes" id="checkboxes-${drink.id}-${day}">
-                <!-- Child checkboxes will be generated by updateChildCheckboxes -->
-              </div>
-            </div>
-          `;
-          
-          drinksItems.appendChild(drinkDiv);
-        });
-        
-        drinksDiv.appendChild(drinksHeader);
-        drinksDiv.appendChild(drinksItems);
-        dayDiv.appendChild(drinksDiv);
-        
-        setupCategoryToggle(drinksDiv, 'drinks');
-        
-        container.appendChild(dayDiv);
+        container.appendChild(dayMenu);
       });
       
       updateChildCheckboxes();
     }
 
-    function setupCategoryToggle(categoryDiv, categoryId) {
+    function switchDay(day) {
+      document.querySelectorAll('.day-tab').forEach(function(tab) {
+        tab.classList.remove('active');
+        if (tab.dataset.day === day) {
+          tab.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
+        menu.classList.remove('active');
+        if (menu.dataset.day === day) {
+          menu.classList.add('active');
+        }
+      });
+
+      currentDay = day;
+    }
+
+    function setupCategoryToggle(categoryDiv, category) {
       const header = categoryDiv.querySelector('.menu-category-header');
       header.addEventListener('click', function() {
         categoryDiv.classList.toggle('collapsed');
       });
     }
 
-    function switchDay(day) {
-      currentDay = day;
-      
-      document.querySelectorAll('.day-tab').forEach(function(tab) {
-        tab.classList.remove('active');
-      });
-      
-      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
-        menu.classList.remove('active');
-      });
-      
-      document.querySelector('[data-day="' + day + '"]').classList.add('active');
-      document.querySelector('.menu-for-day[data-day="' + day + '"]').classList.add('active');
-    }
-
     function addChild() {
-      childCounter++;
+      childCount++;
       const container = document.getElementById('children-container');
       
       const childDiv = document.createElement('div');
       childDiv.className = 'child-section';
-      childDiv.dataset.child = childCounter;
+      childDiv.dataset.child = childCount;
       
-      childDiv.innerHTML = `
-        <div class="child-header">
-          <div class="child-title">
-            <div class="child-icon">${childCounter}</div>
-            Child ${childCounter}
-          </div>
-          <button type="button" class="remove-child" onclick="removeChild(${childCounter})">×</button>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>First Name <span class="required">*</span></label>
-            <input type="text" class="child-first-name" required>
-          </div>
-          <div class="form-group">
-            <label>Last Name <span class="required">*</span></label>
-            <input type="text" class="child-last-name" required>
-          </div>
-          <div class="form-group">
-            <label>Grade <span class="required">*</span></label>
-            <select class="child-grade" required>
-              <option value="">Select Grade</option>
-              <option value="K-2">K-2</option>
-              <option value="3-4">3-4</option>
-              <option value="5-6">5-6</option>
-              <option value="7-8">7-8</option>
-              <option value="9-12">9-12</option>
-              <option value="Staff">Staff</option>
-              <option value="Parent">Parent</option>
-            </select>
-          </div>
-        </div>
-      `;
+      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
+      
+      const removeBtn = childDiv.querySelector('.remove-child');
+      removeBtn.addEventListener('click', function() {
+        const childId = this.dataset.childId;
+        removeChild(parseInt(childId));
+      });
       
       container.appendChild(childDiv);
       updateChildCheckboxes();
       validateForm();
+      
+      saveUserDataToCookies(Math.random() < 0.5);
     }
 
     function removeChild(childId) {
-      const childDiv = document.querySelector(`[data-child="${childId}"]`);
-      if (childDiv) {
-        // Remove any orders for this child
-        orderItems = orderItems.filter(item => item.childId !== childId);
+      const childSection = document.querySelector('[data-child="' + childId + '"]');
+      if (childSection && childCount > 1) {
+        orderItems = orderItems.filter(function(item) {
+          return item.childId !== childId.toString();
+        });
         
-        childDiv.remove();
+        childSection.remove();
+        renumberChildren();
         updateChildCheckboxes();
         updateCart();
-        validateForm();
+        
+        saveUserDataQuietly();
       }
+    }
+
+    function renumberChildren() {
+      const childSections = document.querySelectorAll('.child-section');
+      childCount = childSections.length;
+      
+      childSections.forEach(function(section, index) {
+        const newChildId = index + 1;
+        section.dataset.child = newChildId;
+        section.querySelector('.child-icon').textContent = newChildId;
+        section.querySelector('.child-title').lastChild.textContent = ' Child ' + newChildId;
+        
+        const removeBtn = section.querySelector('.remove-child');
+        if (removeBtn) {
+          removeBtn.dataset.childId = newChildId;
+          
+          const newRemoveBtn = removeBtn.cloneNode(true);
+          newRemoveBtn.addEventListener('click', function() {
+            const childId = this.dataset.childId;
+            removeChild(parseInt(childId));
+          });
+          removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
+        }
+      });
     }
 
     function updateChildCheckboxes() {
@@ -1465,25 +1550,25 @@
       document.querySelectorAll('.child-checkboxes').forEach(function(container) {
         container.innerHTML = '';
         
-        const parts = container.id.split('-');
-        const itemId = parts.slice(1, -1).join('-');
-        const day = parts[parts.length - 1];
+        const containerIdParts = container.id.split('-');
+        const itemId = containerIdParts[0];
+        const day = containerIdParts[1];
         
         children.forEach(function(child) {
           const childId = child.dataset.child;
           const firstName = child.querySelector('.child-first-name').value.trim();
           const lastName = child.querySelector('.child-last-name').value.trim();
           
-          const displayName = firstName && lastName ? `${firstName} ${lastName}` : 
+          const displayName = firstName && lastName ? firstName + ' ' + lastName : 
                             firstName ? firstName : 
-                            lastName ? lastName : `Child ${childId}`;
+                            lastName ? lastName : 'Child ' + childId;
           
-          const checkboxDiv = document.createElement('div');
-          checkboxDiv.className = 'child-checkbox';
+          const checkboxWrapper = document.createElement('div');
+          checkboxWrapper.className = 'child-checkbox';
           
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
-          checkbox.id = `${itemId}-${childId}-${day}`;
+          checkbox.id = itemId + '-' + childId + '-' + day;
           checkbox.dataset.item = itemId;
           checkbox.dataset.childId = childId;
           checkbox.dataset.day = day;
@@ -1492,14 +1577,15 @@
           label.htmlFor = checkbox.id;
           label.textContent = displayName;
           
-          checkboxDiv.appendChild(checkbox);
-          checkboxDiv.appendChild(label);
-          container.appendChild(checkboxDiv);
+          checkboxWrapper.appendChild(checkbox);
+          checkboxWrapper.appendChild(label);
+          container.appendChild(checkboxWrapper);
         });
       });
     }
 
     function updateCart() {
+      // Clear current order items
       orderItems = [];
       currentSubtotal = 0;
       
@@ -1514,13 +1600,14 @@
         if (!childFirstName || !childLastName || !childGrade) return;
         
         days.forEach(function(day) {
-          const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]:checked`);
+          const checkboxes = document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked');
           
           checkboxes.forEach(function(checkbox) {
             const itemId = checkbox.dataset.item;
             let item = null;
             let category = null;
             
+            // Find the item in our menu data
             Object.keys(menuData).forEach(function(cat) {
               const found = menuData[cat].find(function(i) { return i.id === itemId; });
               if (found) {
@@ -1552,7 +1639,7 @@
               
               const orderItem = {
                 childId: childId,
-                childName: `${childFirstName} ${childLastName}`,
+                childName: childFirstName + ' ' + childLastName,
                 firstName: childFirstName,
                 lastName: childLastName,
                 grade: childGrade,
@@ -1591,7 +1678,7 @@
       let hasEntreeOrSalad = false;
       let hasSide = false;
       
-      document.querySelectorAll(`input[type="checkbox"][data-child-id="${childId}"][data-day="${day}"]:checked`).forEach(function(checkbox) {
+      document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked').forEach(function(checkbox) {
         const itemId = checkbox.dataset.item;
         
         Object.keys(menuData).forEach(function(category) {
@@ -1611,16 +1698,17 @@
 
     function displayCart() {
       const cartItemsDiv = document.getElementById('cart-items');
-      const subtotalSpan = document.getElementById('subtotal-amount');
-      const discountRow = document.getElementById('discount-row');
+      const subtotalSpan = document.getElementById('subtotal');
+      const discountLine = document.getElementById('discount-line');
       const discountAmount = document.getElementById('discount-amount');
-      const totalSpan = document.getElementById('total-amount');
+      const discountLabel = document.getElementById('discount-label');
+      const totalSpan = document.getElementById('total');
       
       if (orderItems.length === 0) {
         cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
         subtotalSpan.textContent = '$0.00';
         totalSpan.textContent = '$0.00';
-        discountRow.style.display = 'none';
+        discountLine.style.display = 'none';
         return;
       }
       
@@ -1642,36 +1730,38 @@
       }).forEach(function(childId) {
         const childData = itemsByChild[childId];
         
-        html += `<div class="child-cart-section">`;
-        html += `<div class="child-cart-header">${childData.name}</div>`;
+        html += '<div class="child-cart-section">';
+        html += '<div class="child-cart-header">' + childData.name + '</div>';
         
         childData.items.forEach(function(item) {
-          html += `
-            <div class="cart-item">
-              <div class="cart-item-content">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-day">${item.day}</div>
-              </div>
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="cart-item-price">$${item.price.toFixed(2)}</div>
-                <button class="remove-item-btn" onclick="removeItemFromCart('${item.childId}', '${item.day}', '${item.name}')" title="Remove item">×</button>
-              </div>
-            </div>
-          `;
+          html += '<div class="cart-item">';
+          html += '<div class="cart-item-content">';
+          html += '<div class="cart-item-name">' + item.name + '</div>';
+          html += '<div class="cart-item-day">' + item.day + '</div>';
+          html += '</div>';
+          html += '<div class="cart-item-price"> + item.price.toFixed(2) + '</div>';
+          html += '<button class="remove-item" onclick="removeItemFromCart(\'' + item.childId + '\', \'' + item.day.toLowerCase() + '\', \'' + item.name + '\')">×</button>';
+          html += '</div>';
         });
         
-        html += `</div>`;
+        html += '</div>';
       });
       
       cartItemsDiv.innerHTML = html;
-      subtotalSpan.textContent = '$' + currentSubtotal.toFixed(2);
-      totalSpan.textContent = '$' + currentTotal.toFixed(2);
+      subtotalSpan.textContent = ' + currentSubtotal.toFixed(2);
+      totalSpan.textContent = ' + currentTotal.toFixed(2);
       
       if (currentDiscount > 0) {
-        discountRow.style.display = 'flex';
-        discountAmount.textContent = '-$' + currentDiscount.toFixed(2);
+        discountLine.style.display = 'flex';
+        discountAmount.textContent = '- + currentDiscount.toFixed(2);
+        
+        if (discountType === 'staff') {
+          discountLabel.textContent = 'Staff Discount (10%):';
+        } else if (discountType === 'john') {
+          discountLabel.textContent = 'JOHN Discount (50%):';
+        }
       } else {
-        discountRow.style.display = 'none';
+        discountLine.style.display = 'none';
       }
     }
 
@@ -1681,7 +1771,7 @@
       
       children.forEach(function(child) {
         if (child.dataset.child === childId) {
-          const checkboxes = child.parentElement.querySelectorAll(`input[type="checkbox"][data-child-id="${childId}"][data-day="${day.toLowerCase()}"]:checked`);
+          const checkboxes = child.parentElement.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked');
           
           checkboxes.forEach(function(checkbox) {
             const itemId = checkbox.dataset.item;
@@ -1703,63 +1793,340 @@
     }
 
     function validatePromoCode(code) {
-      const promoSection = document.getElementById('promo-section');
-      const promoMessage = document.getElementById('promo-message');
+      const promoStatus = document.getElementById('promo-status');
+      const promoSection = document.querySelector('.promo-section');
       
       code = code.trim().toUpperCase();
       
       if (!code) {
+        promoStatus.textContent = '';
+        promoStatus.className = 'promo-status';
         promoSection.className = 'promo-section';
-        promoMessage.textContent = '';
-        discountType = null;
+        discountType = 'none';
+        updateCart();
+        return;
+      }
+      
+      if (code === 'STAFF2025') {
+        promoStatus.textContent = '✅ Staff discount applied (10% off)';
+        promoStatus.className = 'promo-status valid';
+        promoSection.className = 'promo-section valid';
+        discountType = 'staff';
+      } else if (code === 'JOHN') {
+        promoStatus.textContent = '✅ Special discount applied (50% off)';
+        promoStatus.className = 'promo-status valid';
+        promoSection.className = 'promo-section valid';
+        discountType = 'john';
+      } else {
+        promoStatus.textContent = '❌ Invalid promo code';
+        promoStatus.className = 'promo-status invalid';
+        promoSection.className = 'promo-section invalid';
+        discountType = 'none';
       }
       
       updateCart();
     }
 
     function validateForm() {
-      const emailField = document.getElementById('family-email');
-      const children = document.querySelectorAll('.child-section');
+      const email = document.getElementById('family-email').value.trim();
       const checkoutBtn = document.getElementById('checkout-btn');
       
-      let isValid = true;
-      let hasItems = orderItems.length > 0;
-      
-      // Check email
-      if (!emailField.value.trim()) {
-        isValid = false;
+      if (!checkoutBtn) {
+        return false;
       }
       
-      // Check children
-      let validChildren = 0;
+      const hasItems = orderItems.length > 0;
+      const hasEmail = email.length > 0 && email.includes('@');
+      
+      const children = document.querySelectorAll('.child-section');
+      let allChildrenComplete = true;
       children.forEach(function(child) {
         const firstName = child.querySelector('.child-first-name').value.trim();
         const lastName = child.querySelector('.child-last-name').value.trim();
         const grade = child.querySelector('.child-grade').value;
-        
-        if (firstName && lastName && grade) {
-          validChildren++;
+        if (!firstName || !lastName || !grade) {
+          allChildrenComplete = false;
         }
       });
       
-      if (validChildren === 0) {
-        isValid = false;
+      const isValid = hasItems && hasEmail && allChildrenComplete && storeIsOpen;
+      
+      checkoutBtn.disabled = !isValid;
+      
+      if (isValid) {
+        checkoutBtn.textContent = 'Review & Pay Order ( + currentTotal.toFixed(2) + ')';
+        checkoutBtn.style.opacity = '1';
+        checkoutBtn.style.cursor = 'pointer';
+      } else {
+        if (!storeIsOpen) {
+          checkoutBtn.textContent = 'Store Closed';
+        } else if (!hasItems) {
+          checkoutBtn.textContent = 'Select Items to Continue';
+        } else if (!hasEmail) {
+          checkoutBtn.textContent = 'Enter Email to Continue';
+        } else if (!allChildrenComplete) {
+          checkoutBtn.textContent = 'Complete Child Info';
+        } else {
+          checkoutBtn.textContent = 'Review & Pay Order';
+        }
+        checkoutBtn.style.opacity = '0.6';
+        checkoutBtn.style.cursor = 'not-allowed';
       }
       
-      // Update checkout button
-      if (!isValid) {
-        checkoutBtn.disabled = true;
-        checkoutBtn.textContent = '📝 Complete Required Fields';
-      } else if (!hasItems) {
-        checkoutBtn.disabled = true;
-        checkoutBtn.textContent = '🛒 Add Items to Order First';
-      } else if (!storeIsOpen) {
-        checkoutBtn.disabled = true;
-        checkoutBtn.textContent = '🔒 Store Closed';
-      } else {
-        checkoutBtn.disabled = false;
-        checkoutBtn.textContent = `💳 Checkout - ${currentTotal.toFixed(2)}`;
+      return isValid;
+    }
+
+    function openPaymentModal() {
+      if (!validateForm()) {
+        return;
       }
+      
+      const modal = document.getElementById('payment-modal');
+      const modalTotal = document.getElementById('modal-total');
+      const venmoTotal = document.getElementById('venmo-total');
+      const venmoLink = document.getElementById('venmo-payment-link');
+      
+      if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
+        showNotification('Payment system error. Please refresh the page.', 'error');
+        return;
+      }
+      
+      modalTotal.textContent = currentTotal.toFixed(2);
+      venmoTotal.textContent = currentTotal.toFixed(2);
+      
+      const venmoAmount = currentTotal.toFixed(2);
+      const venmoNote = encodeURIComponent('Artios Cafe Order - ' + authenticatedEmail);
+      const venmoUrl = 'https://venmo.com/u/ChanTa-Rivers?txn=pay&amount=' + venmoAmount + '&note=' + venmoNote;
+      
+      venmoLink.href = venmoUrl;
+      
+      const paymentDetails = '@ChanTa-Rivers\nAmount:  + venmoAmount + '\nNote: Artios Cafe Order - ' + authenticatedEmail;
+      
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      if (confirmBtn) {
+        confirmBtn.onclick = function() {
+          confirmBtn.disabled = true;
+          confirmBtn.textContent = '⏳ Submitting Order...';
+          
+          // Try to copy to clipboard
+          navigator.clipboard.writeText(paymentDetails).then(function() {
+            showNotification('Payment details copied to clipboard!', 'success');
+          }).catch(function() {
+            alert('Please send payment to:\n\n' + paymentDetails);
+          });
+          
+          submitOrder();
+        };
+      }
+      
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+      
+      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      
+      if (modal) {
+        modal.classList.remove('show');
+        setTimeout(function() {
+          modal.style.display = 'none';
+        }, 300);
+      }
+      
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+      }
+    }
+
+    function submitOrder() {
+      const orderData = {
+        email: authenticatedEmail,
+        timestamp: new Date().toISOString(),
+        children: [],
+        items: orderItems,
+        subtotal: currentSubtotal,
+        discount: currentDiscount,
+        total: currentTotal,
+        promoCode: discountType,
+        orderId: generateOrderId()
+      };
+      
+      // Collect children data
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        const childData = {
+          firstName: child.querySelector('.child-first-name').value.trim(),
+          lastName: child.querySelector('.child-last-name').value.trim(),
+          grade: child.querySelector('.child-grade').value
+        };
+        
+        if (childData.firstName && childData.lastName && childData.grade) {
+          orderData.children.push(childData);
+        }
+      });
+      
+      console.log('Submitting order:', orderData);
+      
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+        submitToGoogleSheets(orderData);
+      } else {
+        // Fallback - just show confirmation
+        showDetailedOrderConfirmation(orderData);
+      }
+    }
+
+    function generateOrderId() {
+      const now = new Date();
+      const lastName = authenticatedEmail.split('@')[0].toUpperCase();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hour = String(now.getHours()).padStart(2, '0');
+      const minute = String(now.getMinutes()).padStart(2, '0');
+      
+      return lastName + '-' + month + day + '-' + hour + minute;
+    }
+
+    function submitToGoogleSheets(orderData) {
+      const submitData = {
+        action: 'submitOrder',
+        orderData: JSON.stringify(orderData)
+      };
+      
+      const params = new URLSearchParams(submitData);
+      
+      fetch(GOOGLE_SHEETS_CONFIG.webAppUrl + '?' + params.toString(), {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Order submission response:', data);
+        
+        if (data.success) {
+          saveUserDataToCookies(false);
+          showDetailedOrderConfirmation(orderData);
+          clearOrder();
+        } else {
+          throw new Error(data.error || 'Order submission failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error submitting order:', error);
+        
+        // Show error but still allow local confirmation
+        showNotification('Order may not have been saved to database, but confirmation email should still send.', 'warning');
+        showDetailedOrderConfirmation(orderData);
+        clearOrder();
+      })
+      .finally(() => {
+        closePaymentModal();
+      });
+    }
+
+    function showDetailedOrderConfirmation(order) {
+      const modal = document.getElementById('confirmation-modal');
+      
+      document.getElementById('conf-order-id').textContent = order.orderId;
+      document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
+      document.getElementById('conf-email').textContent = order.email;
+      document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
+      document.getElementById('conf-total').textContent = order.total.toFixed(2);
+      
+      // Children list
+      const childrenListDiv = document.getElementById('conf-children-list');
+      let childrenHtml = '<ul>';
+      if (order.children && order.children.length > 0) {
+        order.children.forEach(function(child) {
+          childrenHtml += '<li><strong>' + child.firstName + ' ' + child.lastName + '</strong> (' + child.grade + ')</li>';
+        });
+      }
+      childrenHtml += '</ul>';
+      childrenListDiv.innerHTML = childrenHtml;
+      
+      // Items list
+      const itemsListDiv = document.getElementById('conf-items-list');
+      const itemsByDay = {};
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      
+      order.items.forEach(function(item) {
+        if (!itemsByDay[item.day]) {
+          itemsByDay[item.day] = [];
+        }
+        itemsByDay[item.day].push(item);
+      });
+      
+      const sortedDays = Object.keys(itemsByDay).sort(function(a, b) {
+        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+      });
+      
+      let itemsHtml = '';
+      sortedDays.forEach(function(day) {
+        itemsHtml += '<div style="margin-bottom: 15px;">';
+        itemsHtml += '<div style="font-weight: 600; color: #4285f4; margin-bottom: 8px;">' + day + ':</div>';
+        
+        const itemsByChild = {};
+        itemsByDay[day].forEach(function(item) {
+          if (!itemsByChild[item.childName]) {
+            itemsByChild[item.childName] = [];
+          }
+          itemsByChild[item.childName].push(item);
+        });
+        
+        Object.keys(itemsByChild).forEach(function(childName) {
+          itemsHtml += '<div style="margin-left: 15px; margin-bottom: 8px;">';
+          itemsHtml += '<div style="font-weight: 500; color: #333;">' + childName + ':</div>';
+          itemsByChild[childName].forEach(function(item) {
+            itemsHtml += '<div style="margin-left: 15px; color: #666;">• ' + item.name + ' -  + item.price.toFixed(2) + '</div>';
+          });
+          itemsHtml += '</div>';
+        });
+        
+        itemsHtml += '</div>';
+      });
+      
+      itemsListDiv.innerHTML = itemsHtml;
+      
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
+
+    function closeConfirmationModal() {
+      const modal = document.getElementById('confirmation-modal');
+      
+      if (modal) {
+        modal.classList.remove('show');
+        setTimeout(function() {
+          modal.style.display = 'none';
+        }, 300);
+      }
+    }
+
+    function clearOrder() {
+      // Clear form
+      document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.checked = false;
+      });
+      
+      document.getElementById('promo-code').value = '';
+      validatePromoCode('');
+      
+      // Reset order state
+      orderItems = [];
+      currentSubtotal = 0;
+      currentDiscount = 0;
+      currentTotal = 0;
+      discountType = 'none';
+      
+      updateCart();
+      validateForm();
+      
+      showNotification('Order submitted successfully! Check your email for confirmation.', 'success');
     }
 
     function setupEventListeners() {
@@ -1859,299 +2226,52 @@
     }
 
     // ============================================
-    // PAYMENT AND ORDER SUBMISSION
-    // ============================================
-    function openPaymentModal() {
-      const modal = document.getElementById('payment-modal');
-      const paymentDetails = document.getElementById('payment-details');
-      
-      const venmoAmount = currentTotal.toFixed(2);
-      const venmoNote = `Artios Cafe Order - ${authenticatedEmail}`;
-      const venmoUrl = `https://venmo.com/u/ChanTa-Rivers?txn=pay&amount=${venmoAmount}&note=${encodeURIComponent(venmoNote)}`;
-      
-      const paymentText = `
-        <div style="text-align: center; margin-bottom: 20px;">
-          <div style="font-size: 1.5em; color: #4CAF50; margin-bottom: 10px;">
-            💰 Total: ${venmoAmount}
-          </div>
-          <div style="color: #666; margin-bottom: 20px;">
-            Send payment via Venmo to complete your order
-          </div>
-        </div>
-        
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-          <div style="font-weight: 600; margin-bottom: 10px;">📱 Venmo Payment Details:</div>
-          <div><strong>Send to:</strong> @ChanTa-Rivers</div>
-          <div><strong>Amount:</strong> ${venmoAmount}</div>
-          <div><strong>Note:</strong> ${venmoNote}</div>
-        </div>
-        
-        <div style="text-align: center; margin-bottom: 20px;">
-          <a href="${venmoUrl}" target="_blank" style="background: #3D95CE; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block;">
-            📱 Pay with Venmo
-          </a>
-        </div>
-        
-        <div style="text-align: center; color: #666; font-size: 0.9em;">
-          After sending payment, click "I've Paid" below to submit your order
-        </div>
-      `;
-      
-      paymentDetails.innerHTML = paymentText;
-      
-      // Try to copy payment details to clipboard
-      const copyText = `Venmo: @ChanTa-Rivers\nAmount: ${venmoAmount}\nNote: ${venmoNote}`;
-      
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      if (confirmBtn) {
-        confirmBtn.onclick = function() {
-          confirmBtn.disabled = true;
-          confirmBtn.textContent = '⏳ Submitting Order...';
-          
-          // Try to copy to clipboard
-          navigator.clipboard.writeText(copyText).then(function() {
-            showNotification('Payment details copied to clipboard!', 'success');
-          }).catch(function() {
-            alert('Please send payment to:\n\n' + copyText);
-          });
-          
-          submitOrder();
-        };
-      }
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-      
-      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (focusableElements.length > 0) {
-        focusableElements[0].focus();
-      }
-    }
-
-    function closePaymentModal() {
-      const modal = document.getElementById('payment-modal');
-      const confirmBtn = document.getElementById('confirm-payment-btn');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-      
-      if (confirmBtn) {
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
-      }
-    }
-
-    function submitOrder() {
-      const orderData = {
-        email: authenticatedEmail,
-        timestamp: new Date().toISOString(),
-        children: [],
-        items: orderItems,
-        subtotal: currentSubtotal,
-        discount: currentDiscount,
-        total: currentTotal,
-        promoCode: discountType,
-        orderId: generateOrderId()
-      };
-      
-      // Collect children data
-      document.querySelectorAll('.child-section').forEach(function(child) {
-        const childData = {
-          firstName: child.querySelector('.child-first-name').value.trim(),
-          lastName: child.querySelector('.child-last-name').value.trim(),
-          grade: child.querySelector('.child-grade').value
-        };
-        
-        if (childData.firstName && childData.lastName && childData.grade) {
-          orderData.children.push(childData);
-        }
-      });
-      
-      console.log('Submitting order:', orderData);
-      
-      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
-        submitToGoogleSheets(orderData);
-      } else {
-        // Fallback - just show confirmation
-        showOrderConfirmation(orderData);
-      }
-    }
-
-    function generateOrderId() {
-      const now = new Date();
-      const lastName = authenticatedEmail.split('@')[0].toUpperCase();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hour = String(now.getHours()).padStart(2, '0');
-      const minute = String(now.getMinutes()).padStart(2, '0');
-      
-      return `${lastName}-${month}${day}-${hour}${minute}`;
-    }
-
-    function submitToGoogleSheets(orderData) {
-      const submitData = {
-        action: 'submitOrder',
-        orderData: JSON.stringify(orderData)
-      };
-      
-      const params = new URLSearchParams(submitData);
-      
-      fetch(GOOGLE_SHEETS_CONFIG.webAppUrl + '?' + params.toString(), {
-        method: 'GET',
-        mode: 'cors'
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Order submission response:', data);
-        
-        if (data.success) {
-          saveUserDataToCookies(false);
-          showOrderConfirmation(orderData);
-          clearOrder();
-        } else {
-          throw new Error(data.error || 'Order submission failed');
-        }
-      })
-      .catch(error => {
-        console.error('Error submitting order:', error);
-        
-        // Show error but still allow local confirmation
-        showNotification('Order may not have been saved to database, but confirmation email should still send.', 'warning');
-        showOrderConfirmation(orderData);
-        clearOrder();
-      })
-      .finally(() => {
-        closePaymentModal();
-      });
-    }
-
-    function showOrderConfirmation(orderData) {
-      const modal = document.getElementById('confirmation-modal');
-      
-      document.getElementById('conf-order-id').textContent = orderData.orderId;
-      document.getElementById('conf-date').textContent = new Date(orderData.timestamp).toLocaleString();
-      document.getElementById('conf-email').textContent = orderData.email;
-      document.getElementById('conf-children-count').textContent = orderData.children.length;
-      document.getElementById('conf-total').textContent = orderData.total.toFixed(2);
-      
-      // Children list
-      const childrenListDiv = document.getElementById('conf-children-list');
-      let childrenHtml = '<ul>';
-      orderData.children.forEach(function(child) {
-        childrenHtml += `<li><strong>${child.firstName} ${child.lastName}</strong> (${child.grade})</li>`;
-      });
-      childrenHtml += '</ul>';
-      childrenListDiv.innerHTML = childrenHtml;
-      
-      // Items list
-      const itemsListDiv = document.getElementById('conf-items-list');
-      const itemsByDay = {};
-      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-      
-      orderData.items.forEach(function(item) {
-        if (!itemsByDay[item.day]) {
-          itemsByDay[item.day] = [];
-        }
-        itemsByDay[item.day].push(item);
-      });
-      
-      const sortedDays = Object.keys(itemsByDay).sort(function(a, b) {
-        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
-      });
-      
-      let itemsHtml = '';
-      sortedDays.forEach(function(day) {
-        itemsHtml += `<div style="margin-bottom: 15px;">`;
-        itemsHtml += `<div style="font-weight: 600; color: #4285f4; margin-bottom: 8px;">${day}:</div>`;
-        
-        const itemsByChild = {};
-        itemsByDay[day].forEach(function(item) {
-          if (!itemsByChild[item.childName]) {
-            itemsByChild[item.childName] = [];
-          }
-          itemsByChild[item.childName].push(item);
-        });
-        
-        Object.keys(itemsByChild).forEach(function(childName) {
-          itemsHtml += `<div style="margin-left: 15px; margin-bottom: 8px;">`;
-          itemsHtml += `<div style="font-weight: 500; color: #333;">${childName}:</div>`;
-          itemsByChild[childName].forEach(function(item) {
-            itemsHtml += `<div style="margin-left: 15px; color: #666;">• ${item.name} - ${item.price.toFixed(2)}</div>`;
-          });
-          itemsHtml += `</div>`;
-        });
-        
-        itemsHtml += `</div>`;
-      });
-      
-      itemsListDiv.innerHTML = itemsHtml;
-      
-      modal.style.display = 'flex';
-      modal.classList.add('show');
-    }
-
-    function closeConfirmationModal() {
-      const modal = document.getElementById('confirmation-modal');
-      
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(function() {
-          modal.style.display = 'none';
-        }, 300);
-      }
-    }
-
-    function clearOrder() {
-      // Clear form
-      document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-        checkbox.checked = false;
-      });
-      
-      document.getElementById('promo-code').value = '';
-      validatePromoCode('');
-      
-      // Reset order state
-      orderItems = [];
-      currentSubtotal = 0;
-      currentDiscount = 0;
-      currentTotal = 0;
-      discountType = null;
-      
-      updateCart();
-      validateForm();
-      
-      showNotification('Order submitted successfully! Check your email for confirmation.', 'success');
-    }
-
-    // ============================================
     // UTILITY FUNCTIONS
     // ============================================
     function showNotification(message, type) {
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.textContent = message;
+      const existingNotif = document.querySelector('.notification');
+      if (existingNotif) {
+        existingNotif.remove();
+      }
       
-      document.body.appendChild(notification);
+      let icon;
+      switch(type) {
+        case 'success':
+          icon = '✅ ';
+          break;
+        case 'error':
+          icon = '❌ ';
+          break;
+        case 'warning':
+          icon = '⚠️ ';
+          break;
+        default:
+          icon = 'ℹ️ ';
+      }
+      
+      const notif = document.createElement('div');
+      notif.className = 'notification ' + type;
+      notif.textContent = icon + message;
+      
+      document.body.appendChild(notif);
       
       setTimeout(function() {
-        notification.classList.add('show');
+        notif.classList.add('show');
       }, 100);
       
       setTimeout(function() {
-        notification.classList.remove('show');
+        notif.classList.remove('show');
         setTimeout(function() {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
+          if (notif.parentNode) {
+            notif.remove();
           }
         }, 300);
-      }, 4000);
+      }, 5000);
     }
 
-    function saveUserDataToCookies(showIndicator = true) {
+    function saveUserDataToCookies(showIndicator) {
+      if (showIndicator === undefined) showIndicator = true;
+      
       try {
         const familyData = {
           email: authenticatedEmail,
@@ -2173,7 +2293,7 @@
         const expirationDate = new Date();
         expirationDate.setDate(expirationDate.getDate() + 30);
         
-        document.cookie = `artios_family_data=${encodeURIComponent(JSON.stringify(familyData))}; expires=${expirationDate.toUTCString()}; path=/`;
+        document.cookie = 'artios_family_data=' + encodeURIComponent(JSON.stringify(familyData)) + '; expires=' + expirationDate.toUTCString() + '; path=/';
         
         if (showIndicator) {
           showNotification('Family information saved for future visits', 'success');
@@ -2181,6 +2301,10 @@
       } catch (error) {
         console.error('Error saving to cookies:', error);
       }
+    }
+
+    function saveUserDataQuietly() {
+      saveUserDataToCookies(false);
     }
 
     function loadUserDataFromCookies() {
@@ -2250,25 +2374,10 @@
         }
       });
     }
+
+    // Make functions available globally
+    window.removeItemFromCart = removeItemFromCart;
+    window.removeChild = removeChild;
   </script>
 </body>
 </html>
-        updateCart();
-        return;
-      }
-      
-      if (code === 'STAFF2025') {
-        promoSection.className = 'promo-section valid';
-        promoMessage.textContent = '✅ Staff discount applied (10% off)';
-        promoMessage.style.color = '#4CAF50';
-        discountType = 'staff';
-      } else if (code === 'JOHN') {
-        promoSection.className = 'promo-section valid';
-        promoMessage.textContent = '✅ Special discount applied (50% off)';
-        promoMessage.style.color = '#4CAF50';
-        discountType = 'john';
-      } else {
-        promoSection.className = 'promo-section invalid';
-        promoMessage.textContent = '❌ Invalid promo code';
-        promoMessage.style.color = '#f44336';
-        discountType = null;
