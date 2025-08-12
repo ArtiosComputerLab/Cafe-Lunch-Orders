@@ -48,51 +48,6 @@
       font-size: 1.1em;
     }
 
-    .tab-container {
-      margin-bottom: 30px;
-    }
-
-    .tab-buttons {
-      display: flex;
-      background: #f5f5f5;
-      border-radius: 12px;
-      padding: 6px;
-      margin-bottom: 25px;
-      gap: 4px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 14px 18px;
-      border: none;
-      background: transparent;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      color: #666;
-      font-size: 0.95em;
-    }
-
-    .tab-btn.active {
-      background: #4285f4;
-      color: white;
-      box-shadow: 0 2px 10px rgba(66, 133, 244, 0.3);
-    }
-
-    .tab-btn:hover:not(.active) {
-      background: rgba(66, 133, 244, 0.1);
-      color: #4285f4;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
     /* Form Styles */
     .form-group {
       margin-bottom: 25px;
@@ -106,7 +61,7 @@
       color: #333;
     }
 
-    .date-input, .file-input {
+    .date-input {
       width: 100%;
       padding: 15px;
       border: 2px solid #e0e0e0;
@@ -116,7 +71,7 @@
       background: white;
     }
 
-    .date-input:focus, .file-input:focus {
+    .date-input:focus {
       outline: none;
       border-color: #4285f4;
       box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
@@ -184,37 +139,6 @@
       text-align: center;
       font-size: 1.1em;
       display: none;
-    }
-
-    /* Daily Orders Specific Styles */
-    .daily-orders-section {
-      background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
-      border: 2px solid #ff9800;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-    }
-
-    .daily-orders-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .daily-orders-title {
-      color: #f57c00;
-      font-size: 1.3em;
-      font-weight: 700;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .daily-orders-desc {
-      color: #ef6c00;
-      font-size: 0.95em;
-      font-style: italic;
     }
 
     /* Email Recipients Section */
@@ -290,31 +214,9 @@
       font-size: 0.9em;
     }
 
-    /* Custom Email Input */
-    .worker-email-input {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #ff9800;
-      border-radius: 8px;
-      font-size: 16px;
-      font-family: monospace;
-      background: white;
-      transition: all 0.3s ease;
-    }
-
-    .worker-email-input:focus {
-      outline: none;
-      border-color: #f57c00;
-      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
-    }
-
-    .worker-email-input::placeholder {
-      color: #999;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    }
-
     /* Button Styles */
-    .generate-btn, .daily-orders-btn, .upload-btn, .reconcile-btn {
+    .generate-btn {
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
       color: white;
       border: none;
       padding: 18px 35px;
@@ -327,30 +229,12 @@
       margin-bottom: 20px;
     }
 
-    .generate-btn {
-      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
-    }
-
-    .daily-orders-btn {
-      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-    }
-
-    .reconcile-btn {
-      background: linear-gradient(135deg, #3d95ce 0%, #2980b9 100%);
-    }
-
-    .generate-btn:hover:not(:disabled),
-    .daily-orders-btn:hover:not(:disabled),
-    .upload-btn:hover:not(:disabled),
-    .reconcile-btn:hover:not(:disabled) {
+    .generate-btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
-    .generate-btn:disabled,
-    .daily-orders-btn:disabled,
-    .upload-btn:disabled,
-    .reconcile-btn:disabled {
+    .generate-btn:disabled {
       background: #ccc;
       cursor: not-allowed;
       transform: none;
@@ -389,16 +273,46 @@
       border: 1px solid #bbdefb;
     }
 
+    /* Worker Link Section */
+    .worker-link-section {
+      background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
+      border: 2px solid #ff9800;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .worker-link-title {
+      color: #f57c00;
+      font-size: 1.3em;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .worker-link {
+      background: #ff9800;
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+
+    .worker-link:hover {
+      background: #f57c00;
+      transform: translateY(-1px);
+      text-decoration: none;
+      color: white;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .admin-container {
         padding: 20px;
         margin: 10px;
-      }
-
-      .tab-buttons {
-        flex-direction: column;
-        gap: 5px;
       }
 
       .report-type-selector {
@@ -410,126 +324,83 @@
 <body>
   <div class="admin-container">
     <div class="admin-header">
-      <h1 class="admin-title">🏢 Artios Academies Cafe Admin Portal</h1>
-      <p class="admin-subtitle">Administrative Tools & Reports</p>
+      <h1 class="admin-title">🏢 Artios Academies Admin Portal</h1>
+      <p class="admin-subtitle">Administrative Reports & Management</p>
     </div>
 
-    <div class="tab-container">
-      <div class="tab-buttons">
-        <button class="tab-btn active" data-tab="reports">📊 Generate Reports</button>
-        <button class="tab-btn" data-tab="daily-orders">🍽️ Daily Orders</button>
-      </div>
+    <!-- Worker Link Section -->
+    <div class="worker-link-section">
+      <div class="worker-link-title">🍽️ Cafe Worker Portal</div>
+      <p style="color: #666; margin-bottom: 15px;">Share this link with cafe workers to get daily orders:</p>
+      <a href="daily-orders.html" class="worker-link" target="_blank">
+        📋 Cafe Worker Daily Orders Portal
+      </a>
+    </div>
 
-      <!-- Generate Reports Tab -->
-      <div class="tab-content active" id="reports-tab">
-        <form id="report-form">
-          
-          <!-- Report Type Selection -->
-          <div class="form-group">
-            <label>Choose Report Type:</label>
-            <div class="report-type-selector">
-              <label class="report-type-option">
-                <input type="radio" name="report-type" value="daily" checked>
-                <span>📅 Daily Report</span>
-                <small>Single day financial analysis</small>
-              </label>
-            </div>
-          </div>
-
-          <!-- Daily Report Date -->
-          <div class="form-group" id="daily-date-section">
-            <label for="daily-report-date">Select Report Date:</label>
-            <input type="date" id="daily-report-date" class="date-input" required>
-            <div class="day-display" id="day-display"></div>
-          </div>
-
-          <!-- Admin Recipients Section -->
-          <div class="email-recipients admin-recipients">
-            <h4>👨‍💼 Admin Recipients</h4>
-            <div class="email-checkbox-group">
-              <div class="email-checkbox" id="admin-checkbox">
-                <input type="checkbox" id="email-admin" checked>
-                <label for="email-admin">
-                  <strong>Jeremiah Daws</strong>
-                  <div class="email-address">jedaws@gmail.com</div>
-                </label>
-              </div>
-              <div class="email-checkbox" id="crivers-checkbox">
-                <input type="checkbox" id="email-crivers" checked>
-                <label for="email-crivers">
-                  <strong>Chan Ta Rivers</strong>
-                  <div class="email-address">CRivers@artiosacademies.com</div>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <button type="submit" class="generate-btn" id="generate-btn">
-            📊 Generate Admin Report
-          </button>
-
-          <div class="status-message" id="status-message"></div>
-        </form>
-      </div>
-
-      <!-- Daily Orders Tab -->
-      <div class="tab-content" id="daily-orders-tab">
-        <div class="daily-orders-section">
-          <div class="daily-orders-header">
-            <div class="daily-orders-title">
-              🍽️ Daily Orders
-            </div>
-            <div class="daily-orders-desc">
-              Send Chick-fil-A order list and student checklist to cafe workers
-            </div>
-          </div>
-
-          <form id="daily-orders-form">
-            <div class="form-group">
-              <label for="orders-date">Select Date for Food Orders:</label>
-              <input type="date" id="orders-date" class="date-input" required>
-              <div class="day-display" id="orders-day-display"></div>
-            </div>
-
-            <div class="form-group">
-              <label for="worker-email">Cafe Worker Email:</label>
-              <input type="email" 
-                     id="worker-email" 
-                     class="worker-email-input" 
-                     placeholder="worker@example.com"
-                     required>
-            </div>
-
-            <button type="submit" class="daily-orders-btn" id="daily-orders-btn">
-              📋 Send Daily Food Orders
-            </button>
-
-            <div class="status-message" id="daily-orders-status"></div>
-          </form>
+    <form id="report-form">
+      
+      <!-- Report Type Selection -->
+      <div class="form-group">
+        <label>Choose Report Type:</label>
+        <div class="report-type-selector">
+          <label class="report-type-option">
+            <input type="radio" name="report-type" value="daily" checked>
+            <span>📅 Daily Report</span>
+            <small>Single day financial analysis</small>
+          </label>
         </div>
       </div>
-    </div>
+
+      <!-- Daily Report Date -->
+      <div class="form-group" id="daily-date-section">
+        <label for="daily-report-date">Select Report Date:</label>
+        <input type="date" id="daily-report-date" class="date-input" required>
+        <div class="day-display" id="day-display"></div>
+      </div>
+
+      <!-- Admin Recipients Section -->
+      <div class="email-recipients admin-recipients">
+        <h4>👨‍💼 Admin Recipients</h4>
+        <div class="email-checkbox-group">
+          <div class="email-checkbox" id="admin-checkbox">
+            <input type="checkbox" id="email-admin" checked>
+            <label for="email-admin">
+              <strong>Jeremiah Daws</strong>
+              <div class="email-address">jedaws@gmail.com</div>
+            </label>
+          </div>
+          <div class="email-checkbox" id="crivers-checkbox">
+            <input type="checkbox" id="email-crivers" checked>
+            <label for="email-crivers">
+              <strong>Chan Ta Rivers</strong>
+              <div class="email-address">CRivers@artiosacademies.com</div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="generate-btn" id="generate-btn">
+        📊 Generate Admin Report
+      </button>
+
+      <div class="status-message" id="status-message"></div>
+    </form>
   </div>
 
   <script>
-    // Configuration - UPDATED TO MATCH YOUR CURRENT SCRIPT
+    // Configuration
     const GOOGLE_SHEETS_CONFIG = {
       webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
       useGoogleSheets: true
     };
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Set default dates
+      // Set default date
       const today = new Date();
       const todayStr = today.toISOString().split('T')[0];
       
-      // Reports tab dates
       document.getElementById('daily-report-date').value = todayStr;
       updateDayDisplay();
-
-      // Daily orders tab date
-      document.getElementById('orders-date').value = todayStr;
-      updateOrdersDayDisplay();
 
       // Setup event listeners
       setupEventListeners();
@@ -537,60 +408,22 @@
     });
 
     function setupEventListeners() {
-      // Tab switching
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const tabId = this.dataset.tab;
-          switchTab(tabId);
-        });
-      });
-
       // Reports form submission
       document.getElementById('report-form').addEventListener('submit', function(e) {
         e.preventDefault();
         generateReport();
       });
 
-      // Daily orders form submission
-      document.getElementById('daily-orders-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        sendDailyOrders();
-      });
-
-      // Date change listeners
+      // Date change listener
       const dailyDateInput = document.getElementById('daily-report-date');
       if (dailyDateInput) {
         dailyDateInput.addEventListener('change', updateDayDisplay);
-      }
-
-      const ordersDateInput = document.getElementById('orders-date');
-      if (ordersDateInput) {
-        ordersDateInput.addEventListener('change', updateOrdersDayDisplay);
       }
 
       // Email checkbox events
       document.querySelectorAll('.email-checkbox input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', updateEmailCheckboxStyles);
       });
-    }
-
-    function switchTab(tabId) {
-      // Update button states
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.tab === tabId) {
-          btn.classList.add('active');
-        }
-      });
-
-      // Update content visibility
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      const targetTab = document.getElementById(tabId + '-tab');
-      if (targetTab) {
-        targetTab.classList.add('active');
-      }
     }
 
     function updateDayDisplay() {
@@ -613,28 +446,7 @@
       }
     }
 
-    function updateOrdersDayDisplay() {
-      const dateInput = document.getElementById('orders-date');
-      const dayDisplay = document.getElementById('orders-day-display');
-      
-      if (dateInput && dayDisplay && dateInput.value) {
-        const selectedDate = new Date(dateInput.value + 'T12:00:00');
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const dayName = dayNames[selectedDate.getDay()];
-        
-        dayDisplay.textContent = `🍽️ ${dayName}, ${selectedDate.toLocaleDateString('en-US', { 
-          month: 'long', 
-          day: 'numeric', 
-          year: 'numeric' 
-        })}`;
-        dayDisplay.style.display = 'block';
-      } else if (dayDisplay) {
-        dayDisplay.style.display = 'none';
-      }
-    }
-
     function updateEmailCheckboxStyles() {
-      // Update checkbox styling for admin recipients
       document.querySelectorAll('.email-checkbox').forEach(checkboxDiv => {
         const checkbox = checkboxDiv.querySelector('input[type="checkbox"]');
         if (checkbox.checked) {
@@ -655,7 +467,7 @@
         return;
       }
       
-      // Get admin email recipients only
+      // Get admin email recipients
       const emailAdmin = document.getElementById('email-admin').checked;
       const emailCrivers = document.getElementById('email-crivers').checked;
       
@@ -678,7 +490,7 @@
       
       showStatus(`Generating daily admin report (sending to ${adminRecipients.length} recipient${adminRecipients.length > 1 ? 's' : ''})...`, 'info');
 
-      // Build URL with parameters - UPDATED TO MATCH YOUR CURRENT SCRIPT
+      // Build URL with parameters
       let reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?secret=cafe2025&action=generate_report&date=${encodeURIComponent(dateInput)}`;
       reportUrl += `&admin_recipients=${encodeURIComponent(adminRecipients.join(','))}`;
 
@@ -718,95 +530,12 @@
         })
         .finally(() => {
           generateBtn.disabled = false;
-          generateBtn.textContent = '📅 Generate Daily Report';
-        });
-    }
-
-    function sendDailyOrders() {
-      const dateInput = document.getElementById('orders-date').value;
-      const workerEmail = document.getElementById('worker-email').value.trim();
-      const dailyOrdersBtn = document.getElementById('daily-orders-btn');
-      
-      // Validate inputs
-      if (!dateInput) {
-        showDailyOrdersStatus('Please select a date', 'error');
-        return;
-      }
-      
-      if (!workerEmail || !workerEmail.includes('@')) {
-        showDailyOrdersStatus('Please enter a valid cafe worker email', 'error');
-        return;
-      }
-
-      if (!GOOGLE_SHEETS_CONFIG.webAppUrl) {
-        showDailyOrdersStatus('Google Sheets URL not configured', 'error');
-        return;
-      }
-
-      dailyOrdersBtn.disabled = true;
-      dailyOrdersBtn.textContent = '⏳ Sending Beautiful Daily Orders...';
-      
-      showDailyOrdersStatus(`Sending beautiful daily food orders for ${dateInput} to ${workerEmail}...`, 'info');
-
-      // Build URL for daily orders (worker report) - UPDATED TO MATCH YOUR CURRENT SCRIPT
-      const reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?secret=cafe2025&action=generate_report&date=${encodeURIComponent(dateInput)}&worker_recipients=${encodeURIComponent(workerEmail)}`;
-
-      console.log('Calling daily orders URL:', reportUrl);
-
-      fetch(reportUrl)
-        .then(response => {
-          console.log('Daily orders response status:', response.status);
-          return response.json();
-        })
-        .then(data => {
-          console.log('Daily orders response:', data);
-          
-          if (data.success) {
-            let message = `✅ Beautiful Daily Food Orders Sent!\n\n`;
-            message += `📅 Date: ${dateInput}\n`;
-            message += `🍽️ Orders Found: ${data.ordersProcessed || 0}\n`;
-            message += `👷 Beautiful email with student checklist sent to: ${workerEmail}\n`;
-            
-            if (data.ordersProcessed > 0) {
-              message += `\nThe cafe worker received a beautiful email with:\n`;
-              message += `• Clean Chick-fil-A order list\n`;
-              message += `• Printable student checklist with checkboxes\n`;
-              message += `• Professional formatting that prints perfectly`;
-            } else {
-              message += `\nNo orders found for this date - worker notified that no food is needed.`;
-            }
-            
-            // Show success message
-            const statusDiv = document.getElementById('daily-orders-status');
-            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
-            statusDiv.className = 'status-message success show';
-
-          } else {
-            showDailyOrdersStatus(`Daily orders failed: ${data.error}`, 'error');
-          }
-        })
-        .catch(error => {
-          console.error('Daily orders error:', error);
-          showDailyOrdersStatus('Network error sending daily orders', 'error');
-        })
-        .finally(() => {
-          dailyOrdersBtn.disabled = false;
-          dailyOrdersBtn.textContent = '📋 Send Daily Food Orders';
+          generateBtn.textContent = '📊 Generate Admin Report';
         });
     }
 
     function showStatus(message, type) {
       const statusDiv = document.getElementById('status-message');
-      statusDiv.textContent = message;
-      statusDiv.className = `status-message ${type} show`;
-
-      setTimeout(() => {
-        statusDiv.classList.remove('show');
-      }, 8000);
-    }
-
-    function showDailyOrdersStatus(message, type) {
-      const statusDiv = document.getElementById('daily-orders-status');
       statusDiv.textContent = message;
       statusDiv.className = `status-message ${type} show`;
 
