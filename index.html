@@ -98,6 +98,133 @@
       font-size: 0.8em;
     }
 
+    /* NEW: Order Management Integration Styles */
+    .quick-actions-section {
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+      border: 2px solid #2196f3;
+      border-radius: 12px;
+      margin: 20px 30px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+    }
+
+    .quick-actions-header {
+      background: #2196f3;
+      color: white;
+      padding: 15px 25px;
+      text-align: center;
+    }
+
+    .quick-actions-header h3 {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 600;
+    }
+
+    .quick-actions-content {
+      display: flex;
+      padding: 0;
+    }
+
+    .action-option {
+      flex: 1;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border-right: 1px solid rgba(33, 150, 243, 0.2);
+    }
+
+    .action-option:last-child {
+      border-right: none;
+    }
+
+    .action-option:hover {
+      background: rgba(33, 150, 243, 0.05);
+    }
+
+    .action-icon {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .action-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #1976d2;
+      margin-bottom: 8px;
+    }
+
+    .action-desc {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .action-btn {
+      background: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .action-btn:hover {
+      background: #1976d2;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+      text-decoration: none;
+      color: white;
+    }
+
+    .action-btn.secondary {
+      background: #ff9800;
+    }
+
+    .action-btn.secondary:hover {
+      background: #f57c00;
+    }
+
+    .returning-user-banner {
+      background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+      border: 2px solid #4caf50;
+      border-radius: 8px;
+      padding: 15px 25px;
+      margin: 20px 30px;
+      text-align: center;
+      animation: slideIn 0.5s ease;
+    }
+
+    .welcome-back {
+      color: #2e7d32;
+      font-weight: 600;
+    }
+
+    .welcome-back a {
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .welcome-back a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    /* END NEW STYLES */
+
     .main-content {
       display: flex;
       min-height: calc(100vh - 140px);
@@ -1026,7 +1153,6 @@
         display: inline-block;
         margin: 5px;
       }
-    }
 
       .cart-item {
         flex-direction: column;
@@ -1042,6 +1168,24 @@
         align-self: flex-end;
         margin-left: 0;
         margin-top: 5px;
+      }
+
+      /* NEW: Mobile responsive for order management */
+      .quick-actions-content {
+        flex-direction: column;
+      }
+      .action-option {
+        border-right: none;
+        border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+      }
+      .action-option:last-child {
+        border-bottom: none;
+      }
+      .quick-actions-section {
+        margin: 20px 10px;
+      }
+      .returning-user-banner {
+        margin: 20px 10px;
       }
     }
   </style>
@@ -1071,266 +1215,45 @@
         Contact: CRivers@artiosacademies.com | Artios Academies of Sugar Hill
       </div>
     </div>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Management Integration</title>
-  <style>
-    /* Add these styles to your existing CSS */
-    .quick-actions-section {
-      background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
-      border: 2px solid #2196f3;
-      border-radius: 12px;
-      margin: 20px 30px;
-      padding: 0;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
-    }
 
-    .quick-actions-header {
-      background: #2196f3;
-      color: white;
-      padding: 15px 25px;
-      text-align: center;
-    }
-
-    .quick-actions-header h3 {
-      margin: 0;
-      font-size: 1.2em;
-      font-weight: 600;
-    }
-
-    .quick-actions-content {
-      display: flex;
-      padding: 0;
-    }
-
-    .action-option {
-      flex: 1;
-      padding: 25px;
-      text-align: center;
-      transition: all 0.3s ease;
-      border-right: 1px solid rgba(33, 150, 243, 0.2);
-    }
-
-    .action-option:last-child {
-      border-right: none;
-    }
-
-    .action-option:hover {
-      background: rgba(33, 150, 243, 0.05);
-    }
-
-    .action-icon {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    .action-title {
-      font-size: 1.1em;
-      font-weight: 600;
-      color: #1976d2;
-      margin-bottom: 8px;
-    }
-
-    .action-desc {
-      color: #666;
-      font-size: 0.9em;
-      margin-bottom: 15px;
-      line-height: 1.4;
-    }
-
-    .action-btn {
-      background: #2196f3;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .action-btn:hover {
-      background: #1976d2;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
-      text-decoration: none;
-      color: white;
-    }
-
-    .action-btn.secondary {
-      background: #ff9800;
-    }
-
-    .action-btn.secondary:hover {
-      background: #f57c00;
-    }
-
-    /* Returning user banner */
-    .returning-user-banner {
-      background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
-      border: 2px solid #4caf50;
-      border-radius: 8px;
-      padding: 15px 25px;
-      margin: 20px 30px;
-      text-align: center;
-      animation: slideIn 0.5s ease;
-    }
-
-    .welcome-back {
-      color: #2e7d32;
-      font-weight: 600;
-    }
-
-    .welcome-back a {
-      color: #1976d2;
-      text-decoration: none;
-      font-weight: 600;
-      margin-left: 10px;
-    }
-
-    .welcome-back a:hover {
-      text-decoration: underline;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .quick-actions-content {
-        flex-direction: column;
-      }
-
-      .action-option {
-        border-right: none;
-        border-bottom: 1px solid rgba(33, 150, 243, 0.2);
-      }
-
-      .action-option:last-child {
-        border-bottom: none;
-      }
-
-      .quick-actions-section {
-        margin: 20px 10px;
-      }
-
-      .returning-user-banner {
-        margin: 20px 10px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- This section goes right after your header, before main-content -->
-  
-  <!-- Returning user banner (shown dynamically) -->
-  <div class="returning-user-banner" id="returning-user-banner" style="display: none;">
-    <div class="welcome-back">
-      👋 <span id="welcome-message">Welcome back!</span>
-      <a href="#" id="view-orders-link">View your recent orders</a>
+    <!-- NEW: Returning user banner (shown dynamically) -->
+    <div class="returning-user-banner" id="returning-user-banner" style="display: none;">
+      <div class="welcome-back">
+        👋 <span id="welcome-message">Welcome back!</span>
+        <a href="#" id="view-orders-link">View your recent orders</a>
+      </div>
     </div>
-  </div>
 
-  <!-- Main quick actions section -->
-  <div class="quick-actions-section">
-    <div class="quick-actions-header">
-      <h3>🍽️ Artios Cafe Lunch Orders</h3>
-    </div>
-    
-    <div class="quick-actions-content">
-      <div class="action-option">
-        <span class="action-icon">📝</span>
-        <div class="action-title">Place New Order</div>
-        <div class="action-desc">Order lunch for your children for this week</div>
-        <button class="action-btn" onclick="scrollToOrderForm()">Start New Order</button>
+    <!-- NEW: Main quick actions section -->
+    <div class="quick-actions-section">
+      <div class="quick-actions-header">
+        <h3>🍽️ Artios Cafe Lunch Orders</h3>
       </div>
       
-      <div class="action-option">
-        <span class="action-icon">📋</span>
-        <div class="action-title">Manage Orders</div>
-        <div class="action-desc">Cancel items, request refunds, or view order history</div>
-        <a href="manage-orders.html" class="action-btn secondary">Manage Orders</a>
-      </div>
-      
-      <div class="action-option">
-        <span class="action-icon">❓</span>
-        <div class="action-title">Need Help?</div>
-        <div class="action-desc">Questions about orders, payments, or menu items</div>
-        <a href="mailto:CRivers@artiosacademies.com" class="action-btn">Contact Us</a>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Add this JavaScript to your existing script section
-    
-    function scrollToOrderForm() {
-      const formSection = document.querySelector('.form-section');
-      if (formSection) {
-        formSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-
-    function checkForReturningUser() {
-      try {
-        const cookies = document.cookie.split(';');
-        let familyData = null;
+      <div class="quick-actions-content">
+        <div class="action-option">
+          <span class="action-icon">📝</span>
+          <div class="action-title">Place New Order</div>
+          <div class="action-desc">Order lunch for your children for this week</div>
+          <button class="action-btn" onclick="scrollToOrderForm()">Start New Order</button>
+        </div>
         
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          const parts = cookie.split('=');
-          if (parts[0] === 'artios_family_data') {
-            familyData = JSON.parse(decodeURIComponent(parts[1]));
-            break;
-          }
-        }
+        <div class="action-option">
+          <span class="action-icon">📋</span>
+          <div class="action-title">Manage Orders</div>
+          <div class="action-desc">Cancel items, request refunds, or view order history</div>
+          <a href="manage-orders.html" class="action-btn secondary">Manage Orders</a>
+        </div>
         
-        if (familyData && familyData.email) {
-          showReturningUserBanner(familyData.email, familyData.children);
-        }
-      } catch (error) {
-        console.log('No previous order data found');
-      }
-    }
+        <div class="action-option">
+          <span class="action-icon">❓</span>
+          <div class="action-title">Need Help?</div>
+          <div class="action-desc">Questions about orders, payments, or menu items</div>
+          <a href="mailto:CRivers@artiosacademies.com" class="action-btn">Contact Us</a>
+        </div>
+      </div>
+    </div>
 
-    function showReturningUserBanner(email, children) {
-      const banner = document.getElementById('returning-user-banner');
-      const welcomeMessage = document.getElementById('welcome-message');
-      const viewOrdersLink = document.getElementById('view-orders-link');
-      
-      if (children && children.length > 0) {
-        const firstChild = children[0].firstName;
-        const childCount = children.length;
-        const childText = childCount === 1 ? firstChild : `${firstChild} and ${childCount - 1} other${childCount > 2 ? 's' : ''}`;
-        welcomeMessage.textContent = `Welcome back! We remember ${childText}.`;
-      } else {
-        welcomeMessage.textContent = 'Welcome back!';
-      }
-      
-      viewOrdersLink.href = `manage-orders.html?email=${encodeURIComponent(email)}`;
-      banner.style.display = 'block';
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check for returning user after a short delay
-      setTimeout(checkForReturningUser, 500);
-    });
-  </script>
-</body>
-</html>
-
-    
     <div class="main-content">
       <div class="form-section">
         <!-- Shared Email Section -->
@@ -1578,6 +1501,56 @@
     };
 
     // ============================================
+    // NEW: ORDER MANAGEMENT FUNCTIONS
+    // ============================================
+    function scrollToOrderForm() {
+      const formSection = document.querySelector('.form-section');
+      if (formSection) {
+        formSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function checkForReturningUser() {
+      try {
+        const cookies = document.cookie.split(';');
+        let familyData = null;
+        
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          const parts = cookie.split('=');
+          if (parts[0] === 'artios_family_data') {
+            familyData = JSON.parse(decodeURIComponent(parts[1]));
+            break;
+          }
+        }
+        
+        if (familyData && familyData.email) {
+          showReturningUserBanner(familyData.email, familyData.children);
+        }
+      } catch (error) {
+        console.log('No previous order data found');
+      }
+    }
+
+    function showReturningUserBanner(email, children) {
+      const banner = document.getElementById('returning-user-banner');
+      const welcomeMessage = document.getElementById('welcome-message');
+      const viewOrdersLink = document.getElementById('view-orders-link');
+      
+      if (children && children.length > 0) {
+        const firstChild = children[0].firstName;
+        const childCount = children.length;
+        const childText = childCount === 1 ? firstChild : `${firstChild} and ${childCount - 1} other${childCount > 2 ? 's' : ''}`;
+        welcomeMessage.textContent = `Welcome back! We remember ${childText}.`;
+      } else {
+        welcomeMessage.textContent = 'Welcome back!';
+      }
+      
+      viewOrdersLink.href = `manage-orders.html?email=${encodeURIComponent(email)}`;
+      banner.style.display = 'block';
+    }
+
+    // ============================================
     // STORE HOURS LOGIC
     // ============================================
     function checkStoreHours() {
@@ -1683,6 +1656,9 @@
       setupAutoSave();
       updateCart();
       validateForm();
+      
+      // NEW: Check for returning user
+      setTimeout(checkForReturningUser, 500);
       
       console.log('Initialization complete');
     });
@@ -2341,18 +2317,18 @@
         
         child.items.forEach(function(item) {
           let extraClass = '';
-          let priceDisplay = '$' + item.price.toFixed(2);
+          let priceDisplay = ' + item.price.toFixed(2);
           let discountDisplay = '';
           
           if (item.category === 'drinks' && item.isDiscounted) {
             if (item.price === 0) {
               extraClass = 'free-item';
               priceDisplay = 'FREE';
-              discountDisplay = '<div class="discount-line">Was $' + item.originalPrice.toFixed(2) + ' - Combo discount -$' + item.discountAmount.toFixed(2) + '</div>';
+              discountDisplay = '<div class="discount-line">Was  + item.originalPrice.toFixed(2) + ' - Combo discount - + item.discountAmount.toFixed(2) + '</div>';
             } else {
               extraClass = 'discounted-item';
-              priceDisplay = '$' + item.price.toFixed(2);
-              discountDisplay = '<div class="discount-line">Was $' + item.originalPrice.toFixed(2) + ' - Combo discount -$' + item.discountAmount.toFixed(2) + '</div>';
+              priceDisplay = ' + item.price.toFixed(2);
+              discountDisplay = '<div class="discount-line">Was  + item.originalPrice.toFixed(2) + ' - Combo discount - + item.discountAmount.toFixed(2) + '</div>';
             }
           }
           
@@ -2382,9 +2358,9 @@
         
         const discountLabel = discountLine.firstChild;
         if (discountType === 'staff') {
-          discountLabel.textContent = 'Staff Discount (10%): -$';
+          discountLabel.textContent = 'Staff Discount (10%): -;
         } else if (discountType === 'john') {
-          discountLabel.textContent = 'JOHN Discount (50%): -$';
+          discountLabel.textContent = 'JOHN Discount (50%): -;
         }
       } else {
         discountLine.style.display = 'none';
@@ -2418,7 +2394,7 @@
       checkoutBtn.disabled = !isValid;
       
       if (isValid) {
-        checkoutBtn.textContent = 'Review & Pay Order ($' + currentTotal.toFixed(2) + ')';
+        checkoutBtn.textContent = 'Review & Pay Order ( + currentTotal.toFixed(2) + ')';
         checkoutBtn.style.opacity = '1';
         checkoutBtn.style.cursor = 'pointer';
       } else {
@@ -2458,7 +2434,7 @@
       modalTotal.textContent = currentTotal.toFixed(2);
       venmoTotal.textContent = currentTotal.toFixed(2);
       
-      let orderSummary = 'Artios Academies Cafe Lunch Order - $' + currentTotal.toFixed(2);
+      let orderSummary = 'Artios Academies Cafe Lunch Order -  + currentTotal.toFixed(2);
       const children = orderItems.map(function(item) { return item.childName; }).filter(function(value, index, self) { return self.indexOf(value) === index; });
       if (children.length <= 2) {
         orderSummary += ' for ' + children.join(' & ');
@@ -2477,7 +2453,7 @@
         venmoLink.href = venmoWebUrl;
         venmoLink.target = '_blank';
         
-        const paymentDetails = 'Pay @ChanTa-Rivers $' + currentTotal.toFixed(2) + ' for: ' + orderSummary;
+        const paymentDetails = 'Pay @ChanTa-Rivers  + currentTotal.toFixed(2) + ' for: ' + orderSummary;
         
         venmoLink.onclick = function(e) {
           e.preventDefault();
@@ -2558,12 +2534,12 @@
       sortedDays.forEach(function(day) {
         itemsHtml += '<div class="confirmation-day">' + day + ':</div>';
         itemsByDay[day].forEach(function(item) {
-          let priceDisplay = '$' + item.price.toFixed(2);
+          let priceDisplay = ' + item.price.toFixed(2);
           if (item.category === 'drinks' && item.isDiscounted) {
             if (item.price === 0) {
               priceDisplay = 'FREE 🎉';
             } else {
-              priceDisplay = '$' + item.price.toFixed(2) + ' 💰';
+              priceDisplay = ' + item.price.toFixed(2) + ' 💰';
             }
           }
           
@@ -2572,7 +2548,7 @@
       });
       itemsListDiv.innerHTML = itemsHtml;
       
-      let totalHtml = 'Total: $' + order.total.toFixed(2);
+      let totalHtml = 'Total:  + order.total.toFixed(2);
       if (order.discount && order.discount > 0) {
         let discountLabel = 'Discount';
         if (order.promoCode === 'STAFF2025') {
@@ -2581,7 +2557,7 @@
           discountLabel = 'JOHN Discount (50%)';
         }
         
-        totalHtml = 'Subtotal: $' + order.subtotal.toFixed(2) + '<br>' + discountLabel + ': -$' + order.discount.toFixed(2) + '<br><strong>Total: $' + order.total.toFixed(2) + '</strong>';
+        totalHtml = 'Subtotal:  + order.subtotal.toFixed(2) + '<br>' + discountLabel + ': - + order.discount.toFixed(2) + '<br><strong>Total:  + order.total.toFixed(2) + '</strong>';
       }
       document.getElementById('conf-total').innerHTML = totalHtml;
       
@@ -2780,6 +2756,3 @@
     // Make removeItemFromCart available globally
     window.removeItemFromCart = removeItemFromCart;
     window.removeChild = removeChild;
-  </script>
-</body>
-</html>
