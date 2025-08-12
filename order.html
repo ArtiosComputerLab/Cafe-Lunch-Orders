@@ -1106,6 +1106,25 @@
         { id: 'chicken-strips', name: 'Chicken Strips (3ct)', price: 6.75, desc: 'Hand-breaded chicken strips', image: 'assets/chickenstrips.png' }
       ],
       salads: [
+        { id: 'cobb-salad', name: 'Cobb Salad', price: 11.25, desc: 'Mixed greens with chicken, bacon, cheese, and more', image: 'assets/cobbsalad.png' },
+        { id: 'southwest-salad', name: 'Southwest Salad', price: 11.50, desc: 'Mixed greens with chicken, corn, peppers', image: 'assets/southwestsalad.png' },
+        { id: 'market-salad', name: 'Market Fresh Salad', price: 11.50, desc: 'Mixed greens with chicken and seasonal toppings', image: 'assets/marketsalad.png' }
+      ],
+      sides: [
+        { id: 'fries-only', name: 'Fries', price: 3.75, desc: 'Waffle potato fries', image: 'assets/fries.png' },
+        { id: 'fruit-only', name: 'Fruit Cup', price: 5.50, desc: 'Fresh seasonal fruit', image: 'assets/fruitcup.png' },
+        { id: 'mac-only', name: 'Mac & Cheese', price: 5.50, desc: 'Creamy macaroni and cheese', image: 'assets/MacnCheese_5oz_pdp.png' },
+        { id: 'salad-only', name: 'Side Salad', price: 5.50, desc: 'Mixed greens with toppings', image: 'assets/sidesalad.png' },
+        { id: 'parfait-only', name: 'Cookie Parfait', price: 5.75, desc: 'Cookie pieces with cream', image: 'assets/berryparfaitcookiecrumble.png' },
+        { id: 'chips-only', name: 'Chips', price: 1.50, desc: 'Variety of chips (provided by Artios)', image: 'assets/chips.jpg' }
+      ],
+      drinks: [
+        { id: 'regular-drink', name: 'Regular Drink', basePrice: 1.50, category: 'regular', desc: 'Water, Sodas (choose at pickup)' },
+        { id: 'premium-drink', name: 'Premium Drink', basePrice: 3.00, category: 'premium', desc: 'Iced Coffees, Vitamin Water, etc.' }
+      ]
+    };nstrips.png' }
+      ],
+      salads: [
         { id: 'cobb-salad', name: 'Cobb Salad', price: 10.25, desc: 'Fresh greens with grilled chicken', image: 'assets/cobbsalad.png' },
         { id: 'southwest-salad', name: 'Southwest Salad', price: 10.25, desc: 'Spicy southwest-style salad', image: 'assets/southwestsalad.png' },
         { id: 'market-salad', name: 'Market Salad', price: 10.25, desc: 'Fresh seasonal market vegetables', image: 'assets/marketsalad.png' }
@@ -1204,34 +1223,18 @@
       const dayOfWeek = now.getDay();
       const storeStatus = document.getElementById('store-status');
       
-      const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
-      const isPastCutoff = (hours > 8) || (hours === 8 && minutes >= 15);
-      const isBeforeReopen = hours < 13;
-      const isFridayAfterNoon = (dayOfWeek === 5 && hours >= 12);
-      
+      // Check if it's Friday after noon (time to roll to next week)
       if (dayOfWeek === 5 && hours >= 12) {
         isNextWeek = true;
       } else if (dayOfWeek === 0 || dayOfWeek === 6) {
+        // Weekend - current week ordering available
         isNextWeek = false;
       }
       
-      if (isWeekday && isPastCutoff && isBeforeReopen && !isFridayAfterNoon) {
-        storeStatus.style.background = 'rgba(255, 82, 82, 0.8)';
-        storeStatus.textContent = '🔒 Orders Closed Until 1:00 PM';
-        disableOrdering();
-      } else {
-        const statusText = isWeekday ? '✅ Store Open - Orders Accepted' : '✅ Weekend Ordering Open';
-        storeStatus.textContent = statusText;
-        storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
-      }
-    }
-
-    function disableOrdering() {
-      const orderBtn = document.getElementById('submit-order-btn');
-      if (orderBtn) {
-        orderBtn.disabled = true;
-        orderBtn.textContent = 'Ordering Closed (Reopens 1 PM)';
-      }
+      // Store is always open, just show status
+      const statusText = isNextWeek ? '✅ Ordering for Next Week' : '✅ Store Open - Orders Accepted';
+      storeStatus.textContent = statusText;
+      storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
     }
 
     // ============================================
@@ -1242,7 +1245,19 @@
       const now = new Date();
       const currentHour = now.getHours();
       const currentMinutes = now.getMinutes();
+      const dayOfWeek = now.getDay();
       let firstAvailableDay = null;
+
+      // Special Friday logic
+      const isFriday = dayOfWeek === 5;
+      const isFridayAfter815 = isFriday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15));
+      const isFridayBeforeNoon = isFriday && currentHour < 12;
+      
+      // If it's Friday between 8:15 AM and noon, don't show any tabs
+      if (isFridayAfter815 && isFridayBeforeNoon) {
+        tabsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #666; width: 100%;">📅 Friday ordering closed at 8:15 AM. New week ordering opens at noon.</div>';
+        return;
+      }
 
       let monday;
       if (isNextWeek) {
@@ -1264,15 +1279,22 @@
         const dateStr = (date.getMonth() + 1) + '/' + date.getDate();
         
         const today = new Date();
-        const isPast = date < today && date.toDateString() !== today.toDateString();
-        const isToday = date.toDateString() === today.toDateString();
+        today.setHours(0, 0, 0, 0);
+        const compareDate = new Date(date);
+        compareDate.setHours(0, 0, 0, 0);
+        
+        // Check if this day is in the past
+        const isPast = compareDate < today;
+        
+        // Check if this is today and past 8:15 AM cutoff
+        const isToday = compareDate.getTime() === today.getTime();
         const isPastCutoff = isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15));
         
         tab.innerHTML = dayName + '<br><small>' + dateStr + '</small>';
         
         if (isPast || isPastCutoff) {
           tab.classList.add('disabled');
-          tab.title = isPastCutoff ? 'Past 8:15 AM cutoff' : 'Past date';
+          tab.title = isPastCutoff ? 'Past 8:15 AM cutoff for today' : 'Past date';
         } else {
           if (!firstAvailableDay) {
             firstAvailableDay = day;
@@ -1317,6 +1339,20 @@
     function generateMenus() {
       const container = document.getElementById('menu-container');
       
+      // Check for Friday blackout period
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinutes = now.getMinutes();
+      const dayOfWeek = now.getDay();
+      const isFriday = dayOfWeek === 5;
+      const isFridayAfter815 = isFriday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15));
+      const isFridayBeforeNoon = isFriday && currentHour < 12;
+      
+      if (isFridayAfter815 && isFridayBeforeNoon) {
+        container.innerHTML = '<div style="padding: 40px; text-align: center; color: #666; background: #f8f9fa; border-radius: 12px; margin: 20px 0;"><h3>🕐 Friday Ordering Window Closed</h3><p>Ordering for this week closed at 8:15 AM.<br>New week ordering will open at 12:00 PM.</p></div>';
+        return;
+      }
+      
       days.forEach(function(day) {
         const dayMenu = document.createElement('div');
         dayMenu.className = 'menu-for-day';
@@ -1356,9 +1392,1221 @@
             
             let priceDisplay;
             if (category === 'drinks') {
-              priceDisplay = '$' + item.basePrice.toFixed(2);
+              priceDisplay = '
+
+    function setupCategoryToggle(categoryDiv, categoryId) {
+      const header = categoryDiv.querySelector('.menu-category-header');
+      header.addEventListener('click', function() {
+        categoryDiv.classList.toggle('collapsed');
+      });
+    }
+
+    function switchDay(day) {
+      document.querySelectorAll('.day-tab').forEach(function(tab) {
+        tab.classList.remove('active');
+        if (tab.dataset.day === day) {
+          tab.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
+        menu.classList.remove('active');
+        if (menu.dataset.day === day) {
+          menu.classList.add('active');
+        }
+      });
+
+      currentDay = day;
+    }
+
+    // ============================================
+    // CHILD MANAGEMENT
+    // ============================================
+    function addChild() {
+      childCount++;
+      const container = document.getElementById('children-container');
+      
+      const childSection = document.createElement('div');
+      childSection.className = 'child-section';
+      childSection.dataset.child = childCount;
+      
+      childSection.innerHTML = `
+        <div class="child-header">
+          <div class="child-title">
+            <div class="child-icon">${childCount}</div>
+            Child ${childCount}
+          </div>
+          <button type="button" class="remove-child-btn" onclick="removeChild(${childCount})">Remove</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name <span class="required">*</span></label>
+            <input type="text" class="child-first-name" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name <span class="required">*</span></label>
+            <input type="text" class="child-last-name" required>
+          </div>
+          <div class="form-group">
+            <label>Grade <span class="required">*</span></label>
+            <select class="child-grade" required>
+              <option value="">Select Grade</option>
+              <option value="K-2">K-2</option>
+              <option value="3-4">3-4</option>
+              <option value="5-6">5-6</option>
+              <option value="7-8">7-8</option>
+              <option value="9-12">9-12</option>
+              <option value="Staff">Staff</option>
+              <option value="Parent">Parent</option>
+            </select>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(childSection);
+      updateChildCheckboxes();
+      showNotification('Child ' + childCount + ' added!', 'success');
+    }
+
+    function removeChild(childId) {
+      const childSection = document.querySelector('[data-child="' + childId + '"]');
+      if (childSection) {
+        childSection.remove();
+        updateChildCheckboxes();
+        updateCart();
+        showNotification('Child removed', 'info');
+      }
+    }
+
+    function updateChildCheckboxes() {
+      const children = document.querySelectorAll('.child-section');
+      
+      document.querySelectorAll('.child-checkboxes').forEach(function(container) {
+        container.innerHTML = '';
+      });
+      
+      children.forEach(function(child) {
+        const childId = child.dataset.child;
+        const firstName = child.querySelector('.child-first-name').value;
+        const lastName = child.querySelector('.child-last-name').value;
+        const grade = child.querySelector('.child-grade').value;
+        
+        if (firstName && lastName && grade) {
+          const childName = firstName + ' ' + lastName.charAt(0) + '.';
+          
+          days.forEach(function(day) {
+            Object.keys(menuData).forEach(function(category) {
+              menuData[category].forEach(function(item) {
+                const checkboxContainer = document.getElementById(item.id + '-' + day + '-checkboxes');
+                if (checkboxContainer) {
+                  const existingCheckbox = checkboxContainer.querySelector('[data-child-id="' + childId + '"]');
+                  if (!existingCheckbox) {
+                    const checkboxDiv = document.createElement('div');
+                    checkboxDiv.className = 'child-checkbox';
+                    
+                    const checkboxId = item.id + '-' + day + '-' + childId;
+                    checkboxDiv.innerHTML = `
+                      <input type="checkbox" id="${checkboxId}" 
+                             data-item="${item.id}" 
+                             data-day="${day}" 
+                             data-child-id="${childId}">
+                      <label for="${checkboxId}">${childName}</label>
+                    `;
+                    
+                    checkboxContainer.appendChild(checkboxDiv);
+                  }
+                }
+              });
+            });
+          });
+        }
+      });
+    }
+
+    // ============================================
+    // CART MANAGEMENT
+    // ============================================
+    function updateCart() {
+      orderItems = [];
+      currentSubtotal = 0;
+      const childDayDrinks = {};
+      
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
+        const itemId = checkbox.dataset.item;
+        const day = checkbox.dataset.day;
+        const childId = checkbox.dataset.childId;
+        
+        const child = document.querySelector('[data-child="' + childId + '"]');
+        if (!child) return;
+        
+        const childFirstName = child.querySelector('.child-first-name').value;
+        const childLastName = child.querySelector('.child-last-name').value;
+        const childGrade = child.querySelector('.child-grade').value;
+        
+        let item = null;
+        let category = null;
+        Object.keys(menuData).forEach(function(cat) {
+          const found = menuData[cat].find(function(i) { return i.id === itemId; });
+          if (found) {
+            item = found;
+            category = cat;
+          }
+        });
+        
+        if (item) {
+          let finalPrice = item.price || item.basePrice;
+          let isDiscounted = false;
+          let discountAmount = 0;
+          
+          if (category === 'drinks') {
+            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
+            const childDayKey = childId + '-' + day;
+            
+            if (!childDayDrinks[childDayKey]) {
+              childDayDrinks[childDayKey] = { discountedDrinks: 0, hasCombo: hasEntreeOrSaladAndSide };
+            }
+            
+            if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
+              if (item.category === 'regular') {
+                discountAmount = item.basePrice;
+                finalPrice = 0;
+                isDiscounted = true;
+              } else if (item.category === 'premium') {
+                discountAmount = item.basePrice - 1.50;
+                finalPrice = 1.50;
+                isDiscounted = true;
+              }
+              childDayDrinks[childDayKey].discountedDrinks++;
             } else {
-              priceDisplay = '$' + item.price.toFixed(2);
+              finalPrice = item.basePrice;
+            }
+          }
+          
+          const orderItem = {
+            itemId: itemId,
+            childId: childId,
+            childName: childFirstName + ' ' + childLastName,
+            firstName: childFirstName,
+            lastName: childLastName,
+            grade: childGrade,
+            name: item.name,
+            price: finalPrice,
+            originalPrice: item.price || item.basePrice,
+            day: day.charAt(0).toUpperCase() + day.slice(1),
+            category: category,
+            isDiscounted: isDiscounted,
+            discountAmount: discountAmount
+          };
+          
+          orderItems.push(orderItem);
+          currentSubtotal += finalPrice;
+        }
+      });
+      
+      if (discountType === 'staff') {
+        currentDiscount = currentSubtotal * 0.10;
+      } else if (discountType === 'john') {
+        currentDiscount = currentSubtotal * 0.50;
+      } else {
+        currentDiscount = 0;
+      }
+      
+      currentTotal = currentSubtotal - currentDiscount;
+      
+      displayCart();
+      validateForm();
+    }
+
+    function checkChildHasEntreeOrSaladAndSide(childId, day) {
+      let hasEntreeOrSalad = false;
+      let hasSide = false;
+      
+      document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked').forEach(function(checkbox) {
+        const itemId = checkbox.dataset.item;
+        
+        Object.keys(menuData).forEach(function(category) {
+          const found = menuData[category].find(function(i) { return i.id === itemId; });
+          if (found) {
+            if (category === 'entrees' || category === 'salads') {
+              hasEntreeOrSalad = true;
+            } else if (category === 'sides') {
+              hasSide = true;
+            }
+          }
+        });
+      });
+      
+      return hasEntreeOrSalad && hasSide;
+    }
+
+    function displayCart() {
+      const cartItemsDiv = document.getElementById('cart-items');
+      const totalSpan = document.getElementById('total-amount');
+      const subtotalSpan = document.getElementById('subtotal-amount');
+      const discountSpan = document.getElementById('discount-amount');
+      const discountRow = document.getElementById('discount-row');
+      
+      if (orderItems.length === 0) {
+        cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
+        totalSpan.textContent = '0.00';
+        subtotalSpan.textContent = '0.00';
+        return;
+      }
+      
+      const itemsByChild = {};
+      orderItems.forEach(function(item) {
+        if (!itemsByChild[item.childId]) {
+          itemsByChild[item.childId] = {
+            name: item.childName,
+            items: []
+          };
+        }
+        itemsByChild[item.childId].items.push(item);
+      });
+      
+      let html = '';
+      Object.keys(itemsByChild).sort(function(a, b) {
+        return parseInt(a) - parseInt(b);
+      }).forEach(function(childId) {
+        const child = itemsByChild[childId];
+        html += '<div class="cart-child-section">';
+        html += '<div class="cart-child-name">' + child.name + '</div>';
+        
+        child.items.forEach(function(item) {
+          const priceClass = item.isDiscounted ? 'discounted' : '';
+          const priceText = item.price === 0 ? 'FREE!' : ' + item.price.toFixed(2);
+          const originalPriceText = item.isDiscounted ? ' (was  + item.originalPrice.toFixed(2) + ')' : '';
+          
+          html += `
+            <div class="cart-item">
+              <div class="cart-item-content">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-day">${item.day}</div>
+              </div>
+              <div class="cart-item-price ${priceClass}">${priceText}${originalPriceText}</div>
+              <button class="remove-item-btn" onclick="removeItemFromCart('${item.itemId}', '${item.childId}', '${item.day.toLowerCase()}')" title="Remove item">×</button>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+      });
+      
+      cartItemsDiv.innerHTML = html;
+      subtotalSpan.textContent = currentSubtotal.toFixed(2);
+      
+      if (currentDiscount > 0) {
+        discountRow.style.display = 'flex';
+        discountSpan.textContent = currentDiscount.toFixed(2);
+      } else {
+        discountRow.style.display = 'none';
+      }
+      
+      totalSpan.textContent = currentTotal.toFixed(2);
+    }
+
+    function removeItemFromCart(itemId, childId, day) {
+      const checkbox = document.querySelector(
+        `input[type="checkbox"][data-item="${itemId}"][data-child-id="${childId}"][data-day="${day}"]`
+      );
+      
+      if (checkbox) {
+        checkbox.checked = false;
+        updateCart();
+        showNotification('Item removed from cart', 'info');
+      }
+    }
+
+    // ============================================
+    // DISCOUNT MANAGEMENT
+    // ============================================
+    function applyDiscountCode() {
+      const codeInput = document.getElementById('discount-code');
+      const messageDiv = document.getElementById('discount-message');
+      const code = codeInput.value.trim().toUpperCase();
+      
+      messageDiv.style.opacity = '0';
+      
+      if (!code) {
+        messageDiv.className = 'promo-status invalid';
+        messageDiv.textContent = 'Please enter a discount code';
+        messageDiv.style.opacity = '1';
+        return;
+      }
+      
+      if (code === 'STAFF2025') {
+        discountType = 'staff';
+        messageDiv.className = 'promo-status valid';
+        messageDiv.textContent = '✅ Staff discount applied! (10% off)';
+        messageDiv.style.opacity = '1';
+        codeInput.disabled = true;
+      } else if (code === 'JOHN') {
+        discountType = 'john';
+        messageDiv.className = 'promo-status valid';
+        messageDiv.textContent = '✅ Special discount applied! (50% off)';
+        messageDiv.style.opacity = '1';
+        codeInput.disabled = true;
+      } else {
+        discountType = null;
+        messageDiv.className = 'promo-status invalid';
+        messageDiv.textContent = '❌ Invalid discount code';
+        messageDiv.style.opacity = '1';
+      }
+      
+      updateCart();
+    }
+
+    // ============================================
+    // FORM VALIDATION
+    // ============================================
+    function validateForm() {
+      const email = document.getElementById('family-email').value;
+      const submitBtn = document.getElementById('submit-order-btn');
+      
+      let isValid = true;
+      let hasCompleteChild = false;
+      
+      if (!email) {
+        isValid = false;
+      }
+      
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        const firstName = child.querySelector('.child-first-name').value;
+        const lastName = child.querySelector('.child-last-name').value;
+        const grade = child.querySelector('.child-grade').value;
+        
+        if (firstName && lastName && grade) {
+          hasCompleteChild = true;
+        }
+      });
+      
+      if (!hasCompleteChild) {
+        isValid = false;
+      }
+      
+      if (orderItems.length === 0) {
+        isValid = false;
+      }
+      
+      // Form is always enabled now - no time-based disabling
+      if (isValid) {
+        submitBtn.textContent = 'Place Order via Venmo';
+      }
+      
+      submitBtn.disabled = !isValid;
+    }
+
+    // ============================================
+    // ORDER SUBMISSION
+    // ============================================
+    function submitOrder() {
+      const email = document.getElementById('family-email').value;
+      
+      if (!email || orderItems.length === 0) {
+        showNotification('Please complete all required fields and select items', 'error');
+        return;
+      }
+      
+      const venmoUsername = '@ChanTa-Rivers';
+      const orderDescription = generateOrderDescription();
+      const venmoUrl = 'https://venmo.com/' + venmoUsername + '?txn=pay&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderDescription);
+      
+      showNotification('Processing your order...', 'info');
+      
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+        sendToGoogleSheets();
+      }
+      
+      setTimeout(function() {
+        window.open(venmoUrl, '_blank');
+        showNotification('Redirecting to Venmo for payment...', 'success');
+      }, 1000);
+    }
+
+    function generateOrderDescription() {
+      let description = 'Artios Cafe Order - ';
+      const childNames = new Set();
+      
+      orderItems.forEach(function(item) {
+        childNames.add(item.firstName);
+      });
+      
+      description += Array.from(childNames).join(', ');
+      
+      if (currentWeekMonday) {
+        const weekStart = (currentWeekMonday.getMonth() + 1) + '/' + currentWeekMonday.getDate();
+        description += ' - Week of ' + weekStart;
+      }
+      
+      return description;
+    }
+
+    function sendToGoogleSheets() {
+      const email = document.getElementById('family-email').value;
+      const children = [];
+      
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        const firstName = child.querySelector('.child-first-name').value;
+        const lastName = child.querySelector('.child-last-name').value;
+        const grade = child.querySelector('.child-grade').value;
+        
+        if (firstName && lastName && grade) {
+          children.push({
+            firstName: firstName,
+            lastName: lastName,
+            grade: grade
+          });
+        }
+      });
+      
+      const orderData = {
+        timestamp: new Date().toISOString(),
+        email: email,
+        children: children,
+        items: orderItems,
+        subtotal: currentSubtotal,
+        discount: currentDiscount,
+        discountType: discountType,
+        total: currentTotal,
+        weekMonday: currentWeekMonday ? currentWeekMonday.toISOString() : null,
+        isNextWeek: isNextWeek
+      };
+      
+      fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      })
+      .then(function() {
+        console.log('Order sent to Google Sheets');
+        clearSavedData();
+      })
+      .catch(function(error) {
+        console.error('Error sending to Google Sheets:', error);
+      });
+    }
+
+    // ============================================
+    // DATA PERSISTENCE
+    // ============================================
+    function saveDataToCookies() {
+      const data = {
+        email: document.getElementById('family-email').value,
+        children: [],
+        selectedItems: []
+      };
+      
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        data.children.push({
+          id: child.dataset.child,
+          firstName: child.querySelector('.child-first-name').value,
+          lastName: child.querySelector('.child-last-name').value,
+          grade: child.querySelector('.child-grade').value
+        });
+      });
+      
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
+        data.selectedItems.push({
+          item: checkbox.dataset.item,
+          day: checkbox.dataset.day,
+          childId: checkbox.dataset.childId
+        });
+      });
+      
+      localStorage.setItem('artioscafe_order', JSON.stringify(data));
+    }
+
+    function loadSavedData() {
+      try {
+        const savedData = localStorage.getItem('artioscafe_order');
+        if (!savedData) return;
+        
+        const data = JSON.parse(savedData);
+        
+        // Don't load the saved email - use the authenticated one
+        // Email is already pre-filled by setupAuthenticatedUI()
+        
+        // Load children
+        if (data.children && data.children.length > 0) {
+          // Clear existing children except the first
+          document.querySelectorAll('.child-section:not(:first-child)').forEach(function(child) {
+            child.remove();
+          });
+          
+          data.children.forEach(function(childData, index) {
+            if (index === 0) {
+              // Update first child
+              const firstChild = document.querySelector('.child-section');
+              if (firstChild) {
+                firstChild.querySelector('.child-first-name').value = childData.firstName || '';
+                firstChild.querySelector('.child-last-name').value = childData.lastName || '';
+                firstChild.querySelector('.child-grade').value = childData.grade || '';
+              }
+            } else {
+              // Add additional children
+              addChild();
+              const newChild = document.querySelector('[data-child="' + (index + 1) + '"]');
+              if (newChild) {
+                newChild.querySelector('.child-first-name').value = childData.firstName || '';
+                newChild.querySelector('.child-last-name').value = childData.lastName || '';
+                newChild.querySelector('.child-grade').value = childData.grade || '';
+              }
+            }
+          });
+          
+          updateChildCheckboxes();
+          
+          // Restore selected items after checkboxes are created
+          setTimeout(function() {
+            if (data.selectedItems) {
+              data.selectedItems.forEach(function(item) {
+                const checkbox = document.querySelector(
+                  'input[type="checkbox"][data-item="' + item.item + '"][data-day="' + item.day + '"][data-child-id="' + item.childId + '"]'
+                );
+                if (checkbox) {
+                  checkbox.checked = true;
+                }
+              });
+              updateCart();
+            }
+          }, 100);
+        }
+      } catch (error) {
+        console.error('Error loading saved data:', error);
+      }
+    }
+
+    function clearSavedData() {
+      localStorage.removeItem('artioscafe_order');
+    }
+
+    // ============================================
+    // NOTIFICATIONS
+    // ============================================
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = 'notification ' + type;
+      notification.style.display = 'block';
+      
+      setTimeout(function() {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html> + item.basePrice.toFixed(2);
+            } else {
+              priceDisplay = '
+
+    function setupCategoryToggle(categoryDiv, categoryId) {
+      const header = categoryDiv.querySelector('.menu-category-header');
+      header.addEventListener('click', function() {
+        categoryDiv.classList.toggle('collapsed');
+      });
+    }
+
+    function switchDay(day) {
+      document.querySelectorAll('.day-tab').forEach(function(tab) {
+        tab.classList.remove('active');
+        if (tab.dataset.day === day) {
+          tab.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.menu-for-day').forEach(function(menu) {
+        menu.classList.remove('active');
+        if (menu.dataset.day === day) {
+          menu.classList.add('active');
+        }
+      });
+
+      currentDay = day;
+    }
+
+    // ============================================
+    // CHILD MANAGEMENT
+    // ============================================
+    function addChild() {
+      childCount++;
+      const container = document.getElementById('children-container');
+      
+      const childSection = document.createElement('div');
+      childSection.className = 'child-section';
+      childSection.dataset.child = childCount;
+      
+      childSection.innerHTML = `
+        <div class="child-header">
+          <div class="child-title">
+            <div class="child-icon">${childCount}</div>
+            Child ${childCount}
+          </div>
+          <button type="button" class="remove-child-btn" onclick="removeChild(${childCount})">Remove</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name <span class="required">*</span></label>
+            <input type="text" class="child-first-name" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name <span class="required">*</span></label>
+            <input type="text" class="child-last-name" required>
+          </div>
+          <div class="form-group">
+            <label>Grade <span class="required">*</span></label>
+            <select class="child-grade" required>
+              <option value="">Select Grade</option>
+              <option value="K-2">K-2</option>
+              <option value="3-4">3-4</option>
+              <option value="5-6">5-6</option>
+              <option value="7-8">7-8</option>
+              <option value="9-12">9-12</option>
+              <option value="Staff">Staff</option>
+              <option value="Parent">Parent</option>
+            </select>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(childSection);
+      updateChildCheckboxes();
+      showNotification('Child ' + childCount + ' added!', 'success');
+    }
+
+    function removeChild(childId) {
+      const childSection = document.querySelector('[data-child="' + childId + '"]');
+      if (childSection) {
+        childSection.remove();
+        updateChildCheckboxes();
+        updateCart();
+        showNotification('Child removed', 'info');
+      }
+    }
+
+    function updateChildCheckboxes() {
+      const children = document.querySelectorAll('.child-section');
+      
+      document.querySelectorAll('.child-checkboxes').forEach(function(container) {
+        container.innerHTML = '';
+      });
+      
+      children.forEach(function(child) {
+        const childId = child.dataset.child;
+        const firstName = child.querySelector('.child-first-name').value;
+        const lastName = child.querySelector('.child-last-name').value;
+        const grade = child.querySelector('.child-grade').value;
+        
+        if (firstName && lastName && grade) {
+          const childName = firstName + ' ' + lastName.charAt(0) + '.';
+          
+          days.forEach(function(day) {
+            Object.keys(menuData).forEach(function(category) {
+              menuData[category].forEach(function(item) {
+                const checkboxContainer = document.getElementById(item.id + '-' + day + '-checkboxes');
+                if (checkboxContainer) {
+                  const existingCheckbox = checkboxContainer.querySelector('[data-child-id="' + childId + '"]');
+                  if (!existingCheckbox) {
+                    const checkboxDiv = document.createElement('div');
+                    checkboxDiv.className = 'child-checkbox';
+                    
+                    const checkboxId = item.id + '-' + day + '-' + childId;
+                    checkboxDiv.innerHTML = `
+                      <input type="checkbox" id="${checkboxId}" 
+                             data-item="${item.id}" 
+                             data-day="${day}" 
+                             data-child-id="${childId}">
+                      <label for="${checkboxId}">${childName}</label>
+                    `;
+                    
+                    checkboxContainer.appendChild(checkboxDiv);
+                  }
+                }
+              });
+            });
+          });
+        }
+      });
+    }
+
+    // ============================================
+    // CART MANAGEMENT
+    // ============================================
+    function updateCart() {
+      orderItems = [];
+      currentSubtotal = 0;
+      const childDayDrinks = {};
+      
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
+        const itemId = checkbox.dataset.item;
+        const day = checkbox.dataset.day;
+        const childId = checkbox.dataset.childId;
+        
+        const child = document.querySelector('[data-child="' + childId + '"]');
+        if (!child) return;
+        
+        const childFirstName = child.querySelector('.child-first-name').value;
+        const childLastName = child.querySelector('.child-last-name').value;
+        const childGrade = child.querySelector('.child-grade').value;
+        
+        let item = null;
+        let category = null;
+        Object.keys(menuData).forEach(function(cat) {
+          const found = menuData[cat].find(function(i) { return i.id === itemId; });
+          if (found) {
+            item = found;
+            category = cat;
+          }
+        });
+        
+        if (item) {
+          let finalPrice = item.price || item.basePrice;
+          let isDiscounted = false;
+          let discountAmount = 0;
+          
+          if (category === 'drinks') {
+            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
+            const childDayKey = childId + '-' + day;
+            
+            if (!childDayDrinks[childDayKey]) {
+              childDayDrinks[childDayKey] = { discountedDrinks: 0, hasCombo: hasEntreeOrSaladAndSide };
+            }
+            
+            if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
+              if (item.category === 'regular') {
+                discountAmount = item.basePrice;
+                finalPrice = 0;
+                isDiscounted = true;
+              } else if (item.category === 'premium') {
+                discountAmount = item.basePrice - 1.50;
+                finalPrice = 1.50;
+                isDiscounted = true;
+              }
+              childDayDrinks[childDayKey].discountedDrinks++;
+            } else {
+              finalPrice = item.basePrice;
+            }
+          }
+          
+          const orderItem = {
+            itemId: itemId,
+            childId: childId,
+            childName: childFirstName + ' ' + childLastName,
+            firstName: childFirstName,
+            lastName: childLastName,
+            grade: childGrade,
+            name: item.name,
+            price: finalPrice,
+            originalPrice: item.price || item.basePrice,
+            day: day.charAt(0).toUpperCase() + day.slice(1),
+            category: category,
+            isDiscounted: isDiscounted,
+            discountAmount: discountAmount
+          };
+          
+          orderItems.push(orderItem);
+          currentSubtotal += finalPrice;
+        }
+      });
+      
+      if (discountType === 'staff') {
+        currentDiscount = currentSubtotal * 0.10;
+      } else if (discountType === 'john') {
+        currentDiscount = currentSubtotal * 0.50;
+      } else {
+        currentDiscount = 0;
+      }
+      
+      currentTotal = currentSubtotal - currentDiscount;
+      
+      displayCart();
+      validateForm();
+    }
+
+    function checkChildHasEntreeOrSaladAndSide(childId, day) {
+      let hasEntreeOrSalad = false;
+      let hasSide = false;
+      
+      document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked').forEach(function(checkbox) {
+        const itemId = checkbox.dataset.item;
+        
+        Object.keys(menuData).forEach(function(category) {
+          const found = menuData[category].find(function(i) { return i.id === itemId; });
+          if (found) {
+            if (category === 'entrees' || category === 'salads') {
+              hasEntreeOrSalad = true;
+            } else if (category === 'sides') {
+              hasSide = true;
+            }
+          }
+        });
+      });
+      
+      return hasEntreeOrSalad && hasSide;
+    }
+
+    function displayCart() {
+      const cartItemsDiv = document.getElementById('cart-items');
+      const totalSpan = document.getElementById('total-amount');
+      const subtotalSpan = document.getElementById('subtotal-amount');
+      const discountSpan = document.getElementById('discount-amount');
+      const discountRow = document.getElementById('discount-row');
+      
+      if (orderItems.length === 0) {
+        cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
+        totalSpan.textContent = '0.00';
+        subtotalSpan.textContent = '0.00';
+        return;
+      }
+      
+      const itemsByChild = {};
+      orderItems.forEach(function(item) {
+        if (!itemsByChild[item.childId]) {
+          itemsByChild[item.childId] = {
+            name: item.childName,
+            items: []
+          };
+        }
+        itemsByChild[item.childId].items.push(item);
+      });
+      
+      let html = '';
+      Object.keys(itemsByChild).sort(function(a, b) {
+        return parseInt(a) - parseInt(b);
+      }).forEach(function(childId) {
+        const child = itemsByChild[childId];
+        html += '<div class="cart-child-section">';
+        html += '<div class="cart-child-name">' + child.name + '</div>';
+        
+        child.items.forEach(function(item) {
+          const priceClass = item.isDiscounted ? 'discounted' : '';
+          const priceText = item.price === 0 ? 'FREE!' : ' + item.price.toFixed(2);
+          const originalPriceText = item.isDiscounted ? ' (was  + item.originalPrice.toFixed(2) + ')' : '';
+          
+          html += `
+            <div class="cart-item">
+              <div class="cart-item-content">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-day">${item.day}</div>
+              </div>
+              <div class="cart-item-price ${priceClass}">${priceText}${originalPriceText}</div>
+              <button class="remove-item-btn" onclick="removeItemFromCart('${item.itemId}', '${item.childId}', '${item.day.toLowerCase()}')" title="Remove item">×</button>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+      });
+      
+      cartItemsDiv.innerHTML = html;
+      subtotalSpan.textContent = currentSubtotal.toFixed(2);
+      
+      if (currentDiscount > 0) {
+        discountRow.style.display = 'flex';
+        discountSpan.textContent = currentDiscount.toFixed(2);
+      } else {
+        discountRow.style.display = 'none';
+      }
+      
+      totalSpan.textContent = currentTotal.toFixed(2);
+    }
+
+    function removeItemFromCart(itemId, childId, day) {
+      const checkbox = document.querySelector(
+        `input[type="checkbox"][data-item="${itemId}"][data-child-id="${childId}"][data-day="${day}"]`
+      );
+      
+      if (checkbox) {
+        checkbox.checked = false;
+        updateCart();
+        showNotification('Item removed from cart', 'info');
+      }
+    }
+
+    // ============================================
+    // DISCOUNT MANAGEMENT
+    // ============================================
+    function applyDiscountCode() {
+      const codeInput = document.getElementById('discount-code');
+      const messageDiv = document.getElementById('discount-message');
+      const code = codeInput.value.trim().toUpperCase();
+      
+      messageDiv.style.opacity = '0';
+      
+      if (!code) {
+        messageDiv.className = 'promo-status invalid';
+        messageDiv.textContent = 'Please enter a discount code';
+        messageDiv.style.opacity = '1';
+        return;
+      }
+      
+      if (code === 'STAFF2025') {
+        discountType = 'staff';
+        messageDiv.className = 'promo-status valid';
+        messageDiv.textContent = '✅ Staff discount applied! (10% off)';
+        messageDiv.style.opacity = '1';
+        codeInput.disabled = true;
+      } else if (code === 'JOHN') {
+        discountType = 'john';
+        messageDiv.className = 'promo-status valid';
+        messageDiv.textContent = '✅ Special discount applied! (50% off)';
+        messageDiv.style.opacity = '1';
+        codeInput.disabled = true;
+      } else {
+        discountType = null;
+        messageDiv.className = 'promo-status invalid';
+        messageDiv.textContent = '❌ Invalid discount code';
+        messageDiv.style.opacity = '1';
+      }
+      
+      updateCart();
+    }
+
+    // ============================================
+    // FORM VALIDATION
+    // ============================================
+    function validateForm() {
+      const email = document.getElementById('family-email').value;
+      const submitBtn = document.getElementById('submit-order-btn');
+      
+      let isValid = true;
+      let hasCompleteChild = false;
+      
+      if (!email) {
+        isValid = false;
+      }
+      
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        const firstName = child.querySelector('.child-first-name').value;
+        const lastName = child.querySelector('.child-last-name').value;
+        const grade = child.querySelector('.child-grade').value;
+        
+        if (firstName && lastName && grade) {
+          hasCompleteChild = true;
+        }
+      });
+      
+      if (!hasCompleteChild) {
+        isValid = false;
+      }
+      
+      if (orderItems.length === 0) {
+        isValid = false;
+      }
+      
+      // Form is always enabled now - no time-based disabling
+      if (isValid) {
+        submitBtn.textContent = 'Place Order via Venmo';
+      }
+      
+      submitBtn.disabled = !isValid;
+    }
+
+    // ============================================
+    // ORDER SUBMISSION
+    // ============================================
+    function submitOrder() {
+      const email = document.getElementById('family-email').value;
+      
+      if (!email || orderItems.length === 0) {
+        showNotification('Please complete all required fields and select items', 'error');
+        return;
+      }
+      
+      const venmoUsername = '@ChanTa-Rivers';
+      const orderDescription = generateOrderDescription();
+      const venmoUrl = 'https://venmo.com/' + venmoUsername + '?txn=pay&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderDescription);
+      
+      showNotification('Processing your order...', 'info');
+      
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets) {
+        sendToGoogleSheets();
+      }
+      
+      setTimeout(function() {
+        window.open(venmoUrl, '_blank');
+        showNotification('Redirecting to Venmo for payment...', 'success');
+      }, 1000);
+    }
+
+    function generateOrderDescription() {
+      let description = 'Artios Cafe Order - ';
+      const childNames = new Set();
+      
+      orderItems.forEach(function(item) {
+        childNames.add(item.firstName);
+      });
+      
+      description += Array.from(childNames).join(', ');
+      
+      if (currentWeekMonday) {
+        const weekStart = (currentWeekMonday.getMonth() + 1) + '/' + currentWeekMonday.getDate();
+        description += ' - Week of ' + weekStart;
+      }
+      
+      return description;
+    }
+
+    function sendToGoogleSheets() {
+      const email = document.getElementById('family-email').value;
+      const children = [];
+      
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        const firstName = child.querySelector('.child-first-name').value;
+        const lastName = child.querySelector('.child-last-name').value;
+        const grade = child.querySelector('.child-grade').value;
+        
+        if (firstName && lastName && grade) {
+          children.push({
+            firstName: firstName,
+            lastName: lastName,
+            grade: grade
+          });
+        }
+      });
+      
+      const orderData = {
+        timestamp: new Date().toISOString(),
+        email: email,
+        children: children,
+        items: orderItems,
+        subtotal: currentSubtotal,
+        discount: currentDiscount,
+        discountType: discountType,
+        total: currentTotal,
+        weekMonday: currentWeekMonday ? currentWeekMonday.toISOString() : null,
+        isNextWeek: isNextWeek
+      };
+      
+      fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      })
+      .then(function() {
+        console.log('Order sent to Google Sheets');
+        clearSavedData();
+      })
+      .catch(function(error) {
+        console.error('Error sending to Google Sheets:', error);
+      });
+    }
+
+    // ============================================
+    // DATA PERSISTENCE
+    // ============================================
+    function saveDataToCookies() {
+      const data = {
+        email: document.getElementById('family-email').value,
+        children: [],
+        selectedItems: []
+      };
+      
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        data.children.push({
+          id: child.dataset.child,
+          firstName: child.querySelector('.child-first-name').value,
+          lastName: child.querySelector('.child-last-name').value,
+          grade: child.querySelector('.child-grade').value
+        });
+      });
+      
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
+        data.selectedItems.push({
+          item: checkbox.dataset.item,
+          day: checkbox.dataset.day,
+          childId: checkbox.dataset.childId
+        });
+      });
+      
+      localStorage.setItem('artioscafe_order', JSON.stringify(data));
+    }
+
+    function loadSavedData() {
+      try {
+        const savedData = localStorage.getItem('artioscafe_order');
+        if (!savedData) return;
+        
+        const data = JSON.parse(savedData);
+        
+        // Don't load the saved email - use the authenticated one
+        // Email is already pre-filled by setupAuthenticatedUI()
+        
+        // Load children
+        if (data.children && data.children.length > 0) {
+          // Clear existing children except the first
+          document.querySelectorAll('.child-section:not(:first-child)').forEach(function(child) {
+            child.remove();
+          });
+          
+          data.children.forEach(function(childData, index) {
+            if (index === 0) {
+              // Update first child
+              const firstChild = document.querySelector('.child-section');
+              if (firstChild) {
+                firstChild.querySelector('.child-first-name').value = childData.firstName || '';
+                firstChild.querySelector('.child-last-name').value = childData.lastName || '';
+                firstChild.querySelector('.child-grade').value = childData.grade || '';
+              }
+            } else {
+              // Add additional children
+              addChild();
+              const newChild = document.querySelector('[data-child="' + (index + 1) + '"]');
+              if (newChild) {
+                newChild.querySelector('.child-first-name').value = childData.firstName || '';
+                newChild.querySelector('.child-last-name').value = childData.lastName || '';
+                newChild.querySelector('.child-grade').value = childData.grade || '';
+              }
+            }
+          });
+          
+          updateChildCheckboxes();
+          
+          // Restore selected items after checkboxes are created
+          setTimeout(function() {
+            if (data.selectedItems) {
+              data.selectedItems.forEach(function(item) {
+                const checkbox = document.querySelector(
+                  'input[type="checkbox"][data-item="' + item.item + '"][data-day="' + item.day + '"][data-child-id="' + item.childId + '"]'
+                );
+                if (checkbox) {
+                  checkbox.checked = true;
+                }
+              });
+              updateCart();
+            }
+          }, 100);
+        }
+      } catch (error) {
+        console.error('Error loading saved data:', error);
+      }
+    }
+
+    function clearSavedData() {
+      localStorage.removeItem('artioscafe_order');
+    }
+
+    // ============================================
+    // NOTIFICATIONS
+    // ============================================
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = 'notification ' + type;
+      notification.style.display = 'block';
+      
+      setTimeout(function() {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html> + item.price.toFixed(2);
             }
             
             let imageHtml = '';
@@ -1789,19 +3037,8 @@
         isValid = false;
       }
       
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const dayOfWeek = now.getDay();
-      const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
-      const isPastCutoff = (hours > 8) || (hours === 8 && minutes >= 15);
-      const isBeforeReopen = hours < 13;
-      const isFridayAfterNoon = (dayOfWeek === 5 && hours >= 12);
-      
-      if (isWeekday && isPastCutoff && isBeforeReopen && !isFridayAfterNoon) {
-        isValid = false;
-        submitBtn.textContent = 'Ordering Closed (Reopens 1 PM)';
-      } else if (isValid) {
+      // Form is always enabled now - no time-based disabling
+      if (isValid) {
         submitBtn.textContent = 'Place Order via Venmo';
       }
       
