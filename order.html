@@ -1428,8 +1428,6 @@
         const childLastName = child.querySelector('.child-last-name').value.trim();
         const childGrade = child.querySelector('.child-grade').value;
         
-        if (!childFirstName || !childLastName || !childGrade) return;
-        
         days.forEach(function(day) {
           const checkboxes = document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked');
           
@@ -1468,13 +1466,18 @@
                 }
               }
               
+              // Use child info if available, otherwise use placeholder
+              const childDisplayName = (childFirstName && childLastName) ? 
+                childFirstName + ' ' + childLastName : 
+                'Child ' + childId;
+              
               const orderItem = {
                 itemId: itemId,
                 childId: childId,
-                childName: childFirstName + ' ' + childLastName,
-                firstName: childFirstName,
-                lastName: childLastName,
-                grade: childGrade,
+                childName: childDisplayName,
+                firstName: childFirstName || '',
+                lastName: childLastName || '',
+                grade: childGrade || '',
                 name: item.name,
                 price: finalPrice,
                 originalPrice: item.price || item.basePrice,
