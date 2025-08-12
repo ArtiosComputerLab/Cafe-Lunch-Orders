@@ -48,6 +48,18 @@
       padding: 30px;
     }
 
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
     /* Order Lookup Form */
     .lookup-section {
       background: #f8f9fa;
@@ -116,6 +128,12 @@
     .lookup-btn:hover {
       background: #1976d2;
       transform: translateY(-1px);
+    }
+
+    .lookup-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
     }
 
     /* Order Display */
@@ -356,19 +374,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Back Link */
-    .back-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      color: #1976d2;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .back-link:hover {
-      text-decoration: underline;
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
       .lookup-form {
@@ -406,8 +411,9 @@
       <a href="index.html" class="back-link">← Back to Order Form</a>
 
       <!-- Order Lookup Section -->
-      <div class="lookup-section">
+      <div class="lookup-section" id="lookup-section">
         <h3>🔍 Find Your Order</h3>
+        <p style="color: #666; margin-bottom: 20px;">Enter your email to view and manage your orders</p>
         <form class="lookup-form" id="lookup-form">
           <div class="form-group">
             <label for="email">Email Address</label>
@@ -417,30 +423,19 @@
             <label for="order-id">Order ID (Optional)</label>
             <input type="text" id="order-id" placeholder="SMITH-0815-0730">
           </div>
-          <button type="submit" class="lookup-btn">Find Orders</button>
+          <button type="submit" class="lookup-btn" id="lookup-btn">Find Orders</button>
         </form>
       </div>
 
       <!-- Order Display Section -->
       <div class="order-section" id="order-section">
-        <div class="order-header">
-          <div class="order-id" id="display-order-id">Order #SMITH-0815-0730</div>
-          <div class="order-details">
-            <div><strong>📅 Order Date:</strong> <span id="order-date">Aug 15, 2024</span></div>
-            <div><strong>👥 Children:</strong> <span id="children-count">2</span></div>
-            <div><strong>💰 Original Total:</strong> <span id="original-total">$47.25</span></div>
-            <div><strong>💳 Payment:</strong> Venmo Confirmed</div>
-          </div>
-        </div>
-
-        <!-- Days Container -->
-        <div id="days-container">
-          <!-- Days will be populated by JavaScript -->
+        <div id="orders-container">
+          <!-- Orders will be populated by JavaScript -->
         </div>
 
         <!-- Refund Summary -->
         <div class="refund-summary" id="refund-summary" style="display: none;">
-          <div class="refund-amount">Total Refunds: $<span id="total-refunds">0.00</span></div>
+          <div class="refund-amount">Total Pending Refunds: $<span id="total-refunds">0.00</span></div>
           <p>Refunds will be processed via Venmo within 24 hours</p>
         </div>
       </div>
@@ -450,10 +445,12 @@
   </div>
 
   <script>
-    // Configuration
+    // Configuration - UPDATE THIS TO YOUR ACTUAL SCRIPT URL
     const GOOGLE_SHEETS_CONFIG = {
       webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec'
     };
+
+    let currentOrders = [];
 
     document.addEventListener('DOMContentLoaded', function() {
       // Check URL parameters for direct access
@@ -469,7 +466,7 @@
       }
 
       // Auto-submit if both parameters provided
-      if (emailParam && orderParam) {
+      if (emailParam) {
         setTimeout(() => {
           findOrders();
         }, 500);
@@ -485,167 +482,253 @@
     function findOrders() {
       const email = document.getElementById('email').value.trim();
       const orderId = document.getElementById('order-id').value.trim();
+      const lookupBtn = document.getElementById('lookup-btn');
 
       if (!email) {
         showMessage('Please enter your email address', 'error');
         return;
       }
 
+      lookupBtn.disabled = true;
+      lookupBtn.textContent = '🔍 Searching...';
       showMessage('🔍 Searching for your orders...', 'info');
       
-      // Here you would call your Google Sheets API to find orders
-      // For now, we'll simulate with sample data
-      setTimeout(() => {
-        displaySampleOrder();
-      }, 1500);
-    }
+      // Build API URL
+      let apiUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=lookup_orders&email=${encodeURIComponent(email)}`;
+      if (orderId) {
+        apiUrl += `&order_id=${encodeURIComponent(orderId)}`;
+      }
 
-    function displaySampleOrder() {
-      // Hide lookup section and show order
-      document.querySelector('.lookup-section').style.display = 'none';
-      document.getElementById('order-section').style.display = 'block';
-      hideMessage();
+      console.log('Calling API:', apiUrl);
 
-      // Sample order data - this would come from your Google Sheets
-      const orderData = {
-        orderId: 'SMITH-0815-0730',
-        orderDate: 'August 15, 2024',
-        childrenCount: 2,
-        originalTotal: 47.25,
-        days: [
-          {
-            name: 'Monday',
-            date: '2024-08-15',
-            canCancel: false,
-            children: [
-              {
-                name: 'Emma Smith',
-                items: [
-                  { id: '1', name: 'Chicken Sandwich', price: 6.50, cancelled: false },
-                  { id: '2', name: 'Fries', price: 3.75, cancelled: false }
-                ]
-              },
-              {
-                name: 'Jake Smith', 
-                items: [
-                  { id: '3', name: 'Nuggets (8ct)', price: 6.50, cancelled: false }
-                ]
-              }
-            ]
-          },
-          {
-            name: 'Wednesday',
-            date: '2024-08-17',
-            canCancel: true,
-            children: [
-              {
-                name: 'Emma Smith',
-                items: [
-                  { id: '4', name: 'Chicken Sandwich', price: 6.50, cancelled: false },
-                  { id: '5', name: 'Fries', price: 3.75, cancelled: true }
-                ]
-              },
-              {
-                name: 'Jake Smith',
-                items: [
-                  { id: '6', name: 'Nuggets (8ct)', price: 6.50, cancelled: false }
-                ]
-              }
-            ]
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log('API Response:', data);
+          
+          if (data.success && data.orders && data.orders.length > 0) {
+            currentOrders = data.orders;
+            displayOrders(data.orders);
+            hideMessage();
+          } else if (data.success && data.orders && data.orders.length === 0) {
+            showMessage('No orders found for this email address. Please check your email and try again.', 'error');
+          } else {
+            showMessage(`Error: ${data.error || 'Failed to find orders'}`, 'error');
           }
-        ]
-      };
-
-      renderOrder(orderData);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showMessage('Network error. Please check your connection and try again.', 'error');
+        })
+        .finally(() => {
+          lookupBtn.disabled = false;
+          lookupBtn.textContent = 'Find Orders';
+        });
     }
 
-    function renderOrder(orderData) {
-      // Update header info
-      document.getElementById('display-order-id').textContent = `Order #${orderData.orderId}`;
-      document.getElementById('order-date').textContent = orderData.orderDate;
-      document.getElementById('children-count').textContent = orderData.childrenCount;
-      document.getElementById('original-total').textContent = `$${orderData.originalTotal.toFixed(2)}`;
+    function displayOrders(orders) {
+      // Hide lookup section and show order section
+      document.getElementById('lookup-section').style.display = 'none';
+      document.getElementById('order-section').style.display = 'block';
 
-      // Render days
-      const daysContainer = document.getElementById('days-container');
-      daysContainer.innerHTML = '';
+      const ordersContainer = document.getElementById('orders-container');
+      ordersContainer.innerHTML = '';
 
-      orderData.days.forEach(day => {
-        const dayDiv = createDaySection(day);
-        daysContainer.appendChild(dayDiv);
+      orders.forEach(order => {
+        const orderDiv = createOrderDisplay(order);
+        ordersContainer.appendChild(orderDiv);
       });
 
-      updateRefundSummary(orderData);
+      calculateRefundSummary();
     }
 
-    function createDaySection(day) {
+    function createOrderDisplay(order) {
+      const orderDiv = document.createElement('div');
+      orderDiv.className = 'order-wrapper';
+      orderDiv.style.marginBottom = '40px';
+
+      // Group items by day
+      const itemsByDay = {};
+      order.items.forEach(item => {
+        if (!itemsByDay[item.day]) {
+          itemsByDay[item.day] = [];
+        }
+        itemsByDay[item.day].push(item);
+      });
+
+      // Sort days
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      const sortedDays = Object.keys(itemsByDay).sort((a, b) => {
+        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+      });
+
+      // Create order header
+      const orderHeader = document.createElement('div');
+      orderHeader.className = 'order-header';
+      
+      const orderDate = new Date(order.timestamp).toLocaleDateString();
+      const activeItems = order.items.filter(item => item.status === 'active').length;
+      const cancelledItems = order.items.filter(item => item.status === 'cancelled').length;
+
+      orderHeader.innerHTML = `
+        <div class="order-id">Order #${order.orderId}</div>
+        <div class="order-details">
+          <div><strong>📅 Order Date:</strong> ${orderDate}</div>
+          <div><strong>👥 Children:</strong> ${order.children.length}</div>
+          <div><strong>💰 Original Total:</strong> $${order.total.toFixed(2)}</div>
+          <div><strong>📋 Status:</strong> ${activeItems} active, ${cancelledItems} cancelled</div>
+        </div>
+      `;
+
+      orderDiv.appendChild(orderHeader);
+
+      // Create day sections
+      sortedDays.forEach(dayName => {
+        const dayDiv = createDaySection(dayName, itemsByDay[dayName]);
+        orderDiv.appendChild(dayDiv);
+      });
+
+      return orderDiv;
+    }
+
+    function createDaySection(dayName, items) {
       const dayDiv = document.createElement('div');
       dayDiv.className = 'day-section';
 
-      const statusClass = day.canCancel ? 'can-cancel' : 'locked';
-      const statusText = day.canCancel ? 'Can Cancel' : 'Locked';
+      // Check if day can be cancelled (8:15 AM rule)
+      const itemDate = new Date(items[0].date + 'T08:15:00');
+      const now = new Date();
+      const canCancel = now <= itemDate;
+
+      const statusClass = canCancel ? 'can-cancel' : 'locked';
+      const statusText = canCancel ? `Can Cancel Until ${itemDate.toLocaleDateString()} 8:15 AM` : 'Cancellation Deadline Passed';
 
       dayDiv.innerHTML = `
         <div class="day-header">
-          <div class="day-title">${day.name}, ${new Date(day.date).toLocaleDateString()}</div>
+          <div class="day-title">${dayName}, ${new Date(items[0].date).toLocaleDateString()}</div>
           <div class="day-status ${statusClass}">${statusText}</div>
         </div>
         <div class="children-container">
-          ${day.children.map((child, childIndex) => `
-            <div class="child-section">
-              <div class="child-name">
-                <div class="child-icon">${childIndex + 1}</div>
-                ${child.name}
-              </div>
-              <div class="item-list">
-                ${child.items.map(item => `
-                  <div class="order-item ${item.cancelled ? 'cancelled' : ''}">
-                    <div class="item-details">
-                      <div class="item-name">${item.name}</div>
-                      <div class="item-price">$${item.price.toFixed(2)}</div>
-                    </div>
-                    ${item.cancelled ? 
-                      '<div class="cancelled-status">CANCELLED</div>' : 
-                      (day.canCancel ? 
-                        `<button class="cancel-btn" onclick="cancelItem('${item.id}', '${item.name}', ${item.price})">Cancel Item</button>` :
-                        '<button class="cancel-btn" disabled>Too Late</button>')
-                    }
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          `).join('')}
+          ${createChildrenSections(items, canCancel)}
         </div>
       `;
 
       return dayDiv;
     }
 
-    function cancelItem(itemId, itemName, itemPrice) {
-      if (confirm(`Cancel ${itemName} for $${itemPrice.toFixed(2)}?\n\nThis will request a refund that will be processed within 24 hours.`)) {
+    function createChildrenSections(items, canCancel) {
+      // Group items by child
+      const itemsByChild = {};
+      items.forEach(item => {
+        if (!itemsByChild[item.childName]) {
+          itemsByChild[item.childName] = [];
+        }
+        itemsByChild[item.childName].push(item);
+      });
+
+      let html = '';
+      let childIndex = 1;
+
+      Object.keys(itemsByChild).forEach(childName => {
+        html += `
+          <div class="child-section">
+            <div class="child-name">
+              <div class="child-icon">${childIndex}</div>
+              ${childName}
+            </div>
+            <div class="item-list">
+              ${itemsByChild[childName].map(item => `
+                <div class="order-item ${item.status === 'cancelled' ? 'cancelled' : ''}">
+                  <div class="item-details">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">$${item.price.toFixed(2)}</div>
+                  </div>
+                  ${item.status === 'cancelled' ? 
+                    '<div class="cancelled-status">CANCELLED</div>' : 
+                    (canCancel ? 
+                      `<button class="cancel-btn" onclick="cancelItem('${item.id}', '${item.name}', ${item.price}, '${childName}')">Cancel Item</button>` :
+                      '<button class="cancel-btn" disabled>Too Late</button>')
+                  }
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        childIndex++;
+      });
+
+      return html;
+    }
+
+    function cancelItem(itemId, itemName, itemPrice, childName) {
+      const reason = prompt(`Why are you cancelling ${itemName} for ${childName}?\n\nCommon reasons:\n• Child is sick\n• Child will be absent\n• Changed mind\n• Other`);
+      
+      if (reason === null) {
+        return; // User cancelled the prompt
+      }
+
+      const finalReason = reason.trim() || 'Parent requested';
+      
+      if (confirm(`Cancel ${itemName} for ${childName}?\n\nRefund: $${itemPrice.toFixed(2)}\nReason: ${finalReason}\n\nThis action cannot be undone.`)) {
         showMessage(`⏳ Cancelling ${itemName}...`, 'info');
         
-        // Here you would call your Google Sheets API to process the cancellation
-        setTimeout(() => {
-          showMessage(`✅ ${itemName} cancelled successfully! Refund of $${itemPrice.toFixed(2)} will be processed within 24 hours.`, 'success');
-          
-          // Update the UI to reflect cancellation
-          const itemElement = document.querySelector(`button[onclick*="${itemId}"]`).closest('.order-item');
-          itemElement.classList.add('cancelled');
-          itemElement.querySelector('.cancel-btn').outerHTML = '<div class="cancelled-status">CANCELLED</div>';
-          
-          updateRefundSummary();
-        }, 1000);
+        const apiUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?action=cancel_item&item_id=${encodeURIComponent(itemId)}&reason=${encodeURIComponent(finalReason)}`;
+        
+        console.log('Calling cancellation API:', apiUrl);
+        
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            console.log('Cancellation response:', data);
+            
+            if (data.success) {
+              showMessage(`✅ ${itemName} cancelled successfully! Refund of $${itemPrice.toFixed(2)} will be processed within 24 hours.`, 'success');
+              
+              // Update the UI
+              const itemElement = document.querySelector(`button[onclick*="${itemId}"]`).closest('.order-item');
+              itemElement.classList.add('cancelled');
+              itemElement.querySelector('.cancel-btn').outerHTML = '<div class="cancelled-status">CANCELLED</div>';
+              
+              // Update the item in our data
+              currentOrders.forEach(order => {
+                order.items.forEach(item => {
+                  if (item.id === itemId) {
+                    item.status = 'cancelled';
+                  }
+                });
+              });
+              
+              calculateRefundSummary();
+            } else {
+              showMessage(`❌ ${data.message || 'Failed to cancel item'}`, 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Cancellation error:', error);
+            showMessage('Network error. Please try again.', 'error');
+          });
       }
     }
 
-    function updateRefundSummary(orderData) {
-      // Calculate total refunds (this would be more sophisticated in real implementation)
-      const totalRefunds = 3.75; // Emma's cancelled fries
-      
+    function calculateRefundSummary() {
+      let totalRefunds = 0;
+      let refundCount = 0;
+
+      currentOrders.forEach(order => {
+        order.items.forEach(item => {
+          if (item.status === 'cancelled') {
+            totalRefunds += item.price;
+            refundCount++;
+          }
+        });
+      });
+
+      const refundSummary = document.getElementById('refund-summary');
       if (totalRefunds > 0) {
         document.getElementById('total-refunds').textContent = totalRefunds.toFixed(2);
-        document.getElementById('refund-summary').style.display = 'block';
+        refundSummary.style.display = 'block';
+      } else {
+        refundSummary.style.display = 'none';
       }
     }
 
@@ -654,11 +737,21 @@
       messageDiv.textContent = message;
       messageDiv.className = `status-message ${type}`;
       messageDiv.style.display = 'block';
+      
+      // Auto-hide success and info messages
+      if (type === 'success' || type === 'info') {
+        setTimeout(() => {
+          hideMessage();
+        }, 5000);
+      }
     }
 
     function hideMessage() {
       document.getElementById('status-message').style.display = 'none';
     }
+
+    // Make cancelItem available globally
+    window.cancelItem = cancelItem;
   </script>
 </body>
 </html>
