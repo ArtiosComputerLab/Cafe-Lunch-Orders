@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Artios Cafe - Place Order</title>
+  <title>Artios Academies of Sugar Hill - Cafe Lunch Order System</title>
   <style>
     * {
       margin: 0;
@@ -12,71 +12,27 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       background: #f8f9fa;
+      color: #202124;
       line-height: 1.6;
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
-      min-height: 100vh;
       background: white;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      min-height: 100vh;
     }
 
-    /* Auth Bar */
-    .auth-bar {
-      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9em;
-    }
-
-    .auth-info {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .auth-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .auth-btn {
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8em;
-      transition: all 0.3s ease;
-    }
-
-    .auth-btn:hover {
-      background: rgba(255,255,255,0.3);
-    }
-
-    .logout-btn {
-      background: rgba(244, 67, 54, 0.8);
-    }
-
-    .logout-btn:hover {
-      background: rgba(244, 67, 54, 1);
-    }
-
-    /* Header */
     .header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
+      padding: 30px;
       text-align: center;
-      padding: 40px 20px;
       position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .header-brand {
@@ -141,6 +97,133 @@
       border-radius: 15px;
       font-size: 0.8em;
     }
+
+    /* NEW: Order Management Integration Styles */
+    .quick-actions-section {
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+      border: 2px solid #2196f3;
+      border-radius: 12px;
+      margin: 20px 30px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+    }
+
+    .quick-actions-header {
+      background: #2196f3;
+      color: white;
+      padding: 15px 25px;
+      text-align: center;
+    }
+
+    .quick-actions-header h3 {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 600;
+    }
+
+    .quick-actions-content {
+      display: flex;
+      padding: 0;
+    }
+
+    .action-option {
+      flex: 1;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border-right: 1px solid rgba(33, 150, 243, 0.2);
+    }
+
+    .action-option:last-child {
+      border-right: none;
+    }
+
+    .action-option:hover {
+      background: rgba(33, 150, 243, 0.05);
+    }
+
+    .action-icon {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .action-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #1976d2;
+      margin-bottom: 8px;
+    }
+
+    .action-desc {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .action-btn {
+      background: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .action-btn:hover {
+      background: #1976d2;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+      text-decoration: none;
+      color: white;
+    }
+
+    .action-btn.secondary {
+      background: #ff9800;
+    }
+
+    .action-btn.secondary:hover {
+      background: #f57c00;
+    }
+
+    .returning-user-banner {
+      background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+      border: 2px solid #4caf50;
+      border-radius: 8px;
+      padding: 15px 25px;
+      margin: 20px 30px;
+      text-align: center;
+      animation: slideIn 0.5s ease;
+    }
+
+    .welcome-back {
+      color: #2e7d32;
+      font-weight: 600;
+    }
+
+    .welcome-back a {
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .welcome-back a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    /* END NEW STYLES */
 
     .main-content {
       display: flex;
@@ -272,12 +355,6 @@
       outline: none;
       border-color: #4285f4;
       box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
-    }
-
-    input[readonly] {
-      background: #f0f9ff;
-      cursor: not-allowed;
-      color: #666;
     }
 
     .add-child-btn {
@@ -438,6 +515,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
+    /* NEW: Menu item image styles */
     .menu-item-image {
       width: 80px;
       height: 80px;
@@ -591,178 +669,549 @@
       color: #333;
     }
 
-    .cart-item-day {
-      font-size: 0.8em;
-      color: #666;
-    }
-
     .cart-item-price {
       font-weight: 700;
       color: #34a853;
     }
 
-    .remove-item {
-      background: #ff4444;
+    .discount-line {
+      font-size: 0.85em;
+      color: #ff9800;
+      font-weight: 600;
+    }
+
+    .remove-item-btn {
+      background: #ff5722;
       color: white;
       border: none;
       border-radius: 50%;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       cursor: pointer;
-      font-size: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
       transition: all 0.3s ease;
+      margin-left: 10px;
+      flex-shrink: 0;
     }
 
-    .remove-item:hover {
-      background: #cc0000;
+    .remove-item-btn:hover {
+      background: #d32f2f;
       transform: scale(1.1);
     }
 
-    .promo-section {
-      background: #f8f9fa;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
+    .cart-item.free-item {
+      background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%);
+      border-left: 4px solid #4caf50;
     }
 
-    .promo-section.valid {
-      border-color: #4caf50;
-      background: #e8f5e8;
+    .cart-item.discounted-item {
+      background: linear-gradient(90deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
+      border-left: 4px solid #ff9800;
     }
 
-    .promo-section.invalid {
-      border-color: #f44336;
-      background: #ffebee;
-    }
-
-    .promo-section h4 {
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .promo-status {
-      margin-top: 5px;
-      font-size: 0.9em;
-      font-weight: 500;
-    }
-
-    .promo-status.valid {
-      color: #4caf50;
-    }
-
-    .promo-status.invalid {
-      color: #f44336;
-    }
-
-    .order-summary {
+    .cart-total {
       background: white;
-      border: 2px solid #e0e0e0;
+      border: 2px solid #4285f4;
       border-radius: 8px;
       padding: 20px;
-      margin-bottom: 20px;
     }
 
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
+    .total-label {
       font-size: 1.1em;
-    }
-
-    .summary-row.total {
-      border-top: 2px solid #e0e0e0;
-      padding-top: 10px;
-      font-weight: 700;
-      font-size: 1.3em;
+      font-weight: 600;
       color: #4285f4;
+      margin-bottom: 10px;
     }
 
-    .discount-line {
-      color: #4caf50 !important;
+    .total-amount {
+      font-size: 2em;
+      font-weight: 700;
+      color: #34a853;
+      margin-bottom: 20px;
     }
 
     .checkout-btn {
       width: 100%;
-      background: #4285f4;
+      background: #34a853;
       color: white;
       border: none;
       padding: 15px;
       border-radius: 8px;
-      font-size: 1.1em;
-      font-weight: 600;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
       transition: all 0.3s ease;
     }
 
     .checkout-btn:hover:not(:disabled) {
-      background: #3367d6;
+      background: #2e7d32;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
     }
 
     .checkout-btn:disabled {
-      background: #ccc;
+      background: #bbb;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
 
-    /* Modal Styles */
-    .modal {
+    /* Payment Modal */
+    .payment-modal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
       top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
+      background: rgba(0,0,0,0.7);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
     }
 
-    .modal-content {
-      background-color: white;
-      margin: 10% auto;
-      padding: 30px;
+    .payment-modal.show {
+      display: flex !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .payment-content {
+      background: white;
       border-radius: 12px;
-      width: 90%;
+      padding: 30px;
       max-width: 500px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      position: relative;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: center;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
 
-    .modal h3 {
-      color: #4285f4;
+    /* Confirmation Modal */
+    .confirmation-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 10001;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .confirmation-modal.show {
+      display: flex !important;
+    }
+
+    .confirmation-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: left;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .confirmation-header {
+      text-align: center;
+      color: #34a853;
+      font-size: 1.8em;
+      font-weight: 600;
       margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .confirmation-section {
+      margin-bottom: 20px;
+    }
+
+    .confirmation-section h4 {
+      color: #4285f4;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .confirmation-section p, .confirmation-section ul {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .confirmation-section ul {
+      padding-left: 20px;
+    }
+
+    .confirmation-items {
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .confirmation-day {
+      font-weight: 600;
+      color: #34a853;
+      margin-bottom: 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .confirmation-item {
+      margin-left: 10px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .confirmation-total {
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+
+    .confirmation-close-btn {
+      background: #4285f4;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .confirmation-close-btn:hover {
+      background: #3367d6;
+      transform: translateY(-2px);
+    }
+
+    @keyframes slideUp {
+      from { 
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to { 
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .payment-header {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #4285f4;
+      margin-bottom: 15px;
+    }
+
+    .payment-amount {
+      font-size: 2em;
+      font-weight: 700;
+      color: #34a853;
+      margin-bottom: 25px;
+      background: #f0f9ff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .payment-steps {
+      text-align: left;
+      margin-bottom: 25px;
+    }
+
+    .payment-step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      gap: 15px;
+    }
+
+    .step-number {
+      background: #4285f4;
+      color: white;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9em;
+      flex-shrink: 0;
+    }
+
+    .venmo-btn {
+      display: inline-block;
+      background: #3d95ce;
+      color: white;
+      text-decoration: none;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      margin: 10px 0;
+      border: none;
+      cursor: pointer;
+    }
+
+    .venmo-btn:hover {
+      background: #357ca5;
+      transform: translateY(-2px);
+      text-decoration: none;
+      color: white;
+    }
+
+    .confirmation-btn {
+      background: #34a853;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .confirmation-btn:hover {
+      background: #2e7d32;
+      transform: translateY(-2px);
+    }
+
+    .cancel-btn {
+      background: #666;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .cancel-btn:hover {
+      background: #555;
+      transform: translateY(-2px);
+    }
+
+    /* Promo Code Section */
+    .promo-section {
+      background: #fff3e0;
+      border: 2px solid #ff9800;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .promo-section h4 {
+      color: #f57c00;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      font-weight: 600;
       text-align: center;
     }
 
-    /* Mobile responsiveness */
+    .promo-input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ffcc02;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      text-transform: uppercase;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .promo-input:focus {
+      outline: none;
+      border-color: #ff9800;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+    }
+
+    .promo-status {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 0.8em;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .promo-status.valid {
+      color: #4caf50;
+      opacity: 1;
+    }
+
+    .promo-status.invalid {
+      color: #f44336;
+      opacity: 1;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 10002;
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
       .main-content {
         flex-direction: column;
       }
 
-      .header-brand {
+      .form-section, .sidebar {
+        flex: none;
+      }
+
+      .sidebar {
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .form-row {
         flex-direction: column;
         gap: 15px;
       }
 
       .day-tabs {
-        flex-wrap: nowrap;
         overflow-x: scroll;
       }
 
       .child-checkboxes {
         flex-direction: column;
+      }
+
+      .payment-content, .confirmation-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+        padding: 20px;
+      }
+
+      .header-brand {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .header-text {
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 1.8em;
+      }
+
+      .header .subtitle {
+        font-size: 1em;
+      }
+
+      .artios-logo {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+      }
+
+      .sync-status, .store-status {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        display: inline-block;
+        margin: 5px;
+      }
+
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 8px;
       }
 
+      .cart-item-content {
+        width: 100%;
+      }
+
+      .remove-item-btn {
+        align-self: flex-end;
+        margin-left: 0;
+        margin-top: 5px;
+      }
+
+      /* NEW: Mobile responsive for order management */
+      .quick-actions-content {
+        flex-direction: column;
+      }
+      .action-option {
+        border-right: none;
+        border-bottom: 1px solid rgba(33, 150, 243, 0.2);
+      }
+      .action-option:last-child {
+        border-bottom: none;
+      }
+      .quick-actions-section {
+        margin: 20px 10px;
+      }
+      .returning-user-banner {
+        margin: 20px 10px;
+      }
+
+      /* Mobile menu item layout */
       .menu-item {
         flex-direction: column;
         gap: 10px;
@@ -774,30 +1223,9 @@
         align-self: center;
       }
     }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
-    }
   </style>
 </head>
 <body>
-  <!-- Auth Bar -->
-  <div class="auth-bar">
-    <div class="auth-info">
-      <span>🔒 Logged in as: <span id="user-email">Loading...</span></span>
-    </div>
-    <div class="auth-actions">
-      <button class="auth-btn" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
-      <button class="auth-btn" onclick="window.location.href='manage-orders.html'">📋 Manage Orders</button>
-      <button class="auth-btn logout-btn" onclick="logout()">Logout</button>
-    </div>
-  </div>
-
   <div class="container">
     <div class="header">
       <div class="store-status" id="store-status">
@@ -823,21 +1251,88 @@
       </div>
     </div>
 
+    <!-- NEW: Returning user banner (shown dynamically) -->
+    <div class="returning-user-banner" id="returning-user-banner" style="display: none;">
+      <div class="welcome-back">
+        👋 <span id="welcome-message">Welcome back!</span>
+        <a href="#" id="view-orders-link">View your recent orders</a>
+      </div>
+    </div>
+
+    <!-- NEW: Main quick actions section -->
+    <div class="quick-actions-section">
+      <div class="quick-actions-header">
+        <h3>🍽️ Artios Cafe Lunch Orders</h3>
+      </div>
+      
+      <div class="quick-actions-content">
+        <div class="action-option">
+          <span class="action-icon">📝</span>
+          <div class="action-title">Place New Order</div>
+          <div class="action-desc">Order lunch for your children for this week</div>
+          <button class="action-btn" onclick="scrollToOrderForm()">Start New Order</button>
+        </div>
+        
+        <div class="action-option">
+          <span class="action-icon">📋</span>
+          <div class="action-title">Manage Orders</div>
+          <div class="action-desc">Cancel items, request refunds, or view order history</div>
+          <a href="manage-orders.html" class="action-btn secondary">Manage Orders</a>
+        </div>
+        
+        <div class="action-option">
+          <span class="action-icon">❓</span>
+          <div class="action-title">Need Help?</div>
+          <div class="action-desc">Questions about orders, payments, or menu items</div>
+          <a href="mailto:CRivers@artiosacademies.com" class="action-btn">Contact Us</a>
+        </div>
+      </div>
+    </div>
+
     <div class="main-content">
       <div class="form-section">
+        <!-- Shared Email Section -->
         <div class="shared-email">
-          <h3>👨‍👩‍👧‍👦 Family Email</h3>
+          <h3>📧 Family Email</h3>
           <div class="form-group">
             <label for="family-email">Email Address <span class="required">*</span></label>
-            <input type="email" id="family-email" readonly>
-            <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
-              Email is locked to your authenticated account for security
-            </div>
+            <input type="email" id="family-email" required placeholder="parent@example.com">
           </div>
         </div>
 
+        <!-- Children Sections -->
         <div id="children-container">
-          <!-- Children will be added dynamically -->
+          <div class="child-section" data-child="1">
+            <div class="child-header">
+              <div class="child-title">
+                <div class="child-icon">1</div>
+                Child 1
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>First Name <span class="required">*</span></label>
+                <input type="text" class="child-first-name" required>
+              </div>
+              <div class="form-group">
+                <label>Last Name <span class="required">*</span></label>
+                <input type="text" class="child-last-name" required>
+              </div>
+              <div class="form-group">
+                <label>Grade <span class="required">*</span></label>
+                <select class="child-grade" required>
+                  <option value="">Select Grade</option>
+                  <option value="K-2">K-2</option>
+                  <option value="3-4">3-4</option>
+                  <option value="5-6">5-6</option>
+                  <option value="7-8">7-8</option>
+                  <option value="9-12">9-12</option>
+                  <option value="Staff">Staff</option>
+                  <option value="Parent">Parent</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
         <button type="button" class="add-child-btn" id="add-child-btn">
@@ -865,92 +1360,153 @@
             <div class="empty-cart">No items selected</div>
           </div>
 
+          <!-- Promo Code Section -->
           <div class="promo-section">
-            <h4>Promo Code (Optional)</h4>
-            <input type="text" id="promo-code" placeholder="Enter promo code">
+            <h4>🎟️ Discount Codes</h4>
+            <input type="text" 
+                   id="promo-code" 
+                   class="promo-input" 
+                   placeholder="Enter discount code"
+                   maxlength="20">
             <div class="promo-status" id="promo-status"></div>
           </div>
 
-          <div class="order-summary">
-            <div class="summary-row">
-              <span>Subtotal:</span>
-              <span id="subtotal">$0.00</span>
+          <div class="cart-total">
+            <div class="total-label">Order Total</div>
+            <div class="total-amount">$<span id="total-amount">0.00</span></div>
+            <div id="discount-line" style="display: none; color: #4caf50; font-weight: 600; margin-bottom: 10px;">
+              Discount Applied: -$<span id="discount-amount">0.00</span>
             </div>
-            <div class="summary-row discount-line" id="discount-line" style="display: none;">
-              <span id="discount-label">Discount:</span>
-              <span id="discount-amount">-$0.00</span>
-            </div>
-            <div class="summary-row total">
-              <span>Total:</span>
-              <span id="total">$0.00</span>
-            </div>
+            <button type="button" class="checkout-btn" id="checkout-btn" disabled>
+              Review & Pay Order
+            </button>
           </div>
-
-          <button class="checkout-btn" id="checkout-btn" disabled>
-            Select Items to Continue
-          </button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Payment Modal -->
-  <div class="modal" id="payment-modal">
-    <div class="modal-content">
-      <h3>💳 Complete Your Payment</h3>
-      <div id="payment-details">
-        <div style="text-align: center; margin: 20px 0;">
-          <div style="font-size: 1.5em; color: #4CAF50; margin-bottom: 10px;">
-            💰 Total: $<span id="modal-total">0.00</span>
-          </div>
-        </div>
-        
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <div style="font-weight: 600; margin-bottom: 10px;">📱 Venmo Payment:</div>
-          <div><strong>Send to:</strong> @ChanTa-Rivers</div>
-          <div><strong>Amount:</strong> $<span id="venmo-total">0.00</span></div>
-          <div><strong>Note:</strong> Artios Cafe Order</div>
-        </div>
+  <div class="payment-modal" id="payment-modal">
+    <div class="payment-content">
+      <div class="payment-header">Complete Your Order</div>
+      <div class="payment-amount">
+        Total: $<span id="modal-total">0.00</span>
+      </div>
 
-        <div style="margin: 20px 0;">
-          <a href="#" id="venmo-payment-link" style="display: block; background: #3D95CE; color: white; padding: 15px; text-align: center; text-decoration: none; border-radius: 8px; font-weight: 600;">
-            💳 Pay with Venmo ($<span id="venmo-link-total">0.00</span>)
-          </a>
+      <div class="payment-steps">
+        <div class="payment-step">
+          <div class="step-number">1</div>
+          <div>Click "Pay with Venmo" to open Venmo with order details</div>
         </div>
-
-        <div style="border-top: 1px solid #e0e0e0; padding-top: 20px; text-align: center;">
-          <button type="button" id="confirm-payment-btn" style="background: #4CAF50; color: white; border: none; padding: 12px 30px; border-radius: 8px; margin-right: 10px; cursor: pointer;">
-            ✅ I've Paid - Submit Order
-          </button>
-          <button type="button" id="cancel-payment-btn" style="background: #666; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer;">
-            Cancel
-          </button>
+        <div class="payment-step">
+          <div class="step-number">2</div>
+          <div>Complete payment to <strong>@ChanTa-Rivers</strong></div>
+        </div>
+        <div class="payment-step">
+          <div class="step-number">3</div>
+          <div>Return here and click "I've Paid" to submit your order</div>
         </div>
       </div>
+
+      <div style="margin: 20px 0;">
+        <a href="#" id="venmo-payment-link" class="venmo-btn">
+          💳 Pay with Venmo ($<span id="venmo-total">0.00</span>)
+        </a>
+      </div>
+
+      <div style="border-top: 1px solid #e0e0e0; padding-top: 20px;">
+        <button type="button" class="confirmation-btn" id="confirm-payment-btn">
+          ✅ I've Paid - Submit Order
+        </button>
+        <button type="button" class="cancel-btn" id="cancel-payment-btn">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="confirmation-modal" id="confirmation-modal">
+    <div class="confirmation-content">
+      <div class="confirmation-header">
+        ✅ Order Confirmed!
+      </div>
+      
+      <div class="confirmation-section">
+        <h4>📋 Order Details</h4>
+        <ul>
+          <li><strong>Order ID:</strong> <span id="conf-order-id"></span></li>
+          <li><strong>Date:</strong> <span id="conf-date"></span></li>
+          <li><strong>Family Email:</strong> <span id="conf-email"></span></li>
+          <li><strong>Children:</strong> <span id="conf-children-count"></span></li>
+        </ul>
+      </div>
+
+      <div class="confirmation-section">
+        <h4>👥 Family Information</h4>
+        <div id="conf-children-list"></div>
+      </div>
+
+      <div class="confirmation-section">
+        <h4>🍽️ Items Ordered</h4>
+        <div class="confirmation-items" id="conf-items-list"></div>
+      </div>
+
+      <div class="confirmation-total" id="conf-total">
+        Total: $0.00
+      </div>
+
+      <div class="confirmation-section">
+        <h4>💳 Payment Summary</h4>
+        <ul>
+          <li><strong>Payment Method:</strong> Venmo (@ChanTa-Rivers)</li>
+          <li><strong>Status:</strong> Confirmed</li>
+        </ul>
+      </div>
+
+      <div class="confirmation-section">
+        <h4>📧 Next Steps</h4>
+        <p>A confirmation email will be sent to your family email address.</p>
+        <p>Questions? Contact: <strong>CRivers@artiosacademies.com</strong></p>
+      </div>
+
+      <button class="confirmation-close-btn" id="confirmation-close-btn">
+        Got It! Close
+      </button>
     </div>
   </div>
 
   <script>
     // ============================================
-    // GLOBAL VARIABLES
+    // CONFIGURATION
     // ============================================
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec';
-    
-    let authenticatedEmail = '';
-    let storeIsOpen = true;
-    let childCount = 0;
-    let orderItems = [];
+    const GOOGLE_SHEETS_CONFIG = {
+      webAppUrl: 'https://script.google.com/macros/s/AKfycbxWSO9AKq5uWU7iReEoZcSx3Vn0oeL30ovCeTryKOmC2ze1kP-r7PhWBeAeIY4-82G3/exec',
+      useGoogleSheets: true,
+      fallbackToLocalStorage: true
+    };
+
+    // ============================================
+    // STATE MANAGEMENT
+    // ============================================
+    let currentTotal = 0;
     let currentSubtotal = 0;
     let currentDiscount = 0;
-    let currentTotal = 0;
-    let discountType = 'none';
+    let orderItems = [];
     let currentDay = 'monday';
+    let storeIsOpen = true;
+    let childCount = 1;
+    let discountType = 'none';
     let currentWeekMonday = null;
     let isNextWeek = false;
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
     const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
+    // ============================================
+    // MENU DATA WITH IMAGES
+    // ============================================
     const menuData = {
       entrees: [
         { id: 'chicken-sandwich', name: 'Chicken Sandwich', price: 6.50, desc: 'Classic boneless breast of chicken', image: 'assets/chickensandwich.png' },
@@ -983,112 +1539,101 @@
     };
 
     // ============================================
-    // AUTHENTICATION FUNCTIONS
+    // NEW: ORDER MANAGEMENT FUNCTIONS
     // ============================================
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, checking authentication...');
-      
-      if (!checkAuthentication()) {
-        return; // Will redirect to login
-      }
-
-      console.log('Authentication passed, initializing order system...');
-      initializeOrderSystem();
-    });
-
-    function checkAuthentication() {
-      authenticatedEmail = sessionStorage.getItem('authenticatedEmail');
-      const authExpiry = parseInt(sessionStorage.getItem('authExpiry'));
-      
-      console.log('Checking authentication...');
-      console.log('Email:', authenticatedEmail);
-      console.log('Expiry:', new Date(authExpiry));
-      
-      if (!authenticatedEmail || !authExpiry || Date.now() >= authExpiry) {
-        console.log('❌ Authentication failed - redirecting to login');
-        redirectToLogin();
-        return false;
-      }
-      
-      console.log('✅ Authentication successful');
-      
-      // Update auth bar with user info
-      document.getElementById('user-email').textContent = authenticatedEmail;
-      
-      // Set the locked email field
-      document.getElementById('family-email').value = authenticatedEmail;
-      
-      return true;
-    }
-
-    function redirectToLogin() {
-      sessionStorage.removeItem('authenticatedEmail');
-      sessionStorage.removeItem('authExpiry');
-      document.body.innerHTML = `
-        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f8f9fa; font-family: Arial, sans-serif;">
-          <div style="text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="font-size: 3em; margin-bottom: 20px;">🔒</div>
-            <h2 style="color: #1976d2; margin-bottom: 15px;">Login Required</h2>
-            <p style="color: #666; margin-bottom: 20px;">Please login to place orders</p>
-            <div style="font-size: 14px; color: #999;">Redirecting to login...</div>
-          </div>
-        </div>
-      `;
-      setTimeout(() => { window.location.href = 'login.html'; }, 2000);
-    }
-
-    function logout() {
-      if (confirm('Are you sure you want to logout? Any unsaved order progress will be lost.')) {
-        sessionStorage.removeItem('authenticatedEmail');
-        sessionStorage.removeItem('authExpiry');
-        window.location.href = 'login.html';
+    function scrollToOrderForm() {
+      const formSection = document.querySelector('.form-section');
+      if (formSection) {
+        formSection.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
-    // ============================================
-    // ORDER SYSTEM INITIALIZATION
-    // ============================================
- function initializeOrderSystem() {
-  console.log('Initializing order system...');
-  
-  checkStoreHours();
-  generateDayTabs();
-  generateMenus();
-  setupEventListeners();
-  
-  // Add first child AFTER the DOM elements are ready
-  if (document.getElementById('children-container')) {
-    addChild();
-  }
-  
-  updateCart();
-  validateForm();
-  
-  console.log('Order system initialization complete');
-}
+    function checkForReturningUser() {
+      try {
+        const cookies = document.cookie.split(';');
+        let familyData = null;
+        
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          const parts = cookie.split('=');
+          if (parts[0] === 'artios_family_data') {
+            familyData = JSON.parse(decodeURIComponent(parts[1]));
+            break;
+          }
+        }
+        
+        if (familyData && familyData.email) {
+          showReturningUserBanner(familyData.email, familyData.children);
+        }
+      } catch (error) {
+        console.log('No previous order data found');
+      }
+    }
 
+    function showReturningUserBanner(email, children) {
+      const banner = document.getElementById('returning-user-banner');
+      const welcomeMessage = document.getElementById('welcome-message');
+      const viewOrdersLink = document.getElementById('view-orders-link');
+      
+      if (children && children.length > 0) {
+        const firstChild = children[0].firstName;
+        const childCount = children.length;
+        const childText = childCount === 1 ? firstChild : `${firstChild} and ${childCount - 1} other${childCount > 2 ? 's' : ''}`;
+        welcomeMessage.textContent = `Welcome back! We remember ${childText}.`;
+      } else {
+        welcomeMessage.textContent = 'Welcome back!';
+      }
+      
+      viewOrdersLink.href = `manage-orders.html?email=${encodeURIComponent(email)}`;
+      banner.style.display = 'block';
+    }
+
+    // ============================================
+    // STORE HOURS LOGIC
+    // ============================================
     function checkStoreHours() {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-      const dayOfWeek = now.getDay();
+      const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, 5 = Friday, 6 = Saturday
       const storeStatus = document.getElementById('store-status');
       
+      // Check if it's a weekday (Monday = 1, Friday = 5)
       const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
       
-      // Friday 8:15 AM - Noon blackout period
-      const isFridayBlackout = (dayOfWeek === 5 && hours >= 8 && minutes >= 15 && hours < 12);
+      // Check if it's 8:15 AM or later (closing time with grace period)
+      const isPastCutoff = (hours > 8) || (hours === 8 && minutes >= 15);
       
-      if (isFridayBlackout) {
+      // Check if it's Friday after noon (next week opens)
+      const isFridayAfterNoon = (dayOfWeek === 5 && hours >= 12);
+      
+      // Store closure logic: Close between 8:15 AM - 1:00 PM on weekdays ONLY
+      if (isWeekday && isPastCutoff && hours < 13 && !isFridayAfterNoon) {
         storeIsOpen = false;
-        storeStatus.textContent = '🔒 Orders resume at noon';
+        storeStatus.textContent = '🔒 Store Closed (8:00 AM - 1:00 PM)';
         storeStatus.style.background = 'rgba(244, 67, 54, 0.8)';
-      } else {
-        storeIsOpen = true;
-        const statusText = isWeekday ? '✅ Store Open - Orders Accepted' : '✅ Weekend Ordering Open';
-        storeStatus.textContent = statusText;
-        storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
+        
+        document.body.style.pointerEvents = 'none';
+        document.body.style.opacity = '0.7';
+        
+        const notice = document.querySelector('.notice');
+        notice.innerHTML = '<strong style="color: #ff5722;">⚠️ ORDERING CLOSED</strong><br>Form reopens daily at 1:00 PM (12:00 PM on Fridays for next week)<br>Current time: ' + now.toLocaleTimeString() + '<br>Contact: CRivers@artiosacademies.com';
+        
+        return;
       }
+      
+      // Set week logic for Friday afternoon
+      if (isFridayAfterNoon) {
+        isNextWeek = true;
+      } else {
+        isNextWeek = false;
+      }
+      
+      // Store is open (including all weekend hours)
+      storeIsOpen = true;
+      const statusText = isWeekday ? '✅ Store Open - Orders Accepted' : '✅ Weekend Ordering Open';
+      storeStatus.textContent = statusText;
+      storeStatus.style.background = 'rgba(76, 175, 80, 0.8)';
     }
 
     function getCurrentWeekMonday(date) {
@@ -1103,33 +1648,76 @@
     function getNextMonday(date) {
       const d = new Date(date);
       const day = d.getDay();
-      const diff = d.getDate() + (8 - day);
+      const diff = d.getDate() + (8 - day); // Days to add to get to next Monday
       d.setDate(diff);
       d.setHours(0, 0, 0, 0);
       return d;
     }
+
+    // ============================================
+    // MENU FILTERING AND COLLAPSING
+    // ============================================
+    function setupCategoryToggle(categoryDiv, categoryId) {
+      const header = categoryDiv.querySelector('.menu-category-header');
+      header.addEventListener('click', function() {
+        categoryDiv.classList.toggle('collapsed');
+      });
+    }
+
+    // ============================================
+    // CART ITEM REMOVAL
+    // ============================================
+    function removeItemFromCart(itemId, childId, day) {
+      // Find and uncheck the corresponding checkbox
+      const checkbox = document.querySelector(
+        `input[type="checkbox"][data-item="${itemId}"][data-child-id="${childId}"][data-day="${day}"]`
+      );
+      
+      if (checkbox) {
+        checkbox.checked = false;
+        updateCart();
+        showNotification(`Removed item from order`, 'info');
+      }
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, starting initialization...');
+      
+      checkStoreHours();
+      generateDayTabs();
+      generateMenus();
+      setupEventListeners();
+      loadUserDataFromCookies();
+      setupAutoSave();
+      updateCart();
+      validateForm();
+      
+      // NEW: Check for returning user
+      setTimeout(checkForReturningUser, 500);
+      
+      console.log('Initialization complete');
+    });
 
     function generateDayTabs() {
       const tabsContainer = document.getElementById('day-tabs');
       const now = new Date();
       const currentHour = now.getHours();
       const currentMinutes = now.getMinutes();
-      const dayOfWeek = now.getDay();
-      
+      let firstAvailableDay = null;
+
+      // Determine which Monday we're working with
       let monday;
-      // Roll over to next week: Friday at noon OR weekend
-      isNextWeek = (dayOfWeek === 5 && currentHour >= 12) || dayOfWeek === 6 || dayOfWeek === 0;
-      
       if (isNextWeek) {
         monday = getNextMonday(now);
       } else {
         monday = getCurrentWeekMonday(now);
       }
       currentWeekMonday = monday;
-      
-      let firstAvailableDay = null;
-      
-      days.forEach((day, index) => {
+
+      days.forEach(function(day, index) {
         const date = new Date(monday);
         date.setDate(monday.getDate() + index);
 
@@ -1139,13 +1727,8 @@
         const isToday = dateOnly.getTime() === todayOnly.getTime();
         const isBeforeToday = dateOnly.getTime() < todayOnly.getTime();
         
-        // Day is disabled if: 
-        // 1. Past 8:15 AM cutoff for current/past days, OR
-        // 2. Friday 8:15 AM - Noon blackout period (all days disabled)
-        const isPastCutoff = !isNextWeek && (isBeforeToday || (isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15))));
-        const isFridayBlackout = (dayOfWeek === 5 && currentHour >= 8 && currentMinutes >= 15 && currentHour < 12);
-        
-        const isDisabled = isPastCutoff || isFridayBlackout;
+        // For current week, check 8:15 AM cutoff for all days
+        const isPast = !isNextWeek && (isBeforeToday || (isToday && ((currentHour > 8) || (currentHour === 8 && currentMinutes >= 15))));
 
         const tab = document.createElement('div');
         tab.className = 'day-tab';
@@ -1153,13 +1736,9 @@
 
         tab.innerHTML = '<div>' + dayNames[index] + '</div><div style="font-size: 0.8em; opacity: 0.8;">' + (date.getMonth() + 1) + '/' + date.getDate() + '</div>';
 
-        if (isDisabled) {
+        if (isPast) {
           tab.classList.add('disabled');
-          if (isFridayBlackout) {
-            tab.title = 'Orders resume at noon on Friday';
-          } else {
-            tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:00 AM cutoff passed)';
-          }
+          tab.title = 'Orders for ' + dayNames[index] + ' are closed (8:00 AM cutoff passed)';
         } else {
           tab.addEventListener('click', function() { switchDay(day); });
           if (!firstAvailableDay) {
@@ -1284,11 +1863,251 @@
       currentDay = day;
     }
 
-    function setupCategoryToggle(categoryDiv, category) {
-      const header = categoryDiv.querySelector('.menu-category-header');
-      header.addEventListener('click', function() {
-        categoryDiv.classList.toggle('collapsed');
+    function setupEventListeners() {
+      document.getElementById('add-child-btn').addEventListener('click', addChild);
+
+      document.addEventListener('change', function(e) {
+        if (e.target.type === 'checkbox' && e.target.dataset.item) {
+          setTimeout(function() {
+            updateCart();
+          }, 50);
+        }
       });
+
+      document.getElementById('promo-code').addEventListener('input', function(e) {
+        validatePromoCode(e.target.value);
+      });
+
+      document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('child-first-name') || 
+            e.target.classList.contains('child-last-name')) {
+          updateChildCheckboxes();
+        }
+        validateForm();
+      });
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (validateForm() && storeIsOpen) {
+            openPaymentModal();
+          } else {
+            if (!storeIsOpen) {
+              showNotification('Store is closed. Orders cannot be placed now.', 'error');
+            } else {
+              showNotification('Please complete all required fields and add items to your order.', 'warning');
+            }
+          }
+        });
+      }
+
+      const cancelBtn = document.getElementById('cancel-payment-btn');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          closePaymentModal();
+        });
+      }
+
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          confirmBtn.disabled = true;
+          confirmBtn.textContent = '⏳ Submitting Order...';
+          
+          try {
+            submitOrder();
+          } catch (error) {
+            console.error('Error in submitOrder:', error);
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+            showNotification('Error submitting order. Please try again.', 'error');
+          }
+        });
+      }
+
+      const confirmationCloseBtn = document.getElementById('confirmation-close-btn');
+      if (confirmationCloseBtn) {
+        confirmationCloseBtn.addEventListener('click', function() {
+          closeConfirmationModal();
+        });
+      }
+
+      const paymentModal = document.getElementById('payment-modal');
+      if (paymentModal) {
+        paymentModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closePaymentModal();
+          }
+        });
+      }
+
+      const confirmationModal = document.getElementById('confirmation-modal');
+      if (confirmationModal) {
+        confirmationModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeConfirmationModal();
+          }
+        });
+      }
+    }
+
+    // ============================================
+    // COOKIE FUNCTIONALITY
+    // ============================================
+    function saveUserDataToCookies(showIndicator) {
+      if (showIndicator === undefined) showIndicator = true;
+      
+      try {
+        const familyData = {
+          email: document.getElementById('family-email').value.trim(),
+          children: []
+        };
+        
+        document.querySelectorAll('.child-section').forEach(function(child) {
+          const childData = {
+            firstName: child.querySelector('.child-first-name').value.trim(),
+            lastName: child.querySelector('.child-last-name').value.trim(),
+            grade: child.querySelector('.child-grade').value
+          };
+          
+          if (childData.firstName) {
+            familyData.children.push(childData);
+          }
+        });
+        
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
+        document.cookie = 'artios_family_data=' + encodeURIComponent(JSON.stringify(familyData)) + '; expires=' + expires.toUTCString() + '; path=/';
+        
+        console.log('Family data saved to cookies:', familyData);
+        
+        if (showIndicator && Math.random() < 0.3) {
+          showSavedIndicator();
+        }
+        
+      } catch (error) {
+        console.error('Error saving family data to cookies:', error);
+      }
+    }
+
+    function saveUserDataQuietly() {
+      saveUserDataToCookies(false);
+    }
+
+    function loadUserDataFromCookies() {
+      try {
+        const cookies = document.cookie.split(';');
+        let familyData = null;
+        
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          const parts = cookie.split('=');
+          if (parts[0] === 'artios_family_data') {
+            familyData = JSON.parse(decodeURIComponent(parts[1]));
+            break;
+          }
+        }
+        
+        if (!familyData) {
+          console.log('No saved family data found');
+          return;
+        }
+        
+        console.log('Loading saved family data:', familyData);
+        
+        if (familyData.email) {
+          document.getElementById('family-email').value = familyData.email;
+        }
+        
+        if (familyData.children && familyData.children.length > 0) {
+          const defaultChild = document.querySelector('.child-section');
+          if (defaultChild && familyData.children.length > 0) {
+            const firstChild = familyData.children[0];
+            defaultChild.querySelector('.child-first-name').value = firstChild.firstName || '';
+            defaultChild.querySelector('.child-last-name').value = firstChild.lastName || '';
+            defaultChild.querySelector('.child-grade').value = firstChild.grade || '';
+            
+            for (let i = 1; i < familyData.children.length; i++) {
+              addChild();
+              const newChild = document.querySelector('[data-child="' + (i + 1) + '"]');
+              if (newChild) {
+                const childData = familyData.children[i];
+                newChild.querySelector('.child-first-name').value = childData.firstName || '';
+                newChild.querySelector('.child-last-name').value = childData.lastName || '';
+                newChild.querySelector('.child-grade').value = childData.grade || '';
+              }
+            }
+          }
+          
+          updateChildCheckboxes();
+        }
+        
+        showNotification('Welcome back! Your family info has been loaded.', 'info');
+        
+      } catch (error) {
+        console.error('Error loading family data from cookies:', error);
+      }
+    }
+
+    function showSavedIndicator() {
+      const existingIndicator = document.querySelector('.saved-indicator');
+      if (existingIndicator) {
+        existingIndicator.remove();
+      }
+      
+      const indicator = document.createElement('div');
+      indicator.className = 'saved-indicator';
+      indicator.textContent = '✓ Saved';
+      indicator.style.cssText = 'position: fixed; top: 70px; right: 20px; background: #4caf50; color: white; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; z-index: 10003; animation: slideIn 0.2s ease, fadeOut 0.2s ease 1s forwards; pointer-events: none; opacity: 0.9;';
+      
+      document.body.appendChild(indicator);
+      
+      setTimeout(function() {
+        if (indicator.parentNode) {
+          indicator.remove();
+        }
+      }, 1200);
+    }
+
+    function setupAutoSave() {
+      document.getElementById('family-email').addEventListener('input', debounce(function() {
+        saveUserDataToCookies(false);
+      }, 3000));
+      
+      document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('child-first-name') || e.target.classList.contains('child-last-name')) {
+          debounce(function() {
+            saveUserDataToCookies(false);
+          }, 3000)();
+        }
+      });
+      
+      document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('child-grade')) {
+          saveUserDataQuietly();
+        }
+      });
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction() {
+        const args = arguments;
+        const later = function() {
+          clearTimeout(timeout);
+          func.apply(null, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
     }
 
     function addChild() {
@@ -1299,38 +2118,7 @@
       childDiv.className = 'child-section';
       childDiv.dataset.child = childCount;
       
-      childDiv.innerHTML = `
-        <div class="child-header">
-          <div class="child-title">
-            <div class="child-icon">${childCount}</div>
-            Child ${childCount}
-          </div>
-          <button type="button" class="remove-child" data-child-id="${childCount}">×</button>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>First Name <span class="required">*</span></label>
-            <input type="text" class="child-first-name" required>
-          </div>
-          <div class="form-group">
-            <label>Last Name <span class="required">*</span></label>
-            <input type="text" class="child-last-name" required>
-          </div>
-          <div class="form-group">
-            <label>Grade <span class="required">*</span></label>
-            <select class="child-grade" required>
-              <option value="">Select Grade</option>
-              <option value="K-2">K-2</option>
-              <option value="3-4">3-4</option>
-              <option value="5-6">5-6</option>
-              <option value="7-8">7-8</option>
-              <option value="9-12">9-12</option>
-              <option value="Staff">Staff</option>
-              <option value="Parent">Parent</option>
-            </select>
-          </div>
-        </div>
-      `;
+      childDiv.innerHTML = '<div class="child-header"><div class="child-title"><div class="child-icon">' + childCount + '</div>Child ' + childCount + '</div><button type="button" class="remove-child" data-child-id="' + childCount + '">✕</button></div><div class="form-row"><div class="form-group"><label>First Name <span class="required">*</span></label><input type="text" class="child-first-name" required></div><div class="form-group"><label>Last Name <span class="required">*</span></label><input type="text" class="child-last-name" required></div><div class="form-group"><label>Grade <span class="required">*</span></label><select class="child-grade" required><option value="">Select Grade</option><option value="K-2">K-2</option><option value="3-4">3-4</option><option value="5-6">5-6</option><option value="7-8">7-8</option><option value="9-12">9-12</option><option value="Staff">Staff</option><option value="Parent">Parent</option></select></div></div>';
       
       const removeBtn = childDiv.querySelector('.remove-child');
       removeBtn.addEventListener('click', function() {
@@ -1341,6 +2129,8 @@
       container.appendChild(childDiv);
       updateChildCheckboxes();
       validateForm();
+      
+      saveUserDataToCookies(Math.random() < 0.5);
     }
 
     function removeChild(childId) {
@@ -1354,6 +2144,8 @@
         renumberChildren();
         updateChildCheckboxes();
         updateCart();
+        
+        saveUserDataQuietly();
       }
     }
 
@@ -1393,113 +2185,125 @@
         
         children.forEach(function(child) {
           const childId = child.dataset.child;
-          const firstName = child.querySelector('.child-first-name').value.trim();
-          const lastName = child.querySelector('.child-last-name').value.trim();
+          const firstName = child.querySelector('.child-first-name').value || ('Child ' + childId);
           
-          const displayName = firstName && lastName ? firstName + ' ' + lastName : 
-                            firstName ? firstName : 
-                            lastName ? lastName : 'Child ' + childId;
+          const checkboxContainer = document.createElement('div');
+          checkboxContainer.className = 'child-checkbox';
           
-          const checkboxWrapper = document.createElement('div');
-          checkboxWrapper.className = 'child-checkbox';
+          const checkboxId = itemId + '-' + day + '-child-' + childId;
           
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.id = itemId + '-' + day + '-child-' + childId;
-          checkbox.dataset.item = itemId;
-          checkbox.dataset.childId = childId;
-          checkbox.dataset.day = day;
+          checkboxContainer.innerHTML = '<input type="checkbox" id="' + checkboxId + '" data-item="' + itemId + '" data-day="' + day + '" data-child-id="' + childId + '"><label for="' + checkboxId + '">' + firstName + '</label>';
           
-          const label = document.createElement('label');
-          label.htmlFor = checkbox.id;
-          label.textContent = displayName;
-          
-          checkboxWrapper.appendChild(checkbox);
-          checkboxWrapper.appendChild(label);
-          container.appendChild(checkboxWrapper);
+          container.appendChild(checkboxContainer);
         });
       });
+    }
+
+    function validatePromoCode(code) {
+      const promoStatus = document.getElementById('promo-status');
+      const trimmedCode = code.trim().toUpperCase();
+      
+      if (trimmedCode === '') {
+        discountType = 'none';
+        promoStatus.textContent = '';
+        promoStatus.className = 'promo-status';
+      } else if (trimmedCode === 'STAFF2025') {
+        discountType = 'staff';
+        promoStatus.textContent = '✅ Staff Discount Applied (10% off)';
+        promoStatus.className = 'promo-status valid';
+      } else if (trimmedCode === 'JOHN') {
+        discountType = 'john';
+        promoStatus.textContent = '✅ JOHN Discount Applied (50% off)';
+        promoStatus.className = 'promo-status valid';
+      } else {
+        discountType = 'none';
+        promoStatus.textContent = '❌ Invalid Code';
+        promoStatus.className = 'promo-status invalid';
+      }
+      
+      updateCart();
     }
 
     function updateCart() {
       orderItems = [];
       currentSubtotal = 0;
       
-      const children = document.querySelectorAll('.child-section');
+      const childDayDrinks = {};
       
-      children.forEach(function(child) {
-        const childId = child.dataset.child;
-        const childFirstName = child.querySelector('.child-first-name').value.trim();
-        const childLastName = child.querySelector('.child-last-name').value.trim();
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
+        const itemId = checkbox.dataset.item;
+        const day = checkbox.dataset.day;
+        const childId = checkbox.dataset.childId;
+        
+        const child = document.querySelector('[data-child="' + childId + '"]');
+        if (!child) {
+          return;
+        }
+        
+        const childFirstName = child.querySelector('.child-first-name').value;
+        const childLastName = child.querySelector('.child-last-name').value;
         const childGrade = child.querySelector('.child-grade').value;
         
-        days.forEach(function(day) {
-          const checkboxes = document.querySelectorAll('input[type="checkbox"][data-child-id="' + childId + '"][data-day="' + day + '"]:checked');
-          
-          checkboxes.forEach(function(checkbox) {
-            const itemId = checkbox.dataset.item;
-            let item = null;
-            let category = null;
-            
-            // Find the item in our menu data
-            Object.keys(menuData).forEach(function(cat) {
-              const found = menuData[cat].find(function(i) { return i.id === itemId; });
-              if (found) {
-                item = found;
-                category = cat;
-              }
-            });
-            
-            if (item) {
-              let finalPrice = item.price || item.basePrice;
-              let isDiscounted = false;
-              let discountAmount = 0;
-              
-              // Apply combo discount for drinks
-              if (category === 'drinks') {
-                const hasCombo = checkChildHasEntreeOrSaladAndSide(childId, day);
-                if (hasCombo) {
-                  if (item.category === 'regular') {
-                    finalPrice = 0;
-                    isDiscounted = true;
-                    discountAmount = item.basePrice;
-                  } else if (item.category === 'premium') {
-                    finalPrice = 1.50;
-                    isDiscounted = true;
-                    discountAmount = item.basePrice - 1.50;
-                  }
-                }
-              }
-              
-              // Use child info if available, otherwise use placeholder
-              const childDisplayName = (childFirstName && childLastName) ? 
-                childFirstName + ' ' + childLastName : 
-                'Child ' + childId;
-              
-              const orderItem = {
-                itemId: itemId,
-                childId: childId,
-                childName: childDisplayName,
-                firstName: childFirstName || '',
-                lastName: childLastName || '',
-                grade: childGrade || '',
-                name: item.name,
-                price: finalPrice,
-                originalPrice: item.price || item.basePrice,
-                day: day.charAt(0).toUpperCase() + day.slice(1),
-                category: category,
-                isDiscounted: isDiscounted,
-                discountAmount: discountAmount
-              };
-              
-              orderItems.push(orderItem);
-              currentSubtotal += finalPrice;
-            }
-          });
+        let item = null;
+        let category = null;
+        Object.keys(menuData).forEach(function(cat) {
+          const found = menuData[cat].find(function(i) { return i.id === itemId; });
+          if (found) {
+            item = found;
+            category = cat;
+          }
         });
+        
+        if (item) {
+          let finalPrice = item.price || item.basePrice;
+          let isDiscounted = false;
+          let discountAmount = 0;
+          
+          if (category === 'drinks') {
+            const hasEntreeOrSaladAndSide = checkChildHasEntreeOrSaladAndSide(childId, day);
+            const childDayKey = childId + '-' + day;
+            
+            if (!childDayDrinks[childDayKey]) {
+              childDayDrinks[childDayKey] = { discountedDrinks: 0, hasCombo: hasEntreeOrSaladAndSide };
+            }
+            
+            if (hasEntreeOrSaladAndSide && childDayDrinks[childDayKey].discountedDrinks === 0) {
+              if (item.category === 'regular') {
+                discountAmount = item.basePrice;
+                finalPrice = 0;
+                isDiscounted = true;
+              } else if (item.category === 'premium') {
+                discountAmount = item.basePrice - 1.50;
+                finalPrice = 1.50;
+                isDiscounted = true;
+              }
+              childDayDrinks[childDayKey].discountedDrinks++;
+            } else {
+              finalPrice = item.basePrice;
+            }
+          }
+          
+          const orderItem = {
+            itemId: itemId,  // Add itemId to the order item
+            childId: childId,
+            childName: childFirstName + ' ' + childLastName,
+            firstName: childFirstName,
+            lastName: childLastName,
+            grade: childGrade,
+            name: item.name,
+            price: finalPrice,
+            originalPrice: item.price || item.basePrice,
+            day: day.charAt(0).toUpperCase() + day.slice(1),
+            category: category,
+            isDiscounted: isDiscounted,
+            discountAmount: discountAmount
+          };
+          
+          orderItems.push(orderItem);
+          currentSubtotal += finalPrice;
+        }
       });
       
-      // Apply promo code discounts
       if (discountType === 'staff') {
         currentDiscount = currentSubtotal * 0.10;
       } else if (discountType === 'john') {
@@ -1538,21 +2342,14 @@
 
     function displayCart() {
       const cartItemsDiv = document.getElementById('cart-items');
-      const subtotalSpan = document.getElementById('subtotal');
-      const discountLine = document.getElementById('discount-line');
-      const discountAmount = document.getElementById('discount-amount');
-      const discountLabel = document.getElementById('discount-label');
-      const totalSpan = document.getElementById('total');
+      const totalSpan = document.getElementById('total-amount');
       
       if (orderItems.length === 0) {
         cartItemsDiv.innerHTML = '<div class="empty-cart">No items selected</div>';
-        subtotalSpan.textContent = '$0.00';
-        totalSpan.textContent = '$0.00';
-        discountLine.style.display = 'none';
+        totalSpan.textContent = '0.00';
         return;
       }
       
-      // Group items by child
       const itemsByChild = {};
       orderItems.forEach(function(item) {
         if (!itemsByChild[item.childId]) {
@@ -1569,98 +2366,59 @@
         return parseInt(a) - parseInt(b);
       }).forEach(function(childId) {
         const child = itemsByChild[childId];
-        
-        html += `<div class="child-cart-section">`;
-        html += `<div class="child-cart-header">${child.name}</div>`;
+        html += '<div class="child-cart-section">';
+        html += '<div class="child-cart-header">' + child.name + '</div>';
         
         child.items.forEach(function(item) {
-          let priceText = `$${item.price.toFixed(2)}`;
-          if (item.isDiscounted && item.discountAmount > 0) {
-            priceText += ` <small style="text-decoration: line-through; opacity: 0.7;">$${item.originalPrice.toFixed(2)}</small>`;
+          let extraClass = '';
+          let priceDisplay = '$' + item.price.toFixed(2);
+          let discountDisplay = '';
+          
+          if (item.category === 'drinks' && item.isDiscounted) {
+            if (item.price === 0) {
+              extraClass = 'free-item';
+              priceDisplay = 'FREE';
+              discountDisplay = '<div class="discount-line">Was $' + item.originalPrice.toFixed(2) + ' - Combo discount -$' + item.discountAmount.toFixed(2) + '</div>';
+            } else {
+              extraClass = 'discounted-item';
+              priceDisplay = '$' + item.price.toFixed(2);
+              discountDisplay = '<div class="discount-line">Was $' + item.originalPrice.toFixed(2) + ' - Combo discount -$' + item.discountAmount.toFixed(2) + '</div>';
+            }
           }
           
-          html += `
-            <div class="cart-item">
-              <div class="cart-item-content">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-day">${item.day}</div>
-              </div>
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="cart-item-price">${priceText}</div>
-                <button class="remove-item" onclick="removeItemFromCart('${item.itemId}', '${item.childId}', '${item.day.toLowerCase()}')">×</button>
-              </div>
-            </div>
-          `;
+          html += '<div class="cart-item ' + extraClass + '">';
+          html += '<div class="cart-item-content">';
+          html += '<div class="cart-item-name">' + item.name + ' (' + item.day + ')</div>';
+          html += discountDisplay;
+          html += '<div class="cart-item-price">' + priceDisplay + '</div>';
+          html += '</div>';
+          html += '<button class="remove-item-btn" onclick="removeItemFromCart(\'' + 
+                 item.itemId + '\', \'' + item.childId + '\', \'' + 
+                 item.day.toLowerCase() + '\')" title="Remove this item">✕</button>';
+          html += '</div>';
         });
-        
-        html += `</div>`;
+        html += '</div>';
       });
       
       cartItemsDiv.innerHTML = html;
+      totalSpan.textContent = currentTotal.toFixed(2);
       
-      // Update totals
-      subtotalSpan.textContent = '$' + currentSubtotal.toFixed(2);
-      totalSpan.textContent = '$' + currentTotal.toFixed(2);
+      const discountLine = document.getElementById('discount-line');
+      const discountAmount = document.getElementById('discount-amount');
       
       if (currentDiscount > 0) {
-        discountAmount.textContent = '-$' + currentDiscount.toFixed(2);
+        discountLine.style.display = 'block';
+        discountAmount.textContent = currentDiscount.toFixed(2);
+        
+        const discountLabel = discountLine.firstChild;
         if (discountType === 'staff') {
-          discountLabel.textContent = 'Staff Discount (10%):';
+          discountLabel.textContent = 'Staff Discount (10%): -$';
         } else if (discountType === 'john') {
-          discountLabel.textContent = 'Special Discount (50%):';
+          discountLabel.textContent = 'JOHN Discount (50%): -$';
         }
-        discountLine.style.display = 'flex';
       } else {
         discountLine.style.display = 'none';
       }
-    }
-
-    function removeItemFromCart(itemId, childId, day) {
-      // Find and uncheck the corresponding checkbox
-      const checkbox = document.querySelector(
-        `input[type="checkbox"][data-item="${itemId}"][data-child-id="${childId}"][data-day="${day}"]`
-      );
-      
-      if (checkbox) {
-        checkbox.checked = false;
-        updateCart();
-        showNotification(`Removed item from order`, 'info');
-      }
-    }
-
-    function validatePromoCode(code) {
-      const promoStatus = document.getElementById('promo-status');
-      const promoSection = document.querySelector('.promo-section');
-      
-      code = code.trim().toUpperCase();
-      
-      if (!code) {
-        promoStatus.textContent = '';
-        promoStatus.className = 'promo-status';
-        promoSection.className = 'promo-section';
-        discountType = 'none';
-        updateCart();
-        return;
-      }
-      
-      if (code === 'STAFF2025') {
-        promoStatus.textContent = '✅ Staff discount applied (10% off)';
-        promoStatus.className = 'promo-status valid';
-        promoSection.className = 'promo-section valid';
-        discountType = 'staff';
-      } else if (code === 'JOHN') {
-        promoStatus.textContent = '✅ Special discount applied (50% off)';
-        promoStatus.className = 'promo-status valid';
-        promoSection.className = 'promo-section valid';
-        discountType = 'john';
-      } else {
-        promoStatus.textContent = '❌ Invalid promo code';
-        promoStatus.className = 'promo-status invalid';
-        promoSection.className = 'promo-section invalid';
-        discountType = 'none';
-      }
-      
-      updateCart();
     }
 
     function validateForm() {
@@ -1696,136 +2454,362 @@
       } else {
         if (!storeIsOpen) {
           checkoutBtn.textContent = 'Store Closed';
-   const venmoLink = document.getElementById('venmo-payment-link');
-    const orderId = generateOrderId();
-    
-    const venmoUrl = `venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=${currentTotal.toFixed(2)}&note=${encodeURIComponent('Artios Order ' + orderId)}`;
-    venmoLink.href = venmoUrl;
-  }
-
-  function generateOrderId() {
-    const now = new Date();
-    const firstChild = document.querySelector('.child-section');
-    const lastName = firstChild ? 
-      firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 
-      'FAMILY';
-    
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hour = String(now.getHours()).padStart(2, '0');
-    const minute = String(now.getMinutes()).padStart(2, '0');
-    
-    return `${lastName}-${month}${day}-${hour}${minute}`;
-  }
-
-  function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 20px;
-      border-radius: 8px;
-      z-index: 10000;
-      background: ${type === 'error' ? '#f8d7da' : type === 'success' ? '#d4edda' : '#e3f2fd'};
-      color: ${type === 'error' ? '#721c24' : type === 'success' ? '#155724' : '#1976d2'};
-      border: 1px solid ${type === 'error' ? '#f5c6cb' : type === 'success' ? '#c3e6cb' : '#bbdefb'};
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.remove();
-    }, 5000);
-  }
-
-  // Payment modal event handlers
-  document.getElementById('cancel-payment-btn').addEventListener('click', function() {
-    document.getElementById('payment-modal').style.display = 'none';
-  });
-
-  document.getElementById('confirm-payment-btn').addEventListener('click', function() {
-    this.disabled = true;
-    this.textContent = 'Submitting...';
-    
-    // Prepare order data
-    const orderId = generateOrderId();
-    const orderData = {
-      orderId: orderId,
-      parentEmail: authenticatedEmail,
-      timestamp: new Date().toISOString(),
-      children: [],
-      items: [],
-      subtotal: currentSubtotal,
-      discount: currentDiscount,
-      total: currentTotal,
-      promoCode: document.getElementById('promo-code').value.trim().toUpperCase()
-    };
-    
-    // Collect children data
-    document.querySelectorAll('.child-section').forEach(child => {
-      orderData.children.push({
-        id: child.dataset.child,
-        firstName: child.querySelector('.child-first-name').value.trim(),
-        lastName: child.querySelector('.child-last-name').value.trim(),
-        grade: child.querySelector('.child-grade').value
-      });
-    });
-    
-    // Add dates to items
-    orderItems.forEach(item => {
-      const dayIndex = days.indexOf(item.day.toLowerCase());
-      const itemDate = new Date(currentWeekMonday);
-      itemDate.setDate(currentWeekMonday.getDate() + dayIndex);
-      
-      orderData.items.push({
-        ...item,
-        date: itemDate.toISOString().split('T')[0] // YYYY-MM-DD format
-      });
-    });
-    
-    // Submit to Google Sheets
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(orderData)
-    })
-    .then(response => response.json())
-    .then(result => {
-      if (result.success) {
-        document.getElementById('payment-modal').style.display = 'none';
-        showNotification(`Order ${orderId} submitted successfully!`, 'success');
-        
-        // Reset form
-        document.getElementById('family-email').value = authenticatedEmail; // Keep email
-        document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => cb.checked = false);
-        orderItems = [];
-        currentTotal = 0;
-        currentSubtotal = 0;
-        currentDiscount = 0;
-        updateCart();
-        
-        // Show simple confirmation
-        alert(`Order Confirmed!\n\nOrder ID: ${orderId}\nTotal: $${orderData.total.toFixed(2)}\n\nA confirmation email will be sent to ${authenticatedEmail}`);
-        
-      } else {
-        throw new Error(result.error || 'Submission failed');
+        } else if (!hasItems) {
+          checkoutBtn.textContent = 'Select Items to Continue';
+        } else if (!hasEmail) {
+          checkoutBtn.textContent = 'Enter Email to Continue';
+        } else if (!allChildrenComplete) {
+          checkoutBtn.textContent = 'Complete Child Info';
+        } else {
+          checkoutBtn.textContent = 'Review & Pay Order';
+        }
+        checkoutBtn.style.opacity = '0.6';
+        checkoutBtn.style.cursor = 'not-allowed';
       }
-    })
-    .catch(error => {
-      console.error('Submission error:', error);
-      showNotification('Error submitting order. Please try again.', 'error');
-      this.disabled = false;
-      this.textContent = '✅ I\'ve Paid - Submit Order';
-    });
-  });
-});
+      
+      return isValid;
+    }
+
+    function openPaymentModal() {
+      if (!validateForm()) {
+        return;
+      }
+      
+      const modal = document.getElementById('payment-modal');
+      const modalTotal = document.getElementById('modal-total');
+      const venmoTotal = document.getElementById('venmo-total');
+      const venmoLink = document.getElementById('venmo-payment-link');
+      
+      if (!modal || !modalTotal || !venmoTotal || !venmoLink) {
+        showNotification('Payment system error. Please refresh the page.', 'error');
+        return;
+      }
+      
+      modalTotal.textContent = currentTotal.toFixed(2);
+      venmoTotal.textContent = currentTotal.toFixed(2);
+      
+      let orderSummary = 'Artios Academies Cafe Lunch Order - $' + currentTotal.toFixed(2);
+      const children = orderItems.map(function(item) { return item.childName; }).filter(function(value, index, self) { return self.indexOf(value) === index; });
+      if (children.length <= 2) {
+        orderSummary += ' for ' + children.join(' & ');
+      } else {
+        orderSummary += ' for ' + children.length + ' children';
+      }
+      
+      const venmoUrl = 'venmo://paycharge?txn=pay&recipients=ChanTa-Rivers&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
+      const venmoWebUrl = 'https://venmo.com/ChanTa-Rivers?txn=pay&amount=' + currentTotal.toFixed(2) + '&note=' + encodeURIComponent(orderSummary);
+      
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        venmoLink.href = venmoUrl;
+      } else {
+        venmoLink.href = venmoWebUrl;
+        venmoLink.target = '_blank';
+        
+        const paymentDetails = 'Pay @ChanTa-Rivers $' + currentTotal.toFixed(2) + ' for: ' + orderSummary;
+        
+        venmoLink.onclick = function(e) {
+          e.preventDefault();
+          window.open(venmoWebUrl, '_blank');
+          
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(paymentDetails).then(function() {
+              showNotification('Payment details copied to clipboard!', 'success');
+            }).catch(function() {
+              alert('Please send payment to:\n\n' + paymentDetails);
+            });
+          } else {
+            alert('Please send payment to:\n\n' + paymentDetails);
+          }
+        };
+      }
+      
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+      
+      const focusableElements = modal.querySelectorAll('button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      
+      if (modal) {
+        modal.classList.remove('show');
+        setTimeout(function() {
+          modal.style.display = 'none';
+        }, 300);
+      }
+      
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+      }
+    }
+
+    function showDetailedOrderConfirmation(order) {
+      const modal = document.getElementById('confirmation-modal');
+      
+      document.getElementById('conf-order-id').textContent = order.orderId;
+      document.getElementById('conf-date').textContent = new Date(order.timestamp).toLocaleString();
+      document.getElementById('conf-email').textContent = order.email;
+      document.getElementById('conf-children-count').textContent = order.children ? order.children.length : 1;
+      
+      const childrenListDiv = document.getElementById('conf-children-list');
+      let childrenHtml = '<ul>';
+      if (order.children && order.children.length > 0) {
+        order.children.forEach(function(child) {
+          childrenHtml += '<li><strong>' + child.firstName + ' ' + child.lastName + '</strong> (' + child.grade + ')</li>';
+        });
+      }
+      childrenHtml += '</ul>';
+      childrenListDiv.innerHTML = childrenHtml;
+      
+      const itemsListDiv = document.getElementById('conf-items-list');
+      const itemsByDay = {};
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      
+      order.items.forEach(function(item) {
+        if (!itemsByDay[item.day]) {
+          itemsByDay[item.day] = [];
+        }
+        itemsByDay[item.day].push(item);
+      });
+      
+      const sortedDays = Object.keys(itemsByDay).sort(function(a, b) {
+        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+      });
+      
+      let itemsHtml = '';
+      sortedDays.forEach(function(day) {
+        itemsHtml += '<div class="confirmation-day">' + day + ':</div>';
+        itemsByDay[day].forEach(function(item) {
+          let priceDisplay = '$' + item.price.toFixed(2);
+          if (item.category === 'drinks' && item.isDiscounted) {
+            if (item.price === 0) {
+              priceDisplay = 'FREE 🎉';
+            } else {
+              priceDisplay = '$' + item.price.toFixed(2) + ' 💰';
+            }
+          }
+          
+          itemsHtml += '<div class="confirmation-item"><span>• ' + item.name + ' - ' + (item.childName || 'Student') + '</span><span><strong>' + priceDisplay + '</strong></span></div>';
+        });
+      });
+      itemsListDiv.innerHTML = itemsHtml;
+      
+      let totalHtml = 'Total: $' + order.total.toFixed(2);
+      if (order.discount && order.discount > 0) {
+        let discountLabel = 'Discount';
+        if (order.promoCode === 'STAFF2025') {
+          discountLabel = 'Staff Discount (10%)';
+        } else if (order.promoCode === 'JOHN') {
+          discountLabel = 'JOHN Discount (50%)';
+        }
+        
+        totalHtml = 'Subtotal: $' + order.subtotal.toFixed(2) + '<br>' + discountLabel + ': -$' + order.discount.toFixed(2) + '<br><strong>Total: $' + order.total.toFixed(2) + '</strong>';
+      }
+      document.getElementById('conf-total').innerHTML = totalHtml;
+      
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
+
+    function closeConfirmationModal() {
+      const modal = document.getElementById('confirmation-modal');
+      
+      if (modal) {
+        modal.classList.remove('show');
+        setTimeout(function() {
+          modal.style.display = 'none';
+        }, 300);
+      }
+    }
+
+    function submitOrder() {
+      const now = new Date();
+      const familyEmail = document.getElementById('family-email').value.trim();
+      const firstChild = document.querySelector('.child-section');
+      const lastName = firstChild ? firstChild.querySelector('.child-last-name').value.trim().toUpperCase() : 'FAMILY';
+      
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hour = String(now.getHours()).padStart(2, '0');
+      const minute = String(now.getMinutes()).padStart(2, '0');
+      
+      const orderId = lastName + '-' + month + day + '-' + hour + minute;
+      
+      const orderData = {
+        orderId: orderId,
+        timestamp: new Date().toISOString(),
+        email: familyEmail,
+        children: [],
+        items: orderItems,
+        subtotal: currentSubtotal,
+        discount: currentDiscount,
+        total: currentTotal,
+        promoCode: discountType === 'staff' ? 'STAFF2025' : (discountType === 'john' ? 'JOHN' : ''),
+        paymentMethod: 'Venmo',
+        paymentStatus: 'confirmed',
+        sendConfirmation: true,
+        weekStart: currentWeekMonday ? currentWeekMonday.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
+      };
+
+      document.querySelectorAll('.child-section').forEach(function(child) {
+        orderData.children.push({
+          id: child.dataset.child,
+          firstName: child.querySelector('.child-first-name').value.trim(),
+          lastName: child.querySelector('.child-last-name').value.trim(),
+          grade: child.querySelector('.child-grade').value
+        });
+      });
+      
+      showNotification('Submitting order to cloud...', 'info');
+      
+      if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
+        fetch(GOOGLE_SHEETS_CONFIG.webAppUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'data=' + encodeURIComponent(JSON.stringify(orderData))
+        })
+        .then(function(response) {
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(function(result) {
+          if (result.success) {
+            if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+              saveToLocalStorage(orderData);
+            }
+            closePaymentModal();
+            showDetailedOrderConfirmation(orderData);
+            showNotification('Order ' + orderId + ' submitted to cloud successfully!', 'success');
+            resetForm();
+          } else {
+            throw new Error(result.error || 'Unknown error from Google Sheets');
+          }
+        })
+        .catch(function(error) {
+          handleSubmissionFailure(orderData, orderId, error.message);
+        });
+      } else {
+        saveToLocalStorage(orderData);
+        closePaymentModal();
+        showDetailedOrderConfirmation(orderData);
+        showNotification('Order ' + orderId + ' saved locally!', 'success');
+        resetForm();
+      }
+    }
+
+    function handleSubmissionFailure(orderData, orderId, errorMessage) {
+      const confirmBtn = document.getElementById('confirm-payment-btn');
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = '✅ I\'ve Paid - Submit Order';
+      }
+      
+      if (GOOGLE_SHEETS_CONFIG.fallbackToLocalStorage) {
+        saveToLocalStorage(orderData);
+        closePaymentModal();
+        showDetailedOrderConfirmation(orderData);
+        showNotification('Order saved locally (cloud sync failed)', 'warning');
+        resetForm();
+      } else {
+        showNotification('Error submitting order. Please try again.', 'error');
+      }
+    }
+
+    function saveToLocalStorage(orderData) {
+      try {
+        const orders = JSON.parse(localStorage.getItem('cafeOrders') || '[]');
+        orders.push(orderData);
+        localStorage.setItem('cafeOrders', JSON.stringify(orders));
+      } catch (e) {
+        console.error('Error saving to localStorage:', e);
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('family-email').value = '';
+      document.querySelectorAll('.child-first-name').forEach(function(input) { input.value = ''; });
+      document.querySelectorAll('.child-last-name').forEach(function(input) { input.value = ''; });
+      document.querySelectorAll('.child-grade').forEach(function(select) { select.value = ''; });
+      document.getElementById('promo-code').value = '';
+      
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(cb) {
+        cb.checked = false;
+      });
+      
+      discountType = 'none';
+      document.getElementById('promo-status').textContent = '';
+      document.getElementById('promo-status').className = 'promo-status';
+      
+      orderItems = [];
+      currentTotal = 0;
+      currentSubtotal = 0;
+      currentDiscount = 0;
+      updateCart();
+      validateForm();
+    }
+
+    function showNotification(message, type) {
+      const existingNotif = document.querySelector('.notification');
+      if (existingNotif) {
+        existingNotif.remove();
+      }
+      
+      let bgColor, textColor, borderColor, icon;
+      switch(type) {
+        case 'success':
+          bgColor = '#d4edda';
+          textColor = '#155724';
+          borderColor = '#c3e6cb';
+          icon = '✅ ';
+          break;
+        case 'error':
+          bgColor = '#f8d7da';
+          textColor = '#721c24';
+          borderColor = '#f5c6cb';
+          icon = '❌ ';
+          break;
+        case 'warning':
+          bgColor = '#fff3cd';
+          textColor = '#856404';
+          borderColor = '#ffeaa7';
+          icon = '⚠️ ';
+          break;
+        default:
+          bgColor = '#e3f2fd';
+          textColor = '#1976d2';
+          borderColor = '#bbdefb';
+          icon = 'ℹ️ ';
+      }
+      
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.style.cssText = 'background: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + ';';
+      notif.textContent = icon + message;
+      
+      document.body.appendChild(notif);
+      
+      setTimeout(function() {
+        if (notif.parentNode) {
+          notif.remove();
+        }
+      }, 5000);
+    }
+
+    // Make removeItemFromCart available globally
+    window.removeItemFromCart = removeItemFromCart;
+    window.removeChild = removeChild;
   </script>
 </body>
 </html>
-
-
-          
