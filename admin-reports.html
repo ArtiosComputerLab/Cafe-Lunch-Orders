@@ -27,7 +27,7 @@
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       padding: 40px;
-      max-width: 900px;
+      max-width: 700px;
       width: 100%;
       text-align: center;
     }
@@ -77,87 +77,33 @@
       box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
     }
 
-    /* Report Type Selection */
-    .report-type-selector {
-      display: flex;
+    .date-range-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 15px;
-      margin-bottom: 10px;
     }
 
-    .report-type-option {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background: white;
-    }
-
-    .report-type-option:hover {
-      border-color: #4285f4;
-      background: rgba(66, 133, 244, 0.05);
-    }
-
-    .report-type-option input[type="radio"] {
-      margin: 0 0 12px 0;
-      width: 20px;
-      height: 20px;
-    }
-
-    .report-type-option input[type="radio"]:checked + span {
-      color: #4285f4;
-      font-weight: 700;
-    }
-
-    .report-type-option span {
-      font-size: 1.2em;
-      font-weight: 600;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-
-    .report-type-option small {
-      color: #666;
-      font-size: 0.9em;
-      text-align: center;
-      line-height: 1.4;
-    }
-
-    /* Day Display */
-    .day-display {
+    .date-range-preview {
       margin-top: 12px;
       padding: 12px 16px;
-      background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
-      border: 2px solid #4285f4;
+      background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+      border: 2px solid #4caf50;
       border-radius: 8px;
-      font-weight: 700;
-      color: #1565c0;
+      font-weight: 600;
+      color: #2e7d32;
       text-align: center;
-      font-size: 1.1em;
+      font-size: 1em;
       display: none;
     }
 
     /* Email Recipients Section */
     .email-recipients {
-      background: #f8f9fa;
-      border: 2px solid #e0e0e0;
+      background: linear-gradient(135deg, rgba(66, 133, 244, 0.1) 0%, rgba(52, 168, 83, 0.1) 100%);
+      border: 2px solid #4285f4;
       border-radius: 10px;
       padding: 20px;
       margin-bottom: 25px;
       text-align: left;
-    }
-
-    .admin-recipients {
-      background: linear-gradient(135deg, rgba(66, 133, 244, 0.1) 0%, rgba(52, 168, 83, 0.1) 100%);
-      border: 2px solid #4285f4;
-    }
-
-    .admin-recipients h4 {
-      color: #4285f4;
     }
 
     .email-recipients h4 {
@@ -249,6 +195,7 @@
       font-weight: 500;
       opacity: 0;
       transition: opacity 0.3s ease;
+      text-align: left;
     }
 
     .status-message.show {
@@ -273,39 +220,24 @@
       border: 1px solid #bbdefb;
     }
 
-    /* Worker Link Section */
-    .worker-link-section {
-      background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
-      border: 2px solid #ff9800;
+    /* Info Box */
+    .info-box {
+      background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+      border: 2px solid #2196f3;
       border-radius: 12px;
-      padding: 25px;
+      padding: 20px;
       margin-bottom: 25px;
       text-align: center;
     }
 
-    .worker-link-title {
-      color: #f57c00;
-      font-size: 1.3em;
-      font-weight: 700;
-      margin-bottom: 15px;
+    .info-box h3 {
+      color: #1976d2;
+      margin-bottom: 10px;
     }
 
-    .worker-link {
-      background: #ff9800;
-      color: white;
-      text-decoration: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      display: inline-block;
-      transition: all 0.3s ease;
-    }
-
-    .worker-link:hover {
-      background: #f57c00;
-      transform: translateY(-1px);
-      text-decoration: none;
-      color: white;
+    .info-box p {
+      color: #666;
+      margin: 0;
     }
 
     /* Responsive Design */
@@ -315,8 +247,8 @@
         margin: 10px;
       }
 
-      .report-type-selector {
-        flex-direction: column;
+      .date-range-inputs {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -324,52 +256,45 @@
 <body>
   <div class="admin-container">
     <div class="admin-header">
-      <h1 class="admin-title">🏢 Artios Academies Admin Portal</h1>
-      <p class="admin-subtitle">Administrative Reports & Management</p>
+      <h1 class="admin-title">📊 Artios Academies Admin Portal</h1>
+      <p class="admin-subtitle">Financial Reports & Analysis</p>
     </div>
 
-    <!-- Worker Link Section -->
-    <div class="worker-link-section">
-      <div class="worker-link-title">🍽️ Cafe Worker Portal</div>
-      <p style="color: #666; margin-bottom: 15px;">Share this link with cafe workers to get daily orders:</p>
-      <a href="daily-orders.html" class="worker-link" target="_blank">
-        📋 Cafe Worker Daily Orders Portal
-      </a>
+    <div class="info-box">
+      <h3>📈 Comprehensive Financial Report</h3>
+      <p>Generate detailed financial analysis including revenue, orders, popular items, families, and discounts for any date range</p>
     </div>
 
     <form id="report-form">
       
-      <!-- Report Type Selection -->
+      <!-- Date Range Section -->
       <div class="form-group">
-        <label>Choose Report Type:</label>
-        <div class="report-type-selector">
-          <label class="report-type-option">
-            <input type="radio" name="report-type" value="daily" checked>
-            <span>📅 Daily Report</span>
-            <small>Single day financial analysis</small>
-          </label>
+        <label>Select Date Range:</label>
+        <div class="date-range-inputs">
+          <div>
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" class="date-input" required>
+          </div>
+          <div>
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" class="date-input" required>
+          </div>
         </div>
-      </div>
-
-      <!-- Daily Report Date -->
-      <div class="form-group" id="daily-date-section">
-        <label for="daily-report-date">Select Report Date:</label>
-        <input type="date" id="daily-report-date" class="date-input" required>
-        <div class="day-display" id="day-display"></div>
+        <div class="date-range-preview" id="date-range-preview"></div>
       </div>
 
       <!-- Admin Recipients Section -->
-      <div class="email-recipients admin-recipients">
-        <h4>👨‍💼 Admin Recipients</h4>
+      <div class="email-recipients">
+        <h4>👨‍💼 Report Recipients</h4>
         <div class="email-checkbox-group">
-          <div class="email-checkbox" id="admin-checkbox">
+          <div class="email-checkbox checked" id="admin-checkbox">
             <input type="checkbox" id="email-admin" checked>
             <label for="email-admin">
               <strong>Jeremiah Daws</strong>
               <div class="email-address">jedaws@gmail.com</div>
             </label>
           </div>
-          <div class="email-checkbox" id="crivers-checkbox">
+          <div class="email-checkbox checked" id="crivers-checkbox">
             <input type="checkbox" id="email-crivers" checked>
             <label for="email-crivers">
               <strong>Chan Ta Rivers</strong>
@@ -380,7 +305,7 @@
       </div>
 
       <button type="submit" class="generate-btn" id="generate-btn">
-        📊 Generate Admin Report
+        📊 Generate Financial Report
       </button>
 
       <div class="status-message" id="status-message"></div>
@@ -395,12 +320,14 @@
     };
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Set default date
+      // Set default dates (today)
       const today = new Date();
       const todayStr = today.toISOString().split('T')[0];
       
-      document.getElementById('daily-report-date').value = todayStr;
-      updateDayDisplay();
+      document.getElementById('start-date').value = todayStr;
+      document.getElementById('end-date').value = todayStr;
+      
+      updateDateRangePreview();
 
       // Setup event listeners
       setupEventListeners();
@@ -408,41 +335,60 @@
     });
 
     function setupEventListeners() {
-      // Reports form submission
+      // Report form submission
       document.getElementById('report-form').addEventListener('submit', function(e) {
         e.preventDefault();
         generateReport();
       });
 
-      // Date change listener
-      const dailyDateInput = document.getElementById('daily-report-date');
-      if (dailyDateInput) {
-        dailyDateInput.addEventListener('change', updateDayDisplay);
+      // Date change listeners
+      const startDateInput = document.getElementById('start-date');
+      const endDateInput = document.getElementById('end-date');
+      if (startDateInput) {
+        startDateInput.addEventListener('change', updateDateRangePreview);
+      }
+      if (endDateInput) {
+        endDateInput.addEventListener('change', updateDateRangePreview);
       }
 
-      // Email checkbox events
+      // Checkbox event listeners
       document.querySelectorAll('.email-checkbox input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', updateEmailCheckboxStyles);
       });
     }
 
-    function updateDayDisplay() {
-      const dateInput = document.getElementById('daily-report-date');
-      const dayDisplay = document.getElementById('day-display');
+    function updateDateRangePreview() {
+      const startDate = document.getElementById('start-date').value;
+      const endDate = document.getElementById('end-date').value;
+      const preview = document.getElementById('date-range-preview');
       
-      if (dateInput && dayDisplay && dateInput.value) {
-        const selectedDate = new Date(dateInput.value + 'T12:00:00');
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const dayName = dayNames[selectedDate.getDay()];
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
         
-        dayDisplay.textContent = `📅 ${dayName}, ${selectedDate.toLocaleDateString('en-US', { 
-          month: 'long', 
-          day: 'numeric', 
-          year: 'numeric' 
-        })}`;
-        dayDisplay.style.display = 'block';
-      } else if (dayDisplay) {
-        dayDisplay.style.display = 'none';
+        if (start > end) {
+          preview.textContent = '⚠️ End date must be after start date';
+          preview.style.background = '#ffebee';
+          preview.style.borderColor = '#f44336';
+          preview.style.color = '#d32f2f';
+        } else {
+          const daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+          const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          
+          if (daysDiff === 1) {
+            preview.textContent = `📊 Single day report: ${startStr}`;
+          } else {
+            preview.textContent = `📊 ${daysDiff} days: ${startStr} to ${endStr}`;
+          }
+          
+          preview.style.background = 'linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%)';
+          preview.style.borderColor = '#4caf50';
+          preview.style.color = '#2e7d32';
+        }
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
       }
     }
 
@@ -459,11 +405,16 @@
 
     function generateReport() {
       const generateBtn = document.getElementById('generate-btn');
+      const startDate = document.getElementById('start-date').value;
+      const endDate = document.getElementById('end-date').value;
       
-      // Get date
-      const dateInput = document.getElementById('daily-report-date').value;
-      if (!dateInput) {
-        showStatus('Please select a report date', 'error');
+      if (!startDate || !endDate) {
+        showStatus('Please select both start and end dates', 'error');
+        return;
+      }
+      
+      if (new Date(startDate) > new Date(endDate)) {
+        showStatus('End date must be after start date', 'error');
         return;
       }
       
@@ -476,7 +427,7 @@
       if (emailCrivers) adminRecipients.push('CRivers@artiosacademies.com');
       
       if (adminRecipients.length === 0) {
-        showStatus('Please select at least one admin recipient', 'error');
+        showStatus('Please select at least one recipient', 'error');
         return;
       }
 
@@ -488,15 +439,17 @@
       generateBtn.disabled = true;
       generateBtn.textContent = '⏳ Generating Report...';
       
-      showStatus(`Generating daily admin report (sending to ${adminRecipients.length} recipient${adminRecipients.length > 1 ? 's' : ''})...`, 'info');
+      const daysDiff = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
+      const reportDescription = `financial report for ${daysDiff} day${daysDiff > 1 ? 's' : ''} (${startDate} to ${endDate})`;
+      
+      showStatus(`Generating ${reportDescription} for ${adminRecipients.length} recipient${adminRecipients.length > 1 ? 's' : ''}...`, 'info');
 
-      // Build URL with parameters
-      let reportUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?secret=cafe2025&action=generate_report&date=${encodeURIComponent(dateInput)}`;
-      reportUrl += `&admin_recipients=${encodeURIComponent(adminRecipients.join(','))}`;
+      // Build API URL
+      const apiUrl = `${GOOGLE_SHEETS_CONFIG.webAppUrl}?secret=cafe2025&action=generate_financial_report&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&admin_recipients=${encodeURIComponent(adminRecipients.join(','))}`;
 
-      console.log('Calling URL:', reportUrl);
+      console.log('Calling URL:', apiUrl);
 
-      fetch(reportUrl)
+      fetch(apiUrl)
         .then(response => {
           console.log('Response status:', response.status);
           return response.json();
@@ -505,10 +458,12 @@
           console.log('Report response:', data);
           
           if (data.success) {
-            let message = `✅ Daily Admin Report Generated!\n\n`;
-            message += `📅 Date: ${dateInput}\n`;
-            message += `🍽️ Orders Found: ${data.ordersProcessed || 0}\n`;
-            message += `📧 Detailed admin report sent to:\n`;
+            let message = `✅ Financial Report Generated Successfully!\n\n`;
+            message += `📈 Date Range: ${startDate} to ${endDate}\n`;
+            message += `💰 Total Revenue: $${(data.totalRevenue || 0).toFixed(2)}\n`;
+            message += `📊 Total Orders: ${data.totalOrders || 0}\n`;
+            message += `📧 Detailed report sent to:\n`;
+            
             adminRecipients.forEach(email => {
               if (email === 'jedaws@gmail.com') message += `  • Jeremiah Daws (${email})\n`;
               else if (email === 'CRivers@artiosacademies.com') message += `  • Chan Ta Rivers (${email})\n`;
@@ -530,18 +485,18 @@
         })
         .finally(() => {
           generateBtn.disabled = false;
-          generateBtn.textContent = '📊 Generate Admin Report';
+          generateBtn.textContent = '📊 Generate Financial Report';
         });
     }
 
     function showStatus(message, type) {
       const statusDiv = document.getElementById('status-message');
-      statusDiv.textContent = message;
+      statusDiv.innerHTML = message.replace(/\n/g, '<br>');
       statusDiv.className = `status-message ${type} show`;
 
       setTimeout(() => {
         statusDiv.classList.remove('show');
-      }, 8000);
+      }, 10000);
     }
   </script>
 </body>
