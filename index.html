@@ -2642,7 +2642,7 @@ async function checkBackend() {
       }
     }
 
-    function submitOrder() {
+    async function submitOrder() {
       const now = new Date();
       const familyEmail = document.getElementById('family-email').value.trim();
       const firstChild = document.querySelector('.child-section');
@@ -2680,6 +2680,12 @@ async function checkBackend() {
         });
       });
       
+      // Preflight backend health check
+      const backendOk = await checkBackend();
+      if (!backendOk) {
+        handleSubmissionFailure(orderData, orderId, 'Backend not reachable');
+        return;
+      }
       showNotification('Submitting order to cloud...', 'info');
       
       if (GOOGLE_SHEETS_CONFIG.useGoogleSheets && GOOGLE_SHEETS_CONFIG.webAppUrl) {
