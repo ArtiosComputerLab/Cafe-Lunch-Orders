@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Artios Academies Cafe - Daily Orders</title>
+  <title>Artios Cafe - Daily Orders</title>
   <style>
     * {
       margin: 0;
@@ -224,8 +224,8 @@
 <body>
   <div class="worker-container">
     <div class="worker-header">
-      <h1 class="worker-title">🍽️ Daily Food Orders</h1>
-      <p class="worker-subtitle">Cafe Worker Portal</p>
+      <h1 class="worker-title">🍽️ Artios Cafe Daily Orders</h1>
+      <p class="worker-subtitle">Daily Food Order Portal</p>
     </div>
 
     <div class="instructions">
@@ -264,10 +264,11 @@
     <div class="features">
       <h4>📧 What You'll Receive:</h4>
       <ul>
-        <li><strong>Chick-fil-A Order List</strong> - Ready to call in</li>
-        <li><strong>Student Checklist</strong> - Printable with checkboxes</li>
+        <li><strong>Chick-fil-A Order List</strong> - Organized by categories (Entrees, Salads, Sides)</li>
+        <li><strong>Student Checklist</strong> - Printable with checkboxes sorted by last name</li>
         <li><strong>Artios Items List</strong> - Items to prepare at school</li>
-        <li><strong>Professional Formatting</strong> - Clean and easy to read</li>
+        <li><strong>Professional Formatting</strong> - Clean and easy to read/print</li>
+        <li><strong>Order Totals</strong> - Clear counts for each category</li>
       </ul>
     </div>
   </div>
@@ -372,9 +373,9 @@
             
             if (data.ordersProcessed > 0) {
               message += `Your email includes:\n`;
-              message += `• Chick-fil-A order list (ready to call in)\n`;
-              message += `• Student checklist with checkboxes\n`;
-              message += `• Artios items to prepare\n`;
+              message += `• Chick-fil-A orders organized by categories\n`;
+              message += `• Student checklist sorted by last name\n`;
+              message += `• Artios items to prepare at school\n`;
               message += `• Professional formatting for easy printing\n\n`;
               message += `Check your email and start preparing! 🍽️`;
             } else {
