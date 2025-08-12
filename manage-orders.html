@@ -921,16 +921,23 @@
             })
           });
 
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
           const result = await response.json();
+          console.log('Cancellation result for', item.name, ':', result);
+          
           if (result.success) {
             successCount++;
             // Mark item as cancelled in our local data
             item.status = 'cancelled';
           } else {
-            errors.push(`${item.name}: ${result.message}`);
+            errors.push(`${item.name}: ${result.message || result.error || 'Unknown error'}`);
           }
         } catch (error) {
-          errors.push(`${item.name}: Network error`);
+          console.error('Error cancelling', item.name, ':', error);
+          errors.push(`${item.name}: ${error.message || 'Network error'}`);
         }
       }
 
